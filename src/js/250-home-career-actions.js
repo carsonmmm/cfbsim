@@ -106,11 +106,21 @@ async function goHome() {
   if (appMode === 'career' && gameLocked()) return notify('Finish the game first, or close it and come back: it waits for you.');
   if (!(await leaveMode())) return;
   appMode = 'home'; rngOwner = null; hideModal(); cui.confirm = null; cui.adPick = false; cui.coSetup = false; cui.flash = ''; ui.flash = ''; render(); window.scrollTo(0, 0);
-  const b = document.querySelector('#view [data-act="goad"]'); if (b) b.focus({ preventScroll: true });
+  const b = document.querySelector('#view .homecont .btn, #view .homepick .evopt'); if (b) b.focus({ preventScroll: true });
 }
 Object.assign(actions, {
   gohome() { goHome(); },
   goad() { enterAD(); },
+  // Home screen: open one exact slot of the AD save set (an AD, GM, commissioner or owner career)
+  async homeopen(d) {
+    const i = +d.slot; if (!(i >= 1 && i <= 5) || !lsGet(NS_PREFIX.ad + 'slot-' + i)) return render();
+    if (appMode === 'career' && !(await leaveMode())) return; if (appMode === 'ad' && state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL);
+    switchNS('ad'); appMode = 'ad'; rngOwner = 'ad'; hideModal();
+    if (!(state && slot === i)) { setActiveSlot(i); state = null; await boot(); }
+    if (state) { ui.tab = 'office'; applyTheme(); render(); window.scrollTo(0, 0); }
+  },
+  // Home screen: the school picker (col) or the NFL club picker (nfl) for a new career
+  homenew(d) { ui.nc.lvl = d.v === 'nfl' ? 'nfl' : 'col'; actions.adpick(); },
   // first AD career: pick the school on the home screen, then create it
   adpick() { cui.adPick = true; ui.newDiff = ui.newDiff || 'normal'; render(); window.scrollTo(0, 0); const el = document.getElementById('nc-tid'); if (el) el.focus(); },
   adpickdiff(d) { ui.newDiff = d.v; render(); refocus({ act: 'adpickdiff', v: d.v }); },

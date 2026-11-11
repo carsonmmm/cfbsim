@@ -17,6 +17,7 @@ const _xCommTabs = commTabList; commTabList = function () { const L = _xCommTabs
 const _xCommGroups = commGroups; commGroups = function () { const G = _xCommGroups(); G.splice(2, 0, ['Fans', ['feed', 'pickem', 'reels', 'friends']]); return G; };
 function xTabVis(k) {
   if (!X_TABS.some(t => t[0] === k)) return null;
+  if (k === 'friends') return typeof shareHere === 'function' && shareHere();
   if (k === 'biz') return bizOn(); if (k === 'nflx') return isGM(); if (k === 'rivals' || k === 'camp') return !isComm();
   return true;
 }

@@ -1030,7 +1030,7 @@ details summary{cursor:pointer;font-weight:600}
 .homehero{padding:18px 4px 4px;max-width:720px}
 .homehero .h2{font-size:44px}
 .homehero p{font-size:16px;margin:6px 0 0}
-.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .mode{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;min-width:0}
 .mode::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--maize)}
 .mode p{margin:0}
@@ -1135,6 +1135,8 @@ p.big{font-size:18px}
   [data-skin=broadcast] .brand .wm.long,[data-skin=scoreboard] .brand .wm.long{font-size:20px!important}
 }
 
+.homecont{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}.homecont .h2{margin:2px 0}.homecont p{margin:0}
+.homepick{margin-bottom:16px}.homepicks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}@media (max-width:800px){.homepicks{grid-template-columns:1fr}}
 /* ================= v8: Football Empire ================= */
 .nflt{display:inline-flex;align-items:center;gap:6px}
 .nsw{width:11px;height:11px;border-radius:3px;border:2px solid;flex:none;display:inline-block}
@@ -15066,25 +15068,41 @@ function renderHome() {
   const el = document.getElementById('customTheme'); if (el) el.textContent = '';
   $('#hdr').innerHTML = `<div class="brand"><div class="wm" data-badge="FE"><span class="wmu">FOOTBALL EMPIRE</span><span class="wmn">Football Empire</span><span class="wmt">Football Empire</span></div><div class="sub">Pick how you want to play</div></div><div class="acts">${toolsHTML('home')}</div>`;
   $('#tabs').innerHTML = ''; const mn = $('#mnav'); if (mn) mn.innerHTML = ''; const tk = $('#ticker'); if (tk) tk.innerHTML = '';
-  const am = slotsMetaOf('ad'); const aSlot = lastADSlot() || 1; const a = am[aSlot] && !am[aSlot].comm && !am[aSlot].own ? am[aSlot] : null;
+  // The AD save slots hold four kinds of career. Each home card shows the one of its kind that was saved last.
+  const am = slotsMetaOf('ad'); const adOf = f => [1, 2, 3, 4, 5].filter(i => am[i] && lsGet('mfad-slot-' + i) && f(am[i])).sort((x, y) => (am[y].saved || 0) - (am[x].saved || 0))[0] || null;
+  const aSlot = adOf(m => !m.comm && !m.own && m.lvl !== 'nfl'), a = aSlot ? am[aSlot] : null; const gSlot = adOf(m => !m.comm && !m.own && m.lvl === 'nfl'), g = gSlot ? am[gSlot] : null;
+  const kSlot = adOf(m => m.comm), wSlot = adOf(m => m.own); const nAD = [1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length;
   const om = slotsMetaOf('coach'); const oSlot = +lsGet('fecoach-active') || 1; const o = om[oSlot]; const nO = Object.keys(om).filter(i => lsGet('fecoach-slot-' + i)).length;
   const cm = cMeta(); const cSlot = +lsGet(CACTIVE_KEY) || 1; const c = cm[cSlot];
-  const nA = adCareerSlots().length, nC = Object.keys(cm).filter(i => lsGet(CSLOT_KEY(i))).length;
+  const nC = Object.keys(cm).filter(i => lsGet(CSLOT_KEY(i))).length;
+  // the career saved last, in any mode, leads the page
+  const recent = [a && { t: a.saved, k: 'Athletic Director', n: a.name, d: `${a.season} · ${a.phase === 'offseason' ? 'offseason' : a.rec}`, act: 'homeopen', slot: aSlot },
+    g && { t: g.saved, k: 'NFL General Manager', n: g.name, d: `${g.season} · ${g.phase === 'offseason' ? 'offseason' : g.rec}`, act: 'homeopen', slot: gSlot },
+    kSlot && { t: am[kSlot].saved, k: 'Commissioner', n: am[kSlot].comm === 'nfl' ? 'The NFL' : 'College football', d: String(am[kSlot].season || ''), act: 'homeopen', slot: kSlot },
+    wSlot && { t: am[wSlot].saved, k: 'Owner', n: am[wSlot].name, d: `${am[wSlot].season} · ${am[wSlot].phase === 'offseason' ? 'offseason' : am[wSlot].rec}`, act: 'homeopen', slot: wSlot },
+    o && lsGet('fecoach-slot-' + oSlot) && { t: o.saved, k: 'Coach', n: o.coach ? o.coach.name : o.name, d: `${o.coach ? roleTitle(o.coach.role) + ', ' : ''}${o.name} · ${o.season}`, act: 'gocoach' },
+    c && lsGet(CSLOT_KEY(cSlot)) && !c.done && { t: c.saved, k: 'Player Career', n: c.name, d: `${c.pos}${c.team ? ' · ' + c.team : ''}`, act: 'gocareer' }].filter(Boolean).sort((x, y) => (y.t || 0) - (x.t || 0))[0];
+  const fresh = !nAD && !nO && !nC;
+  const lead = recent ? `<section class="card next homecont"><div><div class="eyebrow">Pick up where you left off · ${esc(recent.k)}</div><h2 class="h2">${esc(recent.n)}</h2><p class="muted">${esc(recent.d)}</p></div><button class="btn primary" data-act="${recent.act}"${recent.slot ? ` data-slot="${recent.slot}"` : ''}>Continue</button></section>`
+    : fresh ? `<section class="card homepick"><div class="eyebrow">New here? Start with one of these</div><div class="homepicks"><button class="evopt" data-act="homenew" data-v="col"><b>I want to build a program</b><span>Athletic Director: hire the coach, recruit, run the budget. The best place to start.</span></button><button class="evopt" data-act="gocoach" data-v="new"><b>I want to call the plays</b><span>Coach: game plans, play calling and a career ladder to climb.</span></button><button class="evopt" data-act="gocareer" data-v="new"><b>I want to be the star</b><span>Player Career: one player, from high school to the NFL.</span></button></div></section>` : '';
   if (cui.coSetup) { $('#view').innerHTML = coachSetupHTML(null); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.ownSetup) { $('#view').innerHTML = ownSetupHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.adPick) { $('#view').innerHTML = adPickHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
-  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">Five ways to play</h1><p class="muted">Run any of the 138 FBS programs from the athletic director's chair, coach on the sideline and climb the ladder, or become the player: start in high school, get recruited, get drafted and build an NFL career. Or take over as commissioner and run the whole league, or buy an NFL club and run it from the owner's suite.</p></section>
-  <div class="modes">
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">Mode 1</div><h2 class="h2">Athletic Director</h2><p>Pick any of the 138 FBS schools, or create your own. Hire and fire coaches, set the budget, recruit and build a dynasty. Or start as an NFL general manager, and move between college and the NFL.</p>
-    <div class="msave">${a && lsGet('mfad-slot-' + aSlot) ? `<b>${a.lvl === 'nfl' ? 'GM, ' : ''}${esc(a.name)}</b> · ${a.season} · ${a.phase === 'offseason' ? 'offseason' : esc(a.rec)} <span class="muted">· slot ${aSlot}</span>` : '<span class="muted">No AD career yet. Pick your school to start in 2026.</span>'}<div class="small muted">${[1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length} of 5 save slots used${nA < [1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length ? ' (shared with the commissioner)' : ''}</div></div>
-    ${nA ? '<button class="btn primary" data-act="goad">Continue as AD</button>' : '<button class="btn primary" data-act="adpick" data-k="goad">Pick your school</button>'}</article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.users}</div><div class="eyebrow">Mode 2 · New</div><h2 class="h2">Coach</h2><p>Take any job, or start as a position coach and climb. Call plays on game day, recruit on the road, work the coaching carousel and negotiate your own contracts. The AD handles the money; you can ask.</p>
+  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">Six ways to play</h1><p class="muted">Run a college program, coach on the sideline, play a career from high school to the NFL, build an NFL roster as general manager, run a whole league as commissioner, or buy a club and own it.</p></section>
+  ${lead}<div class="modes">
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">College</div><h2 class="h2">Athletic Director</h2><p>Pick any of the 138 FBS schools, or create your own. Hire and fire coaches, set the budget, recruit and build a dynasty. Good ADs hear from the NFL.</p>
+    <div class="msave">${a ? `<b>${esc(a.name)}</b> · ${a.season} · ${a.phase === 'offseason' ? 'offseason' : esc(a.rec)} <span class="muted">· slot ${aSlot}</span>` : '<span class="muted">No AD career yet. Pick your school to start in 2026.</span>'}<div class="small muted">${nAD} of 5 save slots used</div></div>
+    <div class="row gap">${a ? `<button class="btn primary" data-act="homeopen" data-slot="${aSlot}">Continue as AD</button>` : '<button class="btn primary" data-act="homenew" data-v="col">Pick your school</button>'}</div></article>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.users}</div><div class="eyebrow">College and NFL</div><h2 class="h2">Coach</h2><p>Take any job, or start as a position coach and climb. Call plays on game day, recruit on the road, work the coaching carousel and negotiate your own contracts. The AD handles the money; you can ask.</p>
     <div class="msave">${o && lsGet('fecoach-slot-' + oSlot) ? `<b>${esc(o.coach ? o.coach.name : o.name)}</b> · ${esc(o.coach ? roleTitle(o.coach.role) : '')}, ${esc(o.name)} · ${o.season} <span class="muted">· slot ${oSlot}</span>` : '<span class="muted">No coaching career yet.</span>'}<div class="small muted">${nO} of 5 save slots used</div></div>
     <div class="row gap">${nO ? '<button class="btn primary" data-act="gocoach">Continue coaching</button>' : '<button class="btn primary" data-act="gocoach" data-v="new">Create a coach</button>'}</div></article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">Mode 3</div><h2 class="h2">Player Career</h2><p>Pick a position, play your high school seasons, earn your stars, choose from scholarship and NIL offers, hit the transfer portal, get drafted, and play out an NFL career.</p>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">High school to the NFL</div><h2 class="h2">Player Career</h2><p>Pick a position, play your high school seasons, earn your stars, choose from scholarship and NIL offers, hit the transfer portal, get drafted, and play out an NFL career.</p>
     <div class="msave">${c && lsGet(CSLOT_KEY(cSlot)) ? `<b>${esc(c.name)}</b> · ${esc(c.pos)} · ${esc(c.done ? 'career complete' : c.team || '')} ${c.stars ? starsHTML(c.stars) : ''} <span class="muted">· slot ${cSlot}</span>` : '<span class="muted">No player career yet.</span>'}<div class="small muted">${nC} of 5 save slots used</div></div>
     <div class="row gap">${c && lsGet(CSLOT_KEY(cSlot)) ? '<button class="btn primary" data-act="gocareer">Continue career</button><button class="btn ghost" data-act="gocareer" data-v="saves">Career save slots</button>' : '<button class="btn primary" data-act="gocareer" data-v="new">Create a player</button>'}</div></article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.gavel}</div><div class="eyebrow">Mode 4 · New</div><h2 class="h2">Commissioner</h2><p>Run all of college football or the NFL, never a team. Rule on suspensions and appeals, handle scandals and the press, set the salary cap and the TV deals, steer the rules committee, and survive the vote at the end of your term.</p>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">NFL</div><h2 class="h2">General Manager</h2><p>Run an NFL front office: the draft, the salary cap, free agency, trades and the head coach. Start with a real roster, or throw every player into one pool and draft all 32 clubs from scratch.</p>
+    <div class="msave">${g ? `<b>${esc(g.name)}</b> · ${g.season} · ${g.phase === 'offseason' ? 'offseason' : esc(g.rec)} <span class="muted">· slot ${gSlot}</span>` : '<span class="muted">No GM career yet.</span>'}<div class="small muted">Shares the five AD save slots</div></div>
+    <div class="row gap">${g ? `<button class="btn primary" data-act="homeopen" data-slot="${gSlot}">Continue as GM</button><button class="btn ghost" data-act="homenew" data-v="nfl">New GM</button>` : '<button class="btn primary" data-act="homenew" data-v="nfl">Pick your club</button>'}</div></article>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.gavel}</div><div class="eyebrow">College or NFL</div><h2 class="h2">Commissioner</h2><p>Run all of college football or the NFL, never a team. Rule on suspensions and appeals, handle scandals and the press, set the salary cap and the TV deals, steer the rules committee, and survive the vote at the end of your term.</p>
     <div class="msave">${Object.values(slotsMetaOf('ad')).some(m => m && m.comm) ? '<b>Commissioner career saved</b> <span class="muted">· in your AD save slots</span>' : '<span class="muted">Uses one of your five AD save slots.</span>'}</div>
     <div class="row gap"><label class="fld inl"><span>League</span><select id="comm-lvl"><option value="col">College football</option><option value="nfl">The NFL</option></select></label><button class="btn primary" data-act="gocomm">${Object.values(slotsMetaOf('ad')).some(m => m && m.comm) ? 'Continue as commissioner' : 'Start as commissioner'}</button></div></article>
    ${ownHomeCardHTML()}
@@ -16261,11 +16279,21 @@ async function goHome() {
   if (appMode === 'career' && gameLocked()) return notify('Finish the game first, or close it and come back: it waits for you.');
   if (!(await leaveMode())) return;
   appMode = 'home'; rngOwner = null; hideModal(); cui.confirm = null; cui.adPick = false; cui.coSetup = false; cui.flash = ''; ui.flash = ''; render(); window.scrollTo(0, 0);
-  const b = document.querySelector('#view [data-act="goad"]'); if (b) b.focus({ preventScroll: true });
+  const b = document.querySelector('#view .homecont .btn, #view .homepick .evopt'); if (b) b.focus({ preventScroll: true });
 }
 Object.assign(actions, {
   gohome() { goHome(); },
   goad() { enterAD(); },
+  // Home screen: open one exact slot of the AD save set (an AD, GM, commissioner or owner career)
+  async homeopen(d) {
+    const i = +d.slot; if (!(i >= 1 && i <= 5) || !lsGet(NS_PREFIX.ad + 'slot-' + i)) return render();
+    if (appMode === 'career' && !(await leaveMode())) return; if (appMode === 'ad' && state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL);
+    switchNS('ad'); appMode = 'ad'; rngOwner = 'ad'; hideModal();
+    if (!(state && slot === i)) { setActiveSlot(i); state = null; await boot(); }
+    if (state) { ui.tab = 'office'; applyTheme(); render(); window.scrollTo(0, 0); }
+  },
+  // Home screen: the school picker (col) or the NFL club picker (nfl) for a new career
+  homenew(d) { ui.nc.lvl = d.v === 'nfl' ? 'nfl' : 'col'; actions.adpick(); },
   // first AD career: pick the school on the home screen, then create it
   adpick() { cui.adPick = true; ui.newDiff = ui.newDiff || 'normal'; render(); window.scrollTo(0, 0); const el = document.getElementById('nc-tid'); if (el) el.focus(); },
   adpickdiff(d) { ui.newDiff = d.v; render(); refocus({ act: 'adpickdiff', v: d.v }); },
@@ -17604,6 +17632,8 @@ Object.assign(actions, {
 // and everyone reads all of them. A challenge is a shared document: a school, a seed and a number of seasons, so
 // everyone who takes it starts from the same league. Only ids are stored about people; names come from the
 // platform when the board is drawn.
+// True where the sharing features can work at all (the host provides them). On a plain website they are hidden.
+const shareHere = () => !!(window.claude && typeof window.claude.use === 'function');
 var share = { db: null, user: null, uid: null, tried: false, ok: false, board: null, chals: null, names: {}, err: '', busy: false, filter: 'all', loadedAt: 0 };
 const SHARE_MAX = 25; // careers kept per player
 async function shareInit() {
@@ -18036,6 +18066,7 @@ const _xCommTabs = commTabList; commTabList = function () { const L = _xCommTabs
 const _xCommGroups = commGroups; commGroups = function () { const G = _xCommGroups(); G.splice(2, 0, ['Fans', ['feed', 'pickem', 'reels', 'friends']]); return G; };
 function xTabVis(k) {
   if (!X_TABS.some(t => t[0] === k)) return null;
+  if (k === 'friends') return typeof shareHere === 'function' && shareHere();
   if (k === 'biz') return bizOn(); if (k === 'nflx') return isGM(); if (k === 'rivals' || k === 'camp') return !isComm();
   return true;
 }
@@ -18470,8 +18501,9 @@ const SCN_MODE = { ad: 'Athletic Director', coach: 'Coach', gm: 'NFL general man
 function x2ScnHomeHTML() {
   const by = {}; Object.entries(SCENS).forEach(([k, s]) => { (by[s.mode] = by[s.mode] || []).push([k, s]); });
   return `<section class="card" id="x2scn"><div class="head"><div><div class="eyebrow">Scenario challenges</div><h2 class="h2">Start in a mess</h2></div><p class="hint">A new career that starts in trouble, with goals to hit by a deadline. Each one uses a free save slot; your other careers aren't touched.</p></div>
-   <label class="fld inl"><span>Your name (Coach scenarios)</span><input id="x2scnname" maxlength="28" value="${esc(ui.x2scnName || 'Alex Morgan')}"></label>
-   <div class="x2scns">${Object.entries(by).map(([m, L]) => `<div><div class="lbl">${esc(SCN_MODE[m])}</div>${L.map(([k, s]) => `<div class="x2scn"><b>${esc(s.l)}</b><p class="small">${esc(s.d)}</p><ul class="small plainlist">${s.goals.map(g => `<li>· ${esc(g[1])}${g[2] ? ` <span class="muted">(${g[2] === 1 ? 'first season' : 'within ' + g[2] + ' seasons'})</span>` : ''}</li>`).join('')}</ul><button class="btn sm" data-act="x2scn" data-k="${k}">Start this scenario</button></div>`).join('')}</div>`).join('')}</div>${x2BuildHTML()}</section>`;
+   <details${ui.scnOpen ? ' open' : ''} ontoggle="ui.scnOpen=this.open"><summary><b>Show the ${Object.keys(SCENS).length} scenarios</b> <span class="small muted">a scandal, an 0-12 program, cap hell, a labor war and more</span></summary>
+   <label class="fld inl mt"><span>Your name (Coach scenarios)</span><input id="x2scnname" maxlength="28" value="${esc(ui.x2scnName || 'Alex Morgan')}"></label>
+   <div class="x2scns">${Object.entries(by).map(([m, L]) => `<div><div class="lbl">${esc(SCN_MODE[m])}</div>${L.map(([k, s]) => `<div class="x2scn"><b>${esc(s.l)}</b><p class="small">${esc(s.d)}</p><ul class="small plainlist">${s.goals.map(g => `<li>· ${esc(g[1])}${g[2] ? ` <span class="muted">(${g[2] === 1 ? 'first season' : 'within ' + g[2] + ' seasons'})</span>` : ''}</li>`).join('')}</ul><button class="btn sm" data-act="x2scn" data-k="${k}">Start this scenario</button></div>`).join('')}</div>`).join('')}</div></details>${x2BuildHTML()}</section>`;
 }
 { const _ph = patchHomeHTML; patchHomeHTML = function () { return x2ScnHomeHTML() + _ph(); }; }
 // IDEA-06: the challenge builder (AD and NFL GM). Nothing starts until the setup passes its checks.
@@ -18893,16 +18925,16 @@ function x3PrepCard() {
 }
 function x3DailyCard() {
   if (!dailyOn()) return ''; const ch = state.chal; const h = (isPro() ? (PS().hist || []).map(x => ({ s: x.s, w: x.w, l: x.l })) : (state.history || []).map(x => ({ s: x.season, w: x.w, l: x.l }))).find(x => x.s === ch.s0);
-  return `<section class="card next"><div class="eyebrow">Daily challenge · ${esc(String(ch.id).slice(6))}</div><h2 class="h3">${h ? `Final: ${h.w}-${h.l}` : `One season at ${esc(teamName(ch.tid))}`}</h2><p class="small">${h ? 'Post your score to the leaderboard from the Save file page, then see how everyone else did on the Home screen.' : 'Everyone gets the same school and the same league today. Play the season, then post your score.'}</p>${h ? '<button class="btn primary sm" data-act="x3dailypost">Post my score</button>' : ''}</section>`;
+  return `<section class="card next"><div class="eyebrow">Daily challenge · ${esc(String(ch.id).slice(6))}</div><h2 class="h3">${h ? `Final: ${h.w}-${h.l}` : `One season at ${esc(teamName(ch.tid))}`}</h2><p class="small">${!shareHere() ? (h ? 'That is your result for today. A new challenge starts tomorrow.' : 'Everyone gets the same school and the same league today. Play the season and see how you do.') : h ? 'Post your score to the leaderboard from the Save file page, then see how everyone else did on the Home screen.' : 'Everyone gets the same school and the same league today. Play the season, then post your score.'}</p>${h && shareHere() ? '<button class="btn primary sm" data-act="x3dailypost">Post my score</button>' : ''}</section>`;
 }
 { const w = f => function () { return x3DailyCard() + x3PrepCard() + f.apply(this, arguments); }; vOffice = w(vOffice); vCoachOffice = w(vCoachOffice); vProOffice = w(vProOffice); }
 
 /* ---------- 4. the daily challenge (Home) ---------- */
 function x3DailyHomeHTML() {
   const D = dailyToday(); const chk = D.id + ':' + (lsGet(NS_PREFIX.ad + 'slots-meta') || ''); if (cui.dailyChk !== chk) { cui.dailyChk = chk; /* looked up again whenever the AD slots change */ x3DailySlot(D.id).then(i => { const v = i ? D.id : null; if (cui.dailyHave !== v) { cui.dailyHave = v; if (appMode === 'home') render(); } }).catch(() => { }); } const nm = CTEAMS0_AD[D.tid] ? CTEAMS0_AD[D.tid].name : D.tid; const board = (typeof share !== 'undefined' && share.board ? share.board.filter(x => x.chal === D.id) : []).sort((a, b) => b.score - a.score).slice(0, 8);
-  return `<section class="card" id="x3daily"><div class="head"><div><div class="eyebrow">Daily challenge · ${esc(D.k)} (your local date)</div><h2 class="h2">Today: ${esc(nm)}</h2></div><p class="hint">The same school and the same league for everyone today. Play one season as athletic director and post your score. A new one every day.</p></div>
+  return `<section class="card" id="x3daily"><div class="head"><div><div class="eyebrow">Daily challenge · ${esc(D.k)} (your local date)</div><h2 class="h2">Today: ${esc(nm)}</h2></div><p class="hint">The same school and the same league for everyone today. Play one season as athletic director${shareHere() ? ' and post your score' : ''}. A new one every day.</p></div>
    <div class="row gap"><button class="btn primary" data-act="x3daily">Play today's challenge</button>${cui.dailyHave === D.id ? (cui.confirm === 'x3restart' ? '<button class="btn danger" data-act="x3dailyre">Confirm: start it over</button>' : '<button class="btn ghost" data-act="cask2" data-k="x3restart">Start it over</button>') : ''}</div><p class="small muted">A new challenge starts at midnight on your device's clock. Playing again picks up the same save.</p>
-   ${board.length ? `<div class="tw mt"><table class="tbl"><thead><tr><th>#</th><th>Who</th><th>Record</th><th class="num">Score</th></tr></thead><tbody>${board.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(shareWho(x.uid))}</td><td>${x.w}-${x.l}</td><td class="num">${x.score}</td></tr>`).join('')}</tbody></table></div>` : `<p class="small muted mt">${typeof share !== 'undefined' && share.ok ? 'No scores posted yet today.' : 'Scores show up here when the game is opened from its claude.ai link.'}</p>`}</section>`;
+   ${board.length ? `<div class="tw mt"><table class="tbl"><thead><tr><th>#</th><th>Who</th><th>Record</th><th class="num">Score</th></tr></thead><tbody>${board.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(shareWho(x.uid))}</td><td>${x.w}-${x.l}</td><td class="num">${x.score}</td></tr>`).join('')}</tbody></table></div>` : `<p class="small muted mt">${typeof share !== 'undefined' && share.ok ? 'No scores posted yet today.' : shareHere() ? 'Scores show up here once you are signed in.' : 'Your result is kept on this device.'}</p>`}</section>`;
 }
 { const _ph = patchHomeHTML; patchHomeHTML = function () { return x3DailyHomeHTML() + _ph(); }; }
 // the AD slot already holding today's challenge, if any (older saves' summaries don't say, so those are opened to check)
@@ -19091,7 +19123,7 @@ Object.assign(actions, {
   x3sf(d) { if (!STORY_F.some(f => f[0] === d.v)) return; if (appMode === 'career') cui.storyF = d.v; else ui.storyF = d.v; render(); },
   x3daily() { x3DailyStart(); },
   x3dailyre() { cui.confirm = null; x3DailyStart(true); },
-  async x3dailypost(d, el) { const r = typeof sharePost === 'function' ? await sharePost() : 'unavailable'; after(r === 'ok' ? 'Posted. See the board on the Home screen.' : r === 'empty' ? 'Finish the season first.' : 'The leaderboard is only reachable from the game\'s claude.ai link.'); },
+  async x3dailypost(d, el) { const r = typeof sharePost === 'function' ? await sharePost() : 'unavailable'; after(r === 'ok' ? 'Posted. See the board on the Home screen.' : r === 'empty' ? 'Finish the season first.' : 'The leaderboard is not available here yet.'); },
   x3firm() { const r = csFirm(); after(r === 'ok' ? 'Two more candidates are on the list.' : r === 'money' ? 'Not enough money in the reserve.' : ''); },
   x3ask(d) { const r = csAsk(d.id, d.v); after(r === 'none' ? 'No interviews left this year.' : ''); },
   x3reno() { const r = renoStart(); after({ ok: 'The renovation is on.', busy: 'A renovation is already under way.', money: 'You need half the cost in the reserve.', when: 'Renovations start in the offseason.' }[r] || ''); },
@@ -21171,7 +21203,7 @@ const OWN_SCEN = { worst: ['The worst club in the smallest market', 'A cheap clu
 const OWN_PATHS = [['buy', 'Buy a club', 'Four clubs are for sale. Outbid the other groups, then win the owners\' vote.'], ['exp', 'Start an expansion club', 'Pick a city, build the brand, pay the fee and stock the roster in an expansion draft.'], ['worst', OWN_SCEN.worst[0], OWN_SCEN.worst[1]], ['frontier', OWN_SCEN.frontier[0], OWN_SCEN.frontier[1]], ['family', OWN_SCEN.family[0], OWN_SCEN.family[1]], ['partner', 'Buy in as a minority partner', 'A former player or GM from one of your other careers buys 10% of a club, with a deal to take control after a season.']];
 function ownHomeCardHTML() {
   const meta = slotsMetaOf('ad'); const last = +lsGet('mfad-last-own'); const have = meta[last] && meta[last].own && lsGet(SLOT_KEY(last)) ? last : [1, 2, 3, 4, 5].find(i => meta[i] && meta[i].own && lsGet(SLOT_KEY(i))); const m = have ? meta[have] : null;
-  return `<article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">Mode 5 · New</div><h2 class="h2">Owner</h2><p>Buy an NFL club or start an expansion team. Set ticket prices, build a stadium, hire the GM and head coach (or be your own GM), win votes at the owners' meeting, and build a legacy worth a Hall of Fame bust.</p>
+  return `<article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">NFL</div><h2 class="h2">Owner</h2><p>Buy an NFL club or start an expansion team. Set ticket prices, build a stadium, hire the GM and head coach (or be your own GM), win votes at the owners' meeting, and build a legacy worth a Hall of Fame bust.</p>
     <div class="msave">${m ? `<b>${esc(m.owner || 'Owner')}</b> · ${esc(m.name)} · ${m.season} · ${m.phase === 'offseason' ? 'offseason' : esc(m.rec)} <span class="muted">· slot ${have}</span>` : '<span class="muted">Uses one of your five AD save slots.</span>'}</div>
     <div class="row gap">${m ? '<button class="btn primary" data-act="goowner">Continue as owner</button><button class="btn ghost" data-act="owsnew">New owner</button>' : '<button class="btn primary" data-act="owsnew">Become an owner</button>'}</div></article>`;
 }

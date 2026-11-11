@@ -4,6 +4,8 @@
 // and everyone reads all of them. A challenge is a shared document: a school, a seed and a number of seasons, so
 // everyone who takes it starts from the same league. Only ids are stored about people; names come from the
 // platform when the board is drawn.
+// True where the sharing features can work at all (the host provides them). On a plain website they are hidden.
+const shareHere = () => !!(window.claude && typeof window.claude.use === 'function');
 var share = { db: null, user: null, uid: null, tried: false, ok: false, board: null, chals: null, names: {}, err: '', busy: false, filter: 'all', loadedAt: 0 };
 const SHARE_MAX = 25; // careers kept per player
 async function shareInit() {
