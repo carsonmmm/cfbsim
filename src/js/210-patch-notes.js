@@ -1,6 +1,13 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.54', t: 'Ironman everywhere', n: [
+    'Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.',
+    'Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.',
+    'Leaderboards, posting scores, cloud saves and the friends league are switched off for now. They will come back when the site has its own sign-in. Everything else, including the daily challenge and challenge codes, works as before.',
+    'collegefbsim.com now counts visits and which modes get opened, with no cookies and nothing that identifies you. It is noted on the Save file page.',
+    'Old saves load as before.',
+  ] },
   { v: '9.53', t: 'A new front door', n: [
     'Home screen: the career you played last is at the top with one Continue button. New players get three quick picks to start with. The scenarios fold away until you want them.',
     'NFL General Manager has its own card on the Home screen. It was always in the game, behind the Athletic Director card.',

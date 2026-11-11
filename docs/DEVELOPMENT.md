@@ -28,7 +28,7 @@ Needs Node.js 20 or newer. The tests also need Playwright (`npm install`, then `
 | `build.js` | Joins `src/` into `index.html`. |
 | `sw.js`, `manifest.webmanifest` | The installable app: offline loading and the home-screen icon. |
 | `tests/` | Automated checks that run the game in a headless browser. `tests/fixtures/v947.html` is an old build used to prove old saves still load. |
-| `scripts/` | `serve.js` (local server) and `patch-notes.js` (writes `PATCH_NOTES.md`). |
+| `scripts/` | `serve.js` (local server), `patch-notes.js` (writes `PATCH_NOTES.md`) and `make-save-fixture.js` (saves one career of every kind for the tests). |
 | `.github/` | The check that runs on every push, plus pull request and issue templates. |
 | `favicon.svg`, `404.html`, `robots.txt`, `sitemap.xml`, `docs/img/` | Site extras. |
 
@@ -53,7 +53,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `360` | Tutorials |
 | `380` to `400` | Owner mode |
 | `440` | Fantasy draft start |
-| `450` | Ironman careers |
+| `450` | Ironman careers (every mode) |
 | `460` | The website: offline app, storage note, visit counting |
 | `470` | The share-your-season picture |
 
@@ -92,6 +92,8 @@ node tests/run.js tests/home.js           # the Home screen
 node tests/run.js tests/fantasy-draft.js  # the fantasy draft start
 node tests/run.js tests/ironman.js        # Ironman careers
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
+node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
+node tests/contrast.js                    # text contrast in all five themes, light and dark
 node tests/persist.js                     # saves from the v9.47 build load in this one
 node tests/inbox.js                       # the Inbox and "decisions first"
 ```
@@ -107,12 +109,17 @@ node tests/inbox.js                       # the Inbox and "decisions first"
 1. Make the change in `src/` on a branch.
 2. Add a patch note at the top of the list in `src/js/210-patch-notes.js`: `{ v: '9.54', t: 'Title', n: ['…'] }`. The version shown in the game is the first entry. Then run `npm run notes`. Skip this for changes players can't see.
 3. Run `npm test`.
-4. Open a pull request. The check runs by itself.
-5. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
+4. For a version that changes what a save holds, run `node scripts/make-save-fixture.js` and commit the new file in `tests/fixtures/`. From then on every build must load those careers.
+5. Open a pull request. The check runs by itself.
+6. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
 
 ## Visit counting
 
-Off by default. To turn it on, create a free site at goatcounter.com, then put its code (the `mysite` in `mysite.goatcounter.com`) in `SITE.goatcounter` at the top of `src/js/460-site.js` and rebuild. It uses no cookies. It counts page views, which modes are opened (`play-ad`, `play-gm` and so on) and finished seasons (`season-ad` and so on). It only runs on the live site.
+On, using GoatCounter (the dashboard is at carsonm.goatcounter.com). The site code is `SITE.goatcounter` at the top of `src/js/460-site.js`; an empty string turns it off. It uses no cookies. It counts page views, which modes are opened (`play-ad`, `play-gm` and so on) and finished seasons (`season-ad` and so on). It only runs on collegefbsim.com, never on a local copy.
+
+## Online features
+
+Leaderboards, posting scores, cloud saves, the friends league and tutorial sync are all behind one switch: `ONLINE` at the top of `src/js/300-sharing.js`. It is `false`, so they are hidden everywhere and nothing is sent or fetched. The code is still there for the day the site has its own sign-in and database.
 
 ## House rules
 

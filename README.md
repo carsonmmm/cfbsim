@@ -24,7 +24,7 @@ Also on the home screen:
 - **Daily challenge:** the same school and league for everyone, one season, a new one each day.
 - **Scenario challenges:** nine careers that start in trouble (a scandal, an 0-12 program, cap hell, a labor war and more), each with goals and a deadline.
 - **Build your own challenge**, and share it with a code.
-- **Ironman:** start an athletic director or general manager career with no undo, no admin tools and a locked difficulty.
+- **Ironman:** in any mode, play with no undo, no admin tools and a locked difficulty. Choose it at the start or turn it on in Settings.
 
 ![The athletic director's office in the middle of a season](docs/img/athletic-director.png)
 
@@ -40,13 +40,14 @@ Also on the home screen:
 
 <img src="docs/img/phone.png" alt="The home screen on a phone" width="280">
 
-All 60 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.53**.
+All 61 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.54**.
 
 ## Good to know
 
 - **Your saves live in your browser.** Clearing site data for collegefbsim.com deletes them. Download a save file from the Save file tab to back one up or move it to another device.
 - **Install it.** On a phone, open collegefbsim.com and choose "Add to Home Screen". After that it opens with no connection.
-- **Leaderboards, cloud saves and the friends league are not on collegefbsim.com yet.** They need a sign-in service behind them, which is the next big item on the [roadmap](ROADMAP.md). They are hidden until then.
+- **Leaderboards, cloud saves and the friends league are not on collegefbsim.com yet.** They need a sign-in service behind them, which is the next big item on the [roadmap](ROADMAP.md). They are switched off until then.
+- **Privacy.** The site counts visits and which modes get opened, using GoatCounter. No cookies, no accounts, nothing that identifies you.
 
 ## Where it's going
 

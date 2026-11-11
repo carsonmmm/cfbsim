@@ -26,7 +26,7 @@
   --text:#E8EDF6; --muted:#8C9EBD; --dim:#566A8C;
   --maize:#F5C518; --maize-ink:#0A1424; --accent:#F5C518;
   --band:#06101E; --band-text:#F2F5FA; --band-muted:#8FA3C4; --band-line:#1B2D4A;
-  --good:#46C281; --bad:#F0605A; --warn:#E7AB3C;
+  --good:#46C281; --bad:#F2706A; --warn:#E7AB3C;
   --good-bg:rgba(70,194,129,.14); --bad-bg:rgba(240,96,90,.14); --warn-bg:rgba(231,171,60,.15); --maize-bg:rgba(245,197,24,.14);
   --me:rgba(245,197,24,.09);
   --shadow:0 10px 30px rgba(0,0,0,.45);
@@ -71,7 +71,7 @@ select{padding:7px 10px}
 kbd{display:inline-block;min-width:1.6em;padding:1px 6px;border:1px solid rgba(127,127,127,.5);border-bottom-width:2px;border-radius:5px;font:600 12px/1.4 ui-monospace,monospace;text-align:center}
 .pfd.me circle{stroke:#ffd400;stroke-width:.6}.pfd.me{filter:drop-shadow(0 0 .6px #ffd400)}
 .dnlist{list-style:none;margin:10px 0 0;padding:0;max-height:min(56vh,520px);overflow:auto;display:flex;flex-direction:column;gap:4px}.dnlist li{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:8px;border:1px solid var(--line);animation:dnin .35s ease}.dnlist li.me{background:var(--me);border-color:var(--maize,var(--line));font-weight:600}.dnlist li.lost{opacity:.8}.dnlist li.brk{background:var(--soft,transparent);font-style:italic;border-style:dashed}.dnlist i{font-weight:400}@keyframes dnin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.dnlist li{animation:none}}
-.ibadge{position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--bad);color:#fff;font:700 10px/16px var(--sans,system-ui);font-style:normal;text-align:center}.tbtn{position:relative}
+.ibadge{position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#B3261E;color:#fff;font:700 10px/16px var(--sans,system-ui);font-style:normal;text-align:center}.tbtn{position:relative}
 .inbox li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .srch{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card,transparent);color:inherit;margin-top:6px}.srchres{max-height:min(52vh,460px);overflow:auto;margin-top:8px}.srchres li{padding:6px 0;border-bottom:1px solid var(--line)}
 .rchart{margin:8px 0}
@@ -748,7 +748,7 @@ details summary{cursor:pointer;font-weight:600}
 
 /* ================= THEME: Game Day Broadcast ================= */
 :root[data-skin=broadcast]{color-scheme:dark;--bg:#050d19;--surface:#0b1830;--surface-2:#10213f;--line:#182b4d;--line-2:#27436f;--text:#eef3fb;--muted:#8ea5c8;--dim:#566f96;--maize:#ffcb05;--maize-ink:#06152b;--accent:#ffcb05;--band:#081427;--band-text:#f2f5fa;--band-muted:#8ea5c8;--band-line:#1d3355;--good:#3ddc84;--bad:#ff5a4f;--warn:#ffb020;--good-bg:rgba(61,220,132,.14);--bad-bg:rgba(255,90,79,.15);--warn-bg:rgba(255,176,32,.15);--maize-bg:rgba(255,203,5,.14);--me:rgba(255,203,5,.09);--shadow:0 14px 34px rgba(0,0,0,.55);--disp:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif}
-:root[data-skin=broadcast][data-mode=light]{color-scheme:light;--bg:#e8edf5;--surface:#fff;--surface-2:#edf1f7;--line:#d4dcea;--line-2:#b6c4da;--text:#07142a;--muted:#4b5d7a;--dim:#8ea0bb;--accent:#00274c;--band:#07142a;--band-text:#f2f5fa;--band-muted:#9fb1cc;--band-line:#1d3355;--good:#12884f;--bad:#c9352c;--warn:#a86400;--good-bg:rgba(18,136,79,.1);--bad-bg:rgba(201,53,44,.09);--warn-bg:rgba(168,100,0,.1);--maize-bg:rgba(255,203,5,.3);--me:rgba(255,203,5,.18);--shadow:0 12px 28px rgba(7,20,42,.16)}
+:root[data-skin=broadcast][data-mode=light]{color-scheme:light;--bg:#e8edf5;--surface:#fff;--surface-2:#edf1f7;--line:#d4dcea;--line-2:#b6c4da;--text:#07142a;--muted:#4b5d7a;--dim:#8ea0bb;--accent:#00274c;--band:#07142a;--band-text:#f2f5fa;--band-muted:#9fb1cc;--band-line:#1d3355;--good:#0c6e3e;--bad:#c9352c;--warn:#a86400;--good-bg:rgba(18,136,79,.1);--bad-bg:rgba(201,53,44,.09);--warn-bg:rgba(168,100,0,.1);--maize-bg:rgba(255,203,5,.3);--me:rgba(255,203,5,.18);--shadow:0 12px 28px rgba(7,20,42,.16)}
 [data-skin=broadcast] body{background-image:repeating-linear-gradient(115deg,rgba(128,160,210,.045) 0 2px,transparent 2px 22px)}
 [data-skin=broadcast] :is(.h2,.h3,.brand .wm,.board .v,.mval,.tiles .v,.final .sc,.final .res,.odds b,.ts,.rival .big,.legacy b,.coach .cname,.stepper .val,.next .matchup .side){font-style:italic;text-transform:uppercase}
 [data-skin=broadcast] .h2{font-size:32px;font-weight:800;letter-spacing:.005em}
@@ -929,7 +929,7 @@ details summary{cursor:pointer;font-weight:600}
 @media (min-width:721px){[data-skin=scoreboard][data-nav=side] #tabs{background:var(--surface-2);padding-top:12px}[data-skin=scoreboard][data-nav=side] #tabs .tab{clip-path:none;padding:9px 12px;margin:0;background:transparent;font-size:12px}[data-skin=scoreboard][data-nav=side] #tabs .tab.on{background:var(--maize);color:var(--maize-ink);box-shadow:none}}
 
 /* ================= THEME: Front Office Dashboard ================= */
-:root[data-skin=dashboard]{color-scheme:light;--bg:#f3f5f8;--surface:#fff;--surface-2:#f2f4f7;--line:#e4e7ec;--line-2:#d0d5dd;--text:#101828;--muted:#667085;--dim:#98a2b3;--maize:#ffcb05;--maize-ink:#00274c;--accent:#00274c;--band:#fff;--band-text:#101828;--band-muted:#667085;--band-line:#e4e7ec;--good:#079455;--bad:#d92d20;--warn:#dc6803;--good-bg:#ecfdf3;--bad-bg:#fef3f2;--warn-bg:#fffaeb;--maize-bg:#fff5cc;--me:#fffbea;--shadow:0 16px 40px rgba(16,24,40,.14);--disp:"Poppins",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--btn-ink:#fff;--nav:#00274c;--nav-text:#c7d3e3}
+:root[data-skin=dashboard]{color-scheme:light;--bg:#f3f5f8;--surface:#fff;--surface-2:#f2f4f7;--line:#e4e7ec;--line-2:#d0d5dd;--text:#101828;--muted:#667085;--dim:#98a2b3;--maize:#ffcb05;--maize-ink:#00274c;--accent:#00274c;--band:#fff;--band-text:#101828;--band-muted:#667085;--band-line:#e4e7ec;--good:#067647;--bad:#b42318;--warn:#b54708;--good-bg:#ecfdf3;--bad-bg:#fef3f2;--warn-bg:#fffaeb;--maize-bg:#fff5cc;--me:#fffbea;--shadow:0 16px 40px rgba(16,24,40,.14);--disp:"Poppins",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--btn-ink:#fff;--nav:#00274c;--nav-text:#c7d3e3}
 :root[data-skin=dashboard][data-mode=dark]{color-scheme:dark;--bg:#0c111d;--surface:#161b26;--surface-2:#1f242f;--line:#262c38;--line-2:#333a47;--text:#f5f5f6;--muted:#94969c;--dim:#61646c;--maize-ink:#0c111d;--accent:#ffcb05;--band:#161b26;--band-text:#f5f5f6;--band-muted:#94969c;--band-line:#262c38;--good:#47cd89;--bad:#f97066;--warn:#fdb022;--good-bg:rgba(71,205,137,.12);--bad-bg:rgba(249,112,102,.12);--warn-bg:rgba(253,176,34,.12);--maize-bg:rgba(255,203,5,.14);--me:rgba(255,203,5,.07);--shadow:0 16px 40px rgba(0,0,0,.5);--btn-ink:#0c111d;--nav:#0f1520;--nav-text:#94969c}
 [data-skin=dashboard] #hdr{border-bottom:1px solid var(--line)}
 [data-skin=dashboard] .brand .wm .wmu{display:none}
@@ -14501,6 +14501,13 @@ function pfCrowd(P) {
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.54', t: 'Ironman everywhere', n: [
+    'Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.',
+    'Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.',
+    'Leaderboards, posting scores, cloud saves and the friends league are switched off for now. They will come back when the site has its own sign-in. Everything else, including the daily challenge and challenge codes, works as before.',
+    'collegefbsim.com now counts visits and which modes get opened, with no cookies and nothing that identifies you. It is noted on the Save file page.',
+    'Old saves load as before.',
+  ] },
   { v: '9.53', t: 'A new front door', n: [
     'Home screen: the career you played last is at the top with one Continue button. New players get three quick picks to start with. The scenarios fold away until you want them.',
     'NFL General Manager has its own card on the Home screen. It was always in the game, behind the Athletic Director card.',

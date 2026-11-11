@@ -8,18 +8,19 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
 ## Status
 
-**Version 9.53 shipped the first round.** Done:
+**Versions 9.53 and 9.54 shipped the first round.** Done:
 
 - The build: plain source files in `src/` joined by `build.js`. The patch-against-v9.47 build is gone.
 - Tests on every push: every mode opens, feature tests, balance guardrails, saves load.
 - Home screen: a Continue card, quick picks for new players, a card for NFL General Manager, six cards in an even grid, scenarios folded away, no stale "NEW" labels.
 - Fantasy draft start for general managers.
-- Ironman careers for athletic directors and general managers.
+- Ironman careers in every mode.
 - Share your season: a picture in team colors.
 - Installable and playable offline.
 - A storage note on the Save file page, and the game asks the browser to keep saves.
-- Leaderboard prompts and the friends league are hidden where they can't work.
-- Visit counting is built in but off. It needs a free GoatCounter account and one line of setup (see `docs/DEVELOPMENT.md`).
+- Every online feature (leaderboards, posting scores, cloud saves, the friends league) is switched off behind one switch until the site has its own sign-in.
+- Visit counting is on, through GoatCounter, on the live site only.
+- A contrast check of all five themes in light and dark, with the faint spots fixed, and a test that loads one saved career of every kind on each build.
 - Search and link-preview tags, an icon, a not-found page, a sitemap, the page language.
 
 **A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
@@ -29,21 +30,18 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 | # | Problem | Why it matters |
 |---|---|---|
 | 1 | **Online features have no home on collegefbsim.com.** The daily challenge leaderboard, cloud saves and the friends league only work when the game is opened inside claude.ai. They are hidden on your domain now, not fixed. | The daily challenge has little pull without a leaderboard. This is Phase 2. |
-| 2 | **Visit counting is not switched on.** | Until it is, you can't see which modes people play or where they quit. It takes five minutes and an account only you can create. |
-| 3 | **Commissioner, Owner and General Manager share the five AD save slots.** | Confusing, and five slots across four kinds of career is tight. Changing it means moving existing saves, so it needs its own careful update. |
-| 4 | **Athletic Director has 39 tabs**, the NFL has 37. The More menu hides them but does not reduce them. | Features get lost. Several tabs are different views of the same thing (feed, front page, pregame show, reels). |
-| 5 | **Real names carry legal risk.** The game uses real school names, real NFL club names and the real Michigan roster. | Usually tolerated while a fan game is free. Real player names are the riskiest part, and all of it becomes a real problem the day you add ads or payments. Talk to a lawyer before monetizing. |
-| 6 | **Ironman and the fantasy draft cover only some modes.** Ironman is AD and GM; the fantasy draft is GM. | Coach, Player Career and Owner players will ask for them. |
+| 2 | **Commissioner, Owner and General Manager share the five AD save slots.** | Confusing, and five slots across four kinds of career is tight. Changing it means moving existing saves, so it needs its own careful update. |
+| 3 | **Athletic Director has 39 tabs**, the NFL has 37. The More menu hides them but does not reduce them. | Features get lost. Several tabs are different views of the same thing (feed, front page, pregame show, reels). |
+| 4 | **Real names carry legal risk.** The game uses real school names, real NFL club names and the real Michigan roster. | Usually tolerated while a fan game is free. Real player names are the riskiest part, and all of it becomes a real problem the day you add ads or payments. Talk to a lawyer before monetizing. |
+| 5 | **The fantasy draft is for general managers only.** | Owners who act as their own GM will ask for it. |
 
 ## Phase 1: finish the foundation
 
 | Item | What to do | Effort |
 |---|---|---|
-| **Turn on visit counting** | Create a GoatCounter site and put its code in `src/js/460-site.js`. | S |
+| **Read the visit numbers** | After a couple of weeks, look at which modes get opened and how many seasons get finished, and reorder this roadmap around what you see. | S |
 | **Own save slots for General Manager, Commissioner and Owner** | Give each its own set of five. Existing saves stay where they are; new ones go to the new sets. | M |
-| **Ironman everywhere** | Extend it to Coach, Player Career, Commissioner and Owner. | S |
-| **Accessibility pass** | The page has good basics (labels, focus rings, keyboard shortcuts, a declared language). Run a full audit on contrast in all five themes, focus order in dialogs, and screen reader announcements for live game events. | M |
-| **Bundle the fonts** | The two fonts come from Google. Offline play already keeps a copy after the first visit; shipping them with the game removes the outside request altogether. | S |
+| **Accessibility, the rest** | Contrast is checked on the Home screen and the Office in every theme. Still to do: the same check on more pages, focus order in dialogs, and screen reader announcements for live game events. | M |
 
 ## Phase 2: bring the online features home
 
@@ -115,15 +113,14 @@ Check each against what is already in the game before building; with 59 updates,
 |---|---|---|
 | **Fold the wrappers in** | Later updates added behavior by wrapping older functions from a new file. Now that the source is plain files, move each wrapper's code into the function it wraps, a few at a time, with `npm test` after each. | M |
 | **More balance tests** | The guardrails cover wins and scoring for an AD and a GM. Add coach promotions, Player Career draft position and recruiting offers, which were all fixed by hand in 9.47 and 9.52. | M |
-| **Save files from every version** | Keep a real save from each major version in `tests/fixtures/` and load every one on each build. Today only v9.47 is covered. | S |
 | **Preview builds** | Publish every pull request to a preview address so you can play a change on your phone before it goes live. | S |
 | **Decide the names question** | Before any monetization: get advice on school names, club names and the Michigan roster. A safe fallback is fictional names by default with real names available as a team pack the player loads. | S |
 
 ## Suggested order
 
-1. **Now:** turn on visit counting. It needs you, and everything after it is better with numbers.
-2. **Next:** the Firebase backend, then the daily leaderboard. This is the point where the game can start growing by itself.
-3. **Then:** own save slots, Ironman everywhere, more share cards.
+1. **Now:** let the visit numbers build up for a couple of weeks.
+2. **Next:** own save slots, more share cards, the fantasy draft for owners.
+3. **When you are ready for online features:** the Firebase backend, then the daily leaderboard. This is the point where the game can start growing by itself.
 4. **After that:** Agent mode or "start at the bottom" as the next headline update.
 5. **In the background:** Phase 4.
 
