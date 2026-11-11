@@ -1,8 +1,20 @@
 <!doctype html>
+<html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Football Empire</title>
-<meta name="description" content="Football Empire: run any of the 138 FBS programs as athletic director, or create a player and go from high school recruit to the NFL Draft and an NFL career.">
+<title>Football Empire: a free college football and NFL simulator</title>
+<meta name="description" content="Football Empire is a free football management sim that runs in your browser. Run any of the 138 FBS programs as athletic director, coach your way up the ladder, play a career from high school to the NFL, run the league as commissioner, build an NFL roster as general manager, or buy an NFL club as its owner.">
+<link rel="canonical" href="https://collegefbsim.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="docs/img/icon-192.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Football Empire">
+<meta property="og:title" content="Football Empire: six ways to run football">
+<meta property="og:description" content="A free college football and NFL sim in your browser. Athletic director, coach, player career, general manager, commissioner and owner modes. No download, no account.">
+<meta property="og:url" content="https://collegefbsim.com/">
+<meta property="og:image" content="https://collegefbsim.com/docs/img/social.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <meta name="theme-color" content="#0A1424">
@@ -14,7 +26,7 @@
   --text:#E8EDF6; --muted:#8C9EBD; --dim:#566A8C;
   --maize:#F5C518; --maize-ink:#0A1424; --accent:#F5C518;
   --band:#06101E; --band-text:#F2F5FA; --band-muted:#8FA3C4; --band-line:#1B2D4A;
-  --good:#46C281; --bad:#F0605A; --warn:#E7AB3C;
+  --good:#46C281; --bad:#F2706A; --warn:#E7AB3C;
   --good-bg:rgba(70,194,129,.14); --bad-bg:rgba(240,96,90,.14); --warn-bg:rgba(231,171,60,.15); --maize-bg:rgba(245,197,24,.14);
   --me:rgba(245,197,24,.09);
   --shadow:0 10px 30px rgba(0,0,0,.45);
@@ -59,7 +71,7 @@ select{padding:7px 10px}
 kbd{display:inline-block;min-width:1.6em;padding:1px 6px;border:1px solid rgba(127,127,127,.5);border-bottom-width:2px;border-radius:5px;font:600 12px/1.4 ui-monospace,monospace;text-align:center}
 .pfd.me circle{stroke:#ffd400;stroke-width:.6}.pfd.me{filter:drop-shadow(0 0 .6px #ffd400)}
 .dnlist{list-style:none;margin:10px 0 0;padding:0;max-height:min(56vh,520px);overflow:auto;display:flex;flex-direction:column;gap:4px}.dnlist li{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border-radius:8px;border:1px solid var(--line);animation:dnin .35s ease}.dnlist li.me{background:var(--me);border-color:var(--maize,var(--line));font-weight:600}.dnlist li.lost{opacity:.8}.dnlist li.brk{background:var(--soft,transparent);font-style:italic;border-style:dashed}.dnlist i{font-weight:400}@keyframes dnin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.dnlist li{animation:none}}
-.ibadge{position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--bad);color:#fff;font:700 10px/16px var(--sans,system-ui);font-style:normal;text-align:center}.tbtn{position:relative}
+.ibadge{position:absolute;top:-4px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#B3261E;color:#fff;font:700 10px/16px var(--sans,system-ui);font-style:normal;text-align:center}.tbtn{position:relative}
 .inbox li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .srch{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card,transparent);color:inherit;margin-top:6px}.srchres{max-height:min(52vh,460px);overflow:auto;margin-top:8px}.srchres li{padding:6px 0;border-bottom:1px solid var(--line)}
 .rchart{margin:8px 0}
@@ -736,7 +748,7 @@ details summary{cursor:pointer;font-weight:600}
 
 /* ================= THEME: Game Day Broadcast ================= */
 :root[data-skin=broadcast]{color-scheme:dark;--bg:#050d19;--surface:#0b1830;--surface-2:#10213f;--line:#182b4d;--line-2:#27436f;--text:#eef3fb;--muted:#8ea5c8;--dim:#566f96;--maize:#ffcb05;--maize-ink:#06152b;--accent:#ffcb05;--band:#081427;--band-text:#f2f5fa;--band-muted:#8ea5c8;--band-line:#1d3355;--good:#3ddc84;--bad:#ff5a4f;--warn:#ffb020;--good-bg:rgba(61,220,132,.14);--bad-bg:rgba(255,90,79,.15);--warn-bg:rgba(255,176,32,.15);--maize-bg:rgba(255,203,5,.14);--me:rgba(255,203,5,.09);--shadow:0 14px 34px rgba(0,0,0,.55);--disp:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif}
-:root[data-skin=broadcast][data-mode=light]{color-scheme:light;--bg:#e8edf5;--surface:#fff;--surface-2:#edf1f7;--line:#d4dcea;--line-2:#b6c4da;--text:#07142a;--muted:#4b5d7a;--dim:#8ea0bb;--accent:#00274c;--band:#07142a;--band-text:#f2f5fa;--band-muted:#9fb1cc;--band-line:#1d3355;--good:#12884f;--bad:#c9352c;--warn:#a86400;--good-bg:rgba(18,136,79,.1);--bad-bg:rgba(201,53,44,.09);--warn-bg:rgba(168,100,0,.1);--maize-bg:rgba(255,203,5,.3);--me:rgba(255,203,5,.18);--shadow:0 12px 28px rgba(7,20,42,.16)}
+:root[data-skin=broadcast][data-mode=light]{color-scheme:light;--bg:#e8edf5;--surface:#fff;--surface-2:#edf1f7;--line:#d4dcea;--line-2:#b6c4da;--text:#07142a;--muted:#4b5d7a;--dim:#8ea0bb;--accent:#00274c;--band:#07142a;--band-text:#f2f5fa;--band-muted:#9fb1cc;--band-line:#1d3355;--good:#0c6e3e;--bad:#c9352c;--warn:#a86400;--good-bg:rgba(18,136,79,.1);--bad-bg:rgba(201,53,44,.09);--warn-bg:rgba(168,100,0,.1);--maize-bg:rgba(255,203,5,.3);--me:rgba(255,203,5,.18);--shadow:0 12px 28px rgba(7,20,42,.16)}
 [data-skin=broadcast] body{background-image:repeating-linear-gradient(115deg,rgba(128,160,210,.045) 0 2px,transparent 2px 22px)}
 [data-skin=broadcast] :is(.h2,.h3,.brand .wm,.board .v,.mval,.tiles .v,.final .sc,.final .res,.odds b,.ts,.rival .big,.legacy b,.coach .cname,.stepper .val,.next .matchup .side){font-style:italic;text-transform:uppercase}
 [data-skin=broadcast] .h2{font-size:32px;font-weight:800;letter-spacing:.005em}
@@ -917,7 +929,7 @@ details summary{cursor:pointer;font-weight:600}
 @media (min-width:721px){[data-skin=scoreboard][data-nav=side] #tabs{background:var(--surface-2);padding-top:12px}[data-skin=scoreboard][data-nav=side] #tabs .tab{clip-path:none;padding:9px 12px;margin:0;background:transparent;font-size:12px}[data-skin=scoreboard][data-nav=side] #tabs .tab.on{background:var(--maize);color:var(--maize-ink);box-shadow:none}}
 
 /* ================= THEME: Front Office Dashboard ================= */
-:root[data-skin=dashboard]{color-scheme:light;--bg:#f3f5f8;--surface:#fff;--surface-2:#f2f4f7;--line:#e4e7ec;--line-2:#d0d5dd;--text:#101828;--muted:#667085;--dim:#98a2b3;--maize:#ffcb05;--maize-ink:#00274c;--accent:#00274c;--band:#fff;--band-text:#101828;--band-muted:#667085;--band-line:#e4e7ec;--good:#079455;--bad:#d92d20;--warn:#dc6803;--good-bg:#ecfdf3;--bad-bg:#fef3f2;--warn-bg:#fffaeb;--maize-bg:#fff5cc;--me:#fffbea;--shadow:0 16px 40px rgba(16,24,40,.14);--disp:"Poppins",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--btn-ink:#fff;--nav:#00274c;--nav-text:#c7d3e3}
+:root[data-skin=dashboard]{color-scheme:light;--bg:#f3f5f8;--surface:#fff;--surface-2:#f2f4f7;--line:#e4e7ec;--line-2:#d0d5dd;--text:#101828;--muted:#667085;--dim:#98a2b3;--maize:#ffcb05;--maize-ink:#00274c;--accent:#00274c;--band:#fff;--band-text:#101828;--band-muted:#667085;--band-line:#e4e7ec;--good:#067647;--bad:#b42318;--warn:#b54708;--good-bg:#ecfdf3;--bad-bg:#fef3f2;--warn-bg:#fffaeb;--maize-bg:#fff5cc;--me:#fffbea;--shadow:0 16px 40px rgba(16,24,40,.14);--disp:"Poppins",system-ui,sans-serif;--body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--btn-ink:#fff;--nav:#00274c;--nav-text:#c7d3e3}
 :root[data-skin=dashboard][data-mode=dark]{color-scheme:dark;--bg:#0c111d;--surface:#161b26;--surface-2:#1f242f;--line:#262c38;--line-2:#333a47;--text:#f5f5f6;--muted:#94969c;--dim:#61646c;--maize-ink:#0c111d;--accent:#ffcb05;--band:#161b26;--band-text:#f5f5f6;--band-muted:#94969c;--band-line:#262c38;--good:#47cd89;--bad:#f97066;--warn:#fdb022;--good-bg:rgba(71,205,137,.12);--bad-bg:rgba(249,112,102,.12);--warn-bg:rgba(253,176,34,.12);--maize-bg:rgba(255,203,5,.14);--me:rgba(255,203,5,.07);--shadow:0 16px 40px rgba(0,0,0,.5);--btn-ink:#0c111d;--nav:#0f1520;--nav-text:#94969c}
 [data-skin=dashboard] #hdr{border-bottom:1px solid var(--line)}
 [data-skin=dashboard] .brand .wm .wmu{display:none}
@@ -1020,7 +1032,7 @@ details summary{cursor:pointer;font-weight:600}
 .homehero{padding:18px 4px 4px;max-width:720px}
 .homehero .h2{font-size:44px}
 .homehero p{font-size:16px;margin:6px 0 0}
-.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .mode{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;min-width:0}
 .mode::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--maize)}
 .mode p{margin:0}
@@ -1125,6 +1137,8 @@ p.big{font-size:18px}
   [data-skin=broadcast] .brand .wm.long,[data-skin=scoreboard] .brand .wm.long{font-size:20px!important}
 }
 
+.homecont{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}.homecont .h2{margin:2px 0}.homecont p{margin:0}
+.homepick{margin-bottom:16px}.homepicks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}@media (max-width:800px){.homepicks{grid-template-columns:1fr}}
 /* ================= v8: Football Empire ================= */
 .nflt{display:inline-flex;align-items:center;gap:6px}
 .nsw{width:11px;height:11px;border-radius:3px;border:2px solid;flex:none;display:inline-block}
@@ -12221,7 +12235,7 @@ const TABS = [['office', 'Office'], ['career', 'My career'], ['schedule', 'Sched
 const TAB_GROUPS = [['Season', ['office', 'schedule', 'poll', 'standings', 'scores', 'post', 'lghist']], ['Program', ['roster', 'depth', 'staff', 'recruit', 'awards', 'draft']], ['Business', ['money', 'payroll', 'fac']], ['Career', ['career', 'off', 'history', 'records', 'file', 'settings', 'admin']]];
 const MNAV = [['office', 'Office', 'home'], ['schedule', 'Schedule', 'cal'], ['roster', 'Roster', 'users'], ['recruit', 'Recruiting', 'star']];
 const tabLabel = k => (k === 'office' && isComm() ? 'League office' : k === 'career' && isOwner() ? 'Legacy' : k === 'office' && isOwner() ? 'Owner\'s suite' : (curTabs().find(t => t[0] === k) || [k, k])[1]);
-const tabVisible = k => (typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
+const tabVisible = k => (typeof fdOn === 'function' && fdOn() ? FD_TABS.includes(k) : k === 'admin' && typeof ironOn === 'function' && ironOn() ? false : typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
 function tabBtn(k, cls) { const on = ui.tab === k; return `<button class="${cls}${on ? ' on' : ''}${k === 'off' ? ' hot' : ''}${k === 'admin' ? ' adm' : ''}" data-act="tab" data-tab="${k}"${on ? ' aria-current="page"' : ''}>${esc(tabLabel(k))}</button>`; }
 function renderTabs() {
   const t = $('#tabs');
@@ -12286,6 +12300,7 @@ function vSettings() {
   const gameSeg = (k, cur, opts) => seg('setgame', String(cur), opts, `data-k="${k}"`);
   if (isCoach()) return displaySettingsHTML('ad', coachSettingsHTML());
   return displaySettingsHTML('ad', `<section class="card"><div class="eyebrow">Gameplay · slot ${slot}</div>
+   ${typeof ironRowHTML === 'function' ? ironRowHTML() : ''}
    ${setRow('Difficulty', `${esc(DIFF[st.diff].desc)} Legacy points count ×${LEGACY_MULT[st.diff]}.`, gameSeg('diff', st.diff, Object.entries(DIFF).map(([k, d]) => [k, d.label])))}
    ${setRow('Big calls in live games', 'Halftime adjustments, fourth downs and the final drive.', gameSeg('ask', !!st.ask, [['true', 'Ask me'], ['false', 'Coach decides']]))}
    ${setRow('Live game speed', 'How fast live games start. You can change it during a game.', prefSeg('liveSpeed', [[1, 'Normal'], [2, 'Fast'], [3, 'Very fast']]))}
@@ -12798,7 +12813,7 @@ function vFile() {
   const meta = slotsMeta();
   const cards = [1, 2, 3, 4, 5].map(i => {
     const m = meta[i]; const active = i === slot && !saveBlocked; const has = !!lsGet(SLOT_KEY(i));
-    const info = has && m ? `${m.chal ? '<span class="pill maize">Daily challenge</span> ' : ''}${m.scn ? `<span class="pill">${esc(m.scn)}</span> ` : ''}${m.edited ? '<span class="pill bad" title="Changed with the admin tools">Edited</span> ' : ''}<b>${m.coach ? esc(m.coach.name) + ' · ' + esc(roleTitle(m.coach.role)) + ', ' : m.own ? 'Owner, ' : m.lvl === 'nfl' && !m.comm ? 'GM, ' : ''}${esc(m.name)}</b><div class="small muted">${m.season} · ${m.phase === 'offseason' ? 'offseason' : m.rec} · ${DIFF[m.diff] ? DIFF[m.diff].label : ''} · ${m.seasons} season${m.seasons === 1 ? '' : 's'} done${m.legacy != null ? ' · legacy ' + m.legacy : ''}${m.fired ? ' · fired' : ''}</div><div class="small muted">Saved ${new Date(m.saved).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>` : has ? '<span class="muted">Saved data with no summary (it may be damaged). Try loading it, or delete it.</span>' : '<span class="muted">Empty slot</span>';
+    const info = has && m ? `${m.chal ? '<span class="pill maize">Daily challenge</span> ' : ''}${m.scn ? `<span class="pill">${esc(m.scn)}</span> ` : ''}${m.edited ? '<span class="pill bad" title="Changed with the admin tools">Edited</span> ' : ''}${m.iron ? '<span class="pill maize" title="No undo, no admin tools, fixed difficulty">Ironman</span> ' : ''}<b>${m.coach ? esc(m.coach.name) + ' · ' + esc(roleTitle(m.coach.role)) + ', ' : m.own ? 'Owner, ' : m.lvl === 'nfl' && !m.comm ? 'GM, ' : ''}${esc(m.name)}</b><div class="small muted">${m.season} · ${m.phase === 'offseason' ? 'offseason' : m.rec} · ${DIFF[m.diff] ? DIFF[m.diff].label : ''} · ${m.seasons} season${m.seasons === 1 ? '' : 's'} done${m.legacy != null ? ' · legacy ' + m.legacy : ''}${m.fired ? ' · fired' : ''}</div><div class="small muted">Saved ${new Date(m.saved).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>` : has ? '<span class="muted">Saved data with no summary (it may be damaged). Try loading it, or delete it.</span>' : '<span class="muted">Empty slot</span>';
     const ck = ui.confirm; const g = has && !active && (ui.badSlots || []).includes(i) ? goodCopy(NS_PREFIX[NS]) : null; const gd = g && g.i === i ? g : null;
     const restore = gd ? (ck === 'rg-' + i ? `<button class="btn danger sm" data-act="restoregood" data-i="${i}">Confirm: restore the copy from ${esc(goodWhen(gd))}</button>` : `<button class="btn sm" data-act="ask" data-k="rg-${i}">Restore last good copy</button>`) : '';
     const btns = has ? `${restore}${active ? '<span class="pill maize">Playing now</span>' : `<button class="btn sm" data-act="slotload" data-i="${i}">Load</button>`}
@@ -12808,7 +12823,7 @@ function vFile() {
     return `<div class="slotcard${active ? ' on' : ''}"><div class="eyebrow">Slot ${i}</div>${info}<div class="row gap mt">${btns}</div></div>`;
   }).join('');
   const liveNote = liveBusy() ? `<p class="flash">A live game is paused (${esc(liveScoreText())}). Finish it before switching careers. If you leave the site now, that game will be waiting where you left it when you return to this career.</p>` : '';
-  cloudKick(); return `${liveNote}${cloudCardHTML()}<section class="card"><div class="head"><div><div class="eyebrow">Save slots</div><h2 class="h2">Five careers at once</h2></div><p class="hint" id="savemsg">${esc(ui.saveMsg || 'Progress saves automatically after every action.')}</p></div>${saveBlocked ? '<p class="flash bad">This career is not saved yet because every slot holds a save that could not be read. Delete one of them and this career will be saved in its place.</p>' : ''}<div class="slots5">${cards}</div>
+  cloudKick(); return `${liveNote}${cloudCardHTML()}${typeof storageNoteHTML === 'function' ? storageNoteHTML() : ''}<section class="card"><div class="head"><div><div class="eyebrow">Save slots</div><h2 class="h2">Five careers at once</h2></div><p class="hint" id="savemsg">${esc(ui.saveMsg || 'Progress saves automatically after every action.')}</p></div>${saveBlocked ? '<p class="flash bad">This career is not saved yet because every slot holds a save that could not be read. Delete one of them and this career will be saved in its place.</p>' : ''}<div class="slots5">${cards}</div>
   ${NS === 'coach' ? '<p class="hint">Delete empties a slot. Saves live in this browser, so clearing site data or using a private window can erase them.</p>' : `<p class="hint">Reset restarts a slot from Week 1 of 2026 with the same program and difficulty. Delete empties it. Saves live in this browser, so clearing site data or using a private window can erase them.</p>`}</section>
   ${ui.newSlot ? (isCoach() || NS === 'coach' ? coachSetupHTML(ui.newSlot) : newCareerForm()) : ''}
   <div class="grid2"><section class="card"><div class="eyebrow">Back up slot ${slot}</div><p class="hint">Create a save code to keep a copy you control, or to move this career to another device.</p>
@@ -12816,7 +12831,7 @@ function vFile() {
   ${ui.exportCode ? `<textarea id="exportbox" class="code" readonly aria-label="Save code">${esc(ui.exportCode)}</textarea><p class="hint" id="copyhint">${(ui.exportCode.length / 1024).toFixed(0)} KB of text.</p>` : ''}</section>
   <section class="card"><div class="eyebrow">Load a save code into slot ${slot}</div><textarea id="importbox" class="code" aria-label="Paste save code" placeholder="Paste a save code here">${ui.confirm === 'import' ? esc(ui.importCode || '') : ''}</textarea><div class="row gap">${ui.confirm === 'import' ? `<button class="btn danger" data-act="import">Confirm: replace ${esc(teamName(ME))} ${state.season} in slot ${slot}</button><button class="btn ghost" data-act="unconfirm">Cancel</button>` : `<button class="btn" data-act="askimport">Load into slot ${slot}</button>`}</div>${ui.importMsg ? `<p class="hint">${esc(ui.importMsg)}</p>` : ''}</section></div>
   <section class="card"><div class="eyebrow">Settings</div><p class="hint">Theme, light or dark mode, navigation, sound and difficulty are in <button class="lnk" data-act="tab" data-tab="settings">Settings</button>.</p></section>
-  <section class="card"><div class="eyebrow">About this game</div><p class="muted nosub">Football Empire covers all 138 FBS programs in their 2026 conferences. Michigan's 2026 roster, coaching staff and schedule come from the official team site as of September 2026; every other school's roster and staff are generated. The preseason poll is the real 2026 AP order, and Michigan's rivalry series records are real through 2025. Stadiums, capacities and colors are approximations. Star players and head coaches at other schools are fictional, and real players never receive negative traits or off-field storylines. Everything after Week 1 kickoff is simulated, and all ratings, salaries and budgets are game estimates. No team logos or marks are used.</p></section>`;
+  <section class="card"><div class="eyebrow">About this game</div><p class="muted nosub">Football Empire covers all 138 FBS programs in their 2026 conferences. Michigan's 2026 roster, coaching staff and schedule come from the official team site as of September 2026; every other school's roster and staff are generated. The preseason poll is the real 2026 AP order, and Michigan's rivalry series records are real through 2025. Stadiums, capacities and colors are approximations. Star players and head coaches at other schools are fictional, and real players never receive negative traits or off-field storylines. Everything after Week 1 kickoff is simulated, and all ratings, salaries and budgets are game estimates. No team logos or marks are used. collegefbsim.com counts visits and which modes get opened, with no cookies and nothing that identifies you.</p></section>`;
 }
 // School picker: all 138 FBS programs by conference, with a preview of the one selected.
 function schoolTier(r) { return r >= 86 ? 'National power' : r >= 78 ? 'Contender' : r >= 70 ? 'Solid program' : r >= 60 ? 'Rebuild job' : 'Long climb'; }
@@ -14486,6 +14501,24 @@ function pfCrowd(P) {
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.54', t: 'Ironman everywhere', n: [
+    'Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.',
+    'Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.',
+    'Leaderboards, posting scores, cloud saves and the friends league are switched off for now. They will come back when the site has its own sign-in. Everything else, including the daily challenge and challenge codes, works as before.',
+    'collegefbsim.com now counts visits and which modes get opened, with no cookies and nothing that identifies you. It is noted on the Save file page.',
+    'Old saves load as before.',
+  ] },
+  { v: '9.53', t: 'A new front door', n: [
+    'Home screen: the career you played last is at the top with one Continue button. New players get three quick picks to start with. The scenarios fold away until you want them.',
+    'NFL General Manager has its own card on the Home screen. It was always in the game, behind the Athletic Director card.',
+    'New: a fantasy draft start for general managers. Every player in the league goes into one pool and all 32 clubs draft in a snake order until each roster is full. Make your own picks or let the club draft for you. Players keep their contracts, and clubs stay under the cap.',
+    'New: Ironman careers for athletic directors and general managers. Choose it when you start: no undo, no admin tools, a locked difficulty, and no rolling back to an earlier copy. The slot and the header show an Ironman badge.',
+    'New: share your season. In the offseason the Office offers a picture of the season in your team\'s colors, with the record and how it ended, to save or share.',
+    'Install the game: on collegefbsim.com you can add Football Empire to your home screen, and it opens with no connection once you have played it online.',
+    'The Save file page shows how much of the browser\'s storage your saves use, and the game asks the browser to keep them.',
+    'On collegefbsim.com the friends league and the leaderboard prompts are hidden, since they only work where the game is shared with sign-in.',
+    'Old saves load as before.',
+  ] },
   { v: '9.52', t: 'Everyone wants the No. 1 recruit', n: [
     'Player Career: fixed a recruit who was far better than every school getting no offers at all, even as the No. 1 player in the nation. The best players are now a perfect fit for the best programs, with long-shot offers from smaller schools close to home.',
     'Player Career: the "nobody reaches signing day without a place to play" guarantee now works. A senior with fewer than three offers gets them at the end of his last season.',
@@ -15056,25 +15089,41 @@ function renderHome() {
   const el = document.getElementById('customTheme'); if (el) el.textContent = '';
   $('#hdr').innerHTML = `<div class="brand"><div class="wm" data-badge="FE"><span class="wmu">FOOTBALL EMPIRE</span><span class="wmn">Football Empire</span><span class="wmt">Football Empire</span></div><div class="sub">Pick how you want to play</div></div><div class="acts">${toolsHTML('home')}</div>`;
   $('#tabs').innerHTML = ''; const mn = $('#mnav'); if (mn) mn.innerHTML = ''; const tk = $('#ticker'); if (tk) tk.innerHTML = '';
-  const am = slotsMetaOf('ad'); const aSlot = lastADSlot() || 1; const a = am[aSlot] && !am[aSlot].comm && !am[aSlot].own ? am[aSlot] : null;
+  // The AD save slots hold four kinds of career. Each home card shows the one of its kind that was saved last.
+  const am = slotsMetaOf('ad'); const adOf = f => [1, 2, 3, 4, 5].filter(i => am[i] && lsGet('mfad-slot-' + i) && f(am[i])).sort((x, y) => (am[y].saved || 0) - (am[x].saved || 0))[0] || null;
+  const aSlot = adOf(m => !m.comm && !m.own && m.lvl !== 'nfl'), a = aSlot ? am[aSlot] : null; const gSlot = adOf(m => !m.comm && !m.own && m.lvl === 'nfl'), g = gSlot ? am[gSlot] : null;
+  const kSlot = adOf(m => m.comm), wSlot = adOf(m => m.own); const nAD = [1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length;
   const om = slotsMetaOf('coach'); const oSlot = +lsGet('fecoach-active') || 1; const o = om[oSlot]; const nO = Object.keys(om).filter(i => lsGet('fecoach-slot-' + i)).length;
   const cm = cMeta(); const cSlot = +lsGet(CACTIVE_KEY) || 1; const c = cm[cSlot];
-  const nA = adCareerSlots().length, nC = Object.keys(cm).filter(i => lsGet(CSLOT_KEY(i))).length;
+  const nC = Object.keys(cm).filter(i => lsGet(CSLOT_KEY(i))).length;
+  // the career saved last, in any mode, leads the page
+  const recent = [a && { t: a.saved, k: 'Athletic Director', n: a.name, d: `${a.season} · ${a.phase === 'offseason' ? 'offseason' : a.rec}`, act: 'homeopen', slot: aSlot },
+    g && { t: g.saved, k: 'NFL General Manager', n: g.name, d: `${g.season} · ${g.phase === 'offseason' ? 'offseason' : g.rec}`, act: 'homeopen', slot: gSlot },
+    kSlot && { t: am[kSlot].saved, k: 'Commissioner', n: am[kSlot].comm === 'nfl' ? 'The NFL' : 'College football', d: String(am[kSlot].season || ''), act: 'homeopen', slot: kSlot },
+    wSlot && { t: am[wSlot].saved, k: 'Owner', n: am[wSlot].name, d: `${am[wSlot].season} · ${am[wSlot].phase === 'offseason' ? 'offseason' : am[wSlot].rec}`, act: 'homeopen', slot: wSlot },
+    o && lsGet('fecoach-slot-' + oSlot) && { t: o.saved, k: 'Coach', n: o.coach ? o.coach.name : o.name, d: `${o.coach ? roleTitle(o.coach.role) + ', ' : ''}${o.name} · ${o.season}`, act: 'gocoach' },
+    c && lsGet(CSLOT_KEY(cSlot)) && !c.done && { t: c.saved, k: 'Player Career', n: c.name, d: `${c.pos}${c.team ? ' · ' + c.team : ''}`, act: 'gocareer' }].filter(Boolean).sort((x, y) => (y.t || 0) - (x.t || 0))[0];
+  const fresh = !nAD && !nO && !nC;
+  const lead = recent ? `<section class="card next homecont"><div><div class="eyebrow">Pick up where you left off · ${esc(recent.k)}</div><h2 class="h2">${esc(recent.n)}</h2><p class="muted">${esc(recent.d)}</p></div><button class="btn primary" data-act="${recent.act}"${recent.slot ? ` data-slot="${recent.slot}"` : ''}>Continue</button></section>`
+    : fresh ? `<section class="card homepick"><div class="eyebrow">New here? Start with one of these</div><div class="homepicks"><button class="evopt" data-act="homenew" data-v="col"><b>I want to build a program</b><span>Athletic Director: hire the coach, recruit, run the budget. The best place to start.</span></button><button class="evopt" data-act="gocoach" data-v="new"><b>I want to call the plays</b><span>Coach: game plans, play calling and a career ladder to climb.</span></button><button class="evopt" data-act="gocareer" data-v="new"><b>I want to be the star</b><span>Player Career: one player, from high school to the NFL.</span></button></div></section>` : '';
   if (cui.coSetup) { $('#view').innerHTML = coachSetupHTML(null); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.ownSetup) { $('#view').innerHTML = ownSetupHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.adPick) { $('#view').innerHTML = adPickHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
-  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">Five ways to play</h1><p class="muted">Run any of the 138 FBS programs from the athletic director's chair, coach on the sideline and climb the ladder, or become the player: start in high school, get recruited, get drafted and build an NFL career. Or take over as commissioner and run the whole league, or buy an NFL club and run it from the owner's suite.</p></section>
-  <div class="modes">
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">Mode 1</div><h2 class="h2">Athletic Director</h2><p>Pick any of the 138 FBS schools, or create your own. Hire and fire coaches, set the budget, recruit and build a dynasty. Or start as an NFL general manager, and move between college and the NFL.</p>
-    <div class="msave">${a && lsGet('mfad-slot-' + aSlot) ? `<b>${a.lvl === 'nfl' ? 'GM, ' : ''}${esc(a.name)}</b> · ${a.season} · ${a.phase === 'offseason' ? 'offseason' : esc(a.rec)} <span class="muted">· slot ${aSlot}</span>` : '<span class="muted">No AD career yet. Pick your school to start in 2026.</span>'}<div class="small muted">${[1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length} of 5 save slots used${nA < [1, 2, 3, 4, 5].filter(i => lsGet('mfad-slot-' + i)).length ? ' (shared with the commissioner)' : ''}</div></div>
-    ${nA ? '<button class="btn primary" data-act="goad">Continue as AD</button>' : '<button class="btn primary" data-act="adpick" data-k="goad">Pick your school</button>'}</article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.users}</div><div class="eyebrow">Mode 2 · New</div><h2 class="h2">Coach</h2><p>Take any job, or start as a position coach and climb. Call plays on game day, recruit on the road, work the coaching carousel and negotiate your own contracts. The AD handles the money; you can ask.</p>
+  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">Six ways to play</h1><p class="muted">Run a college program, coach on the sideline, play a career from high school to the NFL, build an NFL roster as general manager, run a whole league as commissioner, or buy a club and own it.</p></section>
+  ${lead}<div class="modes">
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">College</div><h2 class="h2">Athletic Director</h2><p>Pick any of the 138 FBS schools, or create your own. Hire and fire coaches, set the budget, recruit and build a dynasty. Good ADs hear from the NFL.</p>
+    <div class="msave">${a ? `<b>${esc(a.name)}</b> · ${a.season} · ${a.phase === 'offseason' ? 'offseason' : esc(a.rec)} <span class="muted">· slot ${aSlot}</span>` : '<span class="muted">No AD career yet. Pick your school to start in 2026.</span>'}<div class="small muted">${nAD} of 5 save slots used</div></div>
+    <div class="row gap">${a ? `<button class="btn primary" data-act="homeopen" data-slot="${aSlot}">Continue as AD</button>` : '<button class="btn primary" data-act="homenew" data-v="col">Pick your school</button>'}</div></article>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.users}</div><div class="eyebrow">College and NFL</div><h2 class="h2">Coach</h2><p>Take any job, or start as a position coach and climb. Call plays on game day, recruit on the road, work the coaching carousel and negotiate your own contracts. The AD handles the money; you can ask.</p>
     <div class="msave">${o && lsGet('fecoach-slot-' + oSlot) ? `<b>${esc(o.coach ? o.coach.name : o.name)}</b> · ${esc(o.coach ? roleTitle(o.coach.role) : '')}, ${esc(o.name)} · ${o.season} <span class="muted">· slot ${oSlot}</span>` : '<span class="muted">No coaching career yet.</span>'}<div class="small muted">${nO} of 5 save slots used</div></div>
     <div class="row gap">${nO ? '<button class="btn primary" data-act="gocoach">Continue coaching</button>' : '<button class="btn primary" data-act="gocoach" data-v="new">Create a coach</button>'}</div></article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">Mode 3</div><h2 class="h2">Player Career</h2><p>Pick a position, play your high school seasons, earn your stars, choose from scholarship and NIL offers, hit the transfer portal, get drafted, and play out an NFL career.</p>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">High school to the NFL</div><h2 class="h2">Player Career</h2><p>Pick a position, play your high school seasons, earn your stars, choose from scholarship and NIL offers, hit the transfer portal, get drafted, and play out an NFL career.</p>
     <div class="msave">${c && lsGet(CSLOT_KEY(cSlot)) ? `<b>${esc(c.name)}</b> · ${esc(c.pos)} · ${esc(c.done ? 'career complete' : c.team || '')} ${c.stars ? starsHTML(c.stars) : ''} <span class="muted">· slot ${cSlot}</span>` : '<span class="muted">No player career yet.</span>'}<div class="small muted">${nC} of 5 save slots used</div></div>
     <div class="row gap">${c && lsGet(CSLOT_KEY(cSlot)) ? '<button class="btn primary" data-act="gocareer">Continue career</button><button class="btn ghost" data-act="gocareer" data-v="saves">Career save slots</button>' : '<button class="btn primary" data-act="gocareer" data-v="new">Create a player</button>'}</div></article>
-   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.gavel}</div><div class="eyebrow">Mode 4 · New</div><h2 class="h2">Commissioner</h2><p>Run all of college football or the NFL, never a team. Rule on suspensions and appeals, handle scandals and the press, set the salary cap and the TV deals, steer the rules committee, and survive the vote at the end of your term.</p>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">NFL</div><h2 class="h2">General Manager</h2><p>Run an NFL front office: the draft, the salary cap, free agency, trades and the head coach. Start with a real roster, or throw every player into one pool and draft all 32 clubs from scratch.</p>
+    <div class="msave">${g ? `<b>${esc(g.name)}</b> · ${g.season} · ${g.phase === 'offseason' ? 'offseason' : esc(g.rec)} <span class="muted">· slot ${gSlot}</span>` : '<span class="muted">No GM career yet.</span>'}<div class="small muted">Shares the five AD save slots</div></div>
+    <div class="row gap">${g ? `<button class="btn primary" data-act="homeopen" data-slot="${gSlot}">Continue as GM</button><button class="btn ghost" data-act="homenew" data-v="nfl">New GM</button>` : '<button class="btn primary" data-act="homenew" data-v="nfl">Pick your club</button>'}</div></article>
+   <article class="mode"><div class="mglyph" aria-hidden="true">${IC.gavel}</div><div class="eyebrow">College or NFL</div><h2 class="h2">Commissioner</h2><p>Run all of college football or the NFL, never a team. Rule on suspensions and appeals, handle scandals and the press, set the salary cap and the TV deals, steer the rules committee, and survive the vote at the end of your term.</p>
     <div class="msave">${Object.values(slotsMetaOf('ad')).some(m => m && m.comm) ? '<b>Commissioner career saved</b> <span class="muted">· in your AD save slots</span>' : '<span class="muted">Uses one of your five AD save slots.</span>'}</div>
     <div class="row gap"><label class="fld inl"><span>League</span><select id="comm-lvl"><option value="col">College football</option><option value="nfl">The NFL</option></select></label><button class="btn primary" data-act="gocomm">${Object.values(slotsMetaOf('ad')).some(m => m && m.comm) ? 'Continue as commissioner' : 'Start as commissioner'}</button></div></article>
    ${ownHomeCardHTML()}
@@ -15090,6 +15139,8 @@ function adPickHTML() {
   return `<section class="card newcareer"><div class="head"><div><div class="eyebrow">Athletic Director · new career</div><h1 class="h2">${gm ? 'Pick your NFL club' : 'Pick your school'}</h1></div><p class="hint">${gm ? 'Run an NFL front office as general manager: the draft, the salary cap, free agency, trades and the head coach. Good GMs hear from big college programs, and good ADs hear from the NFL.' : 'Every FBS program, in its 2026 conference. You can start more careers, or a custom program, from the Save file tab later.'}</p></div>
    <div>${seg('adpicklvl', gm ? 'nfl' : 'col', [['col', 'College athletic director'], ['nfl', 'NFL general manager']])}</div>
    ${gm ? nflPickerHTML(f) : schoolPickerHTML(f)}
+   ${gm ? `<div class="eyebrow mt">Rosters</div><div>${seg('ncfd', f.fd ? '1' : '0', [['0', 'Start with the current rosters'], ['1', 'Fantasy draft: all 32 clubs draft from one pool']])}</div>` : ''}
+   <div class="eyebrow mt">Ironman</div><div>${seg('nciron', f.iron ? '1' : '0', [['0', 'Off'], ['1', 'On: no undo, no admin tools, difficulty locked']])}</div>
    <div class="eyebrow mt">Difficulty</div><div class="diffs">${Object.entries(DIFF).map(([k, d]) => `<button class="evopt${ui.newDiff === k ? ' on' : ''}" data-act="adpickdiff" data-v="${k}"><b>${d.label}</b><span>${esc(d.desc)}</span></button>`).join('')}</div>
    <div class="row gap mt"><button class="btn primary" data-act="adpickstart">${gm ? `Become GM of the ${esc(nflName(NFL_BY[f.nfl] ? f.nfl : 'DET'))}` : `Become athletic director at ${esc(CTEAMS0_AD[f.tid].name)}`}</button><button class="btn ghost" data-act="adpickcancel">Back</button></div></section>`;
 }
@@ -15467,6 +15518,7 @@ function aiHeisList() { const L = cs.league; const top = Object.values(L.teams).
 /* ---------- Settings ---------- */
 function vCSettings() {
   return `${displaySettingsHTML('career')}${cs ? `<section class="card"><div class="eyebrow">Gameplay · career slot ${cslot}</div>
+   ${typeof ironRowHTML === 'function' ? ironRowHTML() : ''}
    ${setRow('Difficulty', esc(cdiff().desc), seg('cdiff', cs.diff, Object.entries(CDIFF).map(([k, d]) => [k, d.label])))}
    ${setRow('Pace', esc(PACES[cs.pace][1]), seg('cpace', cs.pace, Object.entries(PACES).map(([k, v]) => [k, v[0]])))}
    ${setRow('Career growth', cs.balV >= 2 ? 'Updated: every player has a natural ceiling, some offseasons are bigger than others, and Pro Bowls go to the best seasons in the league.' : 'Generous: steady growth and easier honors, as before v9.28.', seg('cgrowth', cs.balV >= 2 ? 'upd' : 'gen', [['upd', 'Updated'], ['gen', 'Generous']]))}
@@ -15495,7 +15547,7 @@ function vCSaves() {
    <label class="fld wide mt"><span>Paste a save code (starts with MFPC)</span><textarea id="cimportbox" class="codebox" aria-label="Paste a save code">${esc(cui.importCode || '')}</textarea></label>
    ${cui.importMsg ? `<p class="flash bad">${esc(cui.importMsg)}</p>` : ''}
    <div class="row gap mt">${cui.confirm === 'cimp' ? `<button class="btn danger sm" data-act="cimport">Confirm: replace ${esc(cName(cs.p))} in slot ${cslot}</button>` : `<button class="btn sm" data-act="cask2" data-k="cimp">Load this code into slot ${cslot}</button>`}</div></section>` : `<section class="card"><div class="eyebrow">Save codes</div><label class="fld wide"><span>Paste a save code (starts with MFPC)</span><textarea id="cimportbox" class="codebox" aria-label="Paste a save code">${esc(cui.importCode || '')}</textarea></label>${cui.importMsg ? `<p class="flash bad">${esc(cui.importMsg)}</p>` : ''}<div class="row gap mt"><button class="btn sm" data-act="cimport">Load this code</button></div></section>`;
-  cloudKick(); return `${cui.form ? newPlayerForm() : ''}${cloudCardHTML()}<section class="card"><div class="head"><div><div class="eyebrow">Player Career</div><h2 class="h2">Five save slots</h2></div><p class="hint" id="csavemsg">${esc(cui.saveMsg || 'These are separate from your five AD mode slots. Careers save automatically after every action.')}</p></div><div class="slots5">${cards}</div></section>${codes}`;
+  cloudKick(); return `${cui.form ? newPlayerForm() : ''}${cloudCardHTML()}${typeof storageNoteHTML === 'function' ? storageNoteHTML() : ''}<section class="card"><div class="head"><div><div class="eyebrow">Player Career</div><h2 class="h2">Five save slots</h2></div><p class="hint" id="csavemsg">${esc(cui.saveMsg || 'These are separate from your five AD mode slots. Careers save automatically after every action.')}</p></div><div class="slots5">${cards}</div></section>${codes}`;
 }
 function newPlayerForm() {
   const f = cui.form; const styles = CSTYLES[f.pos]; const om = lsGet(CSLOT_KEY(f.slot)) ? (cMeta()[f.slot] || {}) : null; const over = om ? (om.name || 'a career') : '';
@@ -16251,11 +16303,21 @@ async function goHome() {
   if (appMode === 'career' && gameLocked()) return notify('Finish the game first, or close it and come back: it waits for you.');
   if (!(await leaveMode())) return;
   appMode = 'home'; rngOwner = null; hideModal(); cui.confirm = null; cui.adPick = false; cui.coSetup = false; cui.flash = ''; ui.flash = ''; render(); window.scrollTo(0, 0);
-  const b = document.querySelector('#view [data-act="goad"]'); if (b) b.focus({ preventScroll: true });
+  const b = document.querySelector('#view .homecont .btn, #view .homepick .evopt'); if (b) b.focus({ preventScroll: true });
 }
 Object.assign(actions, {
   gohome() { goHome(); },
   goad() { enterAD(); },
+  // Home screen: open one exact slot of the AD save set (an AD, GM, commissioner or owner career)
+  async homeopen(d) {
+    const i = +d.slot; if (!(i >= 1 && i <= 5) || !lsGet(NS_PREFIX.ad + 'slot-' + i)) return render();
+    if (appMode === 'career' && !(await leaveMode())) return; if (appMode === 'ad' && state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL);
+    switchNS('ad'); appMode = 'ad'; rngOwner = 'ad'; hideModal();
+    if (!(state && slot === i)) { setActiveSlot(i); state = null; await boot(); }
+    if (state) { ui.tab = 'office'; applyTheme(); render(); window.scrollTo(0, 0); }
+  },
+  // Home screen: the school picker (col) or the NFL club picker (nfl) for a new career
+  homenew(d) { ui.nc.lvl = d.v === 'nfl' ? 'nfl' : 'col'; actions.adpick(); },
   // first AD career: pick the school on the home screen, then create it
   adpick() { cui.adPick = true; ui.newDiff = ui.newDiff || 'normal'; render(); window.scrollTo(0, 0); const el = document.getElementById('nc-tid'); if (el) el.focus(); },
   adpickdiff(d) { ui.newDiff = d.v; render(); refocus({ act: 'adpickdiff', v: d.v }); },
@@ -16264,7 +16326,9 @@ Object.assign(actions, {
     // with other careers in the AD slots (a commissioner, say), the new one goes in a free slot instead of loading theirs
     if ([1, 2, 3, 4, 5].some(i => lsGet(SLOT_KEY(i)))) { if (state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL); const free = firstFreeSlot(); if (!free) { state = null; await boot(); ui.tab = 'file'; ui.flash = 'All five AD save slots are in use. Delete one here, then pick your school again from the Home screen.'; render(); return; }
       newGame(ui.newDiff || 'normal', null, null, gm ? 'MICH' : ui.nc.tid); if (gm) { goPro(gm, { role: 'gm' }); state.tline = []; } setActiveSlot(free); resetUi(); applyTheme(); save(); }
-    else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); } ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
+    else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); }
+    if (ui.nc.iron && state) { X().iron = true; save(); } ui.nc.iron = false;
+    if (gm && ui.nc.fd && state && isPro() && !PS().fd) { fdStart(); save(); } ui.nc.fd = false; ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
   chlwatch(d) { hlCareer(+d.i); },
   patchall() { openModal(patchAllHTML(), 'Patch notes'); },
   gocareer(d) { enterCareer(d.v); },
@@ -17594,12 +17658,18 @@ Object.assign(actions, {
 // and everyone reads all of them. A challenge is a shared document: a school, a seed and a number of seasons, so
 // everyone who takes it starts from the same league. Only ids are stored about people; names come from the
 // platform when the board is drawn.
+// ONLINE is the one switch for every online feature: leaderboards, posting scores, cloud saves, the friends
+// league and tutorial sync. While it is false they are hidden everywhere and nothing is sent or fetched.
+// Turn it on when the site has its own sign-in and database (see ROADMAP.md, Phase 2).
+const ONLINE = false;
+// True where the sharing features can work at all: the switch is on and the host provides them.
+const shareHere = () => ONLINE && !!(window.claude && typeof window.claude.use === 'function');
 var share = { db: null, user: null, uid: null, tried: false, ok: false, board: null, chals: null, names: {}, err: '', busy: false, filter: 'all', loadedAt: 0 };
 const SHARE_MAX = 25; // careers kept per player
 async function shareInit() {
   if (share.tried) return share.ok; share.tried = true;
   try {
-    const c = window.claude; if (!c || typeof c.use !== 'function') return false;
+    if (!shareHere()) return false; const c = window.claude;
     share.db = await c.use('db').catch(() => null); share.user = await c.use('user').catch(() => null);
     share.uid = share.user ? await share.user.id() : null; share.ok = !!(share.db && share.uid);
   } catch (e) { share.ok = false; } finally { share.ready = true; }
@@ -18026,6 +18096,7 @@ const _xCommTabs = commTabList; commTabList = function () { const L = _xCommTabs
 const _xCommGroups = commGroups; commGroups = function () { const G = _xCommGroups(); G.splice(2, 0, ['Fans', ['feed', 'pickem', 'reels', 'friends']]); return G; };
 function xTabVis(k) {
   if (!X_TABS.some(t => t[0] === k)) return null;
+  if (k === 'friends') return typeof shareHere === 'function' && shareHere();
   if (k === 'biz') return bizOn(); if (k === 'nflx') return isGM(); if (k === 'rivals' || k === 'camp') return !isComm();
   return true;
 }
@@ -18460,8 +18531,9 @@ const SCN_MODE = { ad: 'Athletic Director', coach: 'Coach', gm: 'NFL general man
 function x2ScnHomeHTML() {
   const by = {}; Object.entries(SCENS).forEach(([k, s]) => { (by[s.mode] = by[s.mode] || []).push([k, s]); });
   return `<section class="card" id="x2scn"><div class="head"><div><div class="eyebrow">Scenario challenges</div><h2 class="h2">Start in a mess</h2></div><p class="hint">A new career that starts in trouble, with goals to hit by a deadline. Each one uses a free save slot; your other careers aren't touched.</p></div>
-   <label class="fld inl"><span>Your name (Coach scenarios)</span><input id="x2scnname" maxlength="28" value="${esc(ui.x2scnName || 'Alex Morgan')}"></label>
-   <div class="x2scns">${Object.entries(by).map(([m, L]) => `<div><div class="lbl">${esc(SCN_MODE[m])}</div>${L.map(([k, s]) => `<div class="x2scn"><b>${esc(s.l)}</b><p class="small">${esc(s.d)}</p><ul class="small plainlist">${s.goals.map(g => `<li>· ${esc(g[1])}${g[2] ? ` <span class="muted">(${g[2] === 1 ? 'first season' : 'within ' + g[2] + ' seasons'})</span>` : ''}</li>`).join('')}</ul><button class="btn sm" data-act="x2scn" data-k="${k}">Start this scenario</button></div>`).join('')}</div>`).join('')}</div>${x2BuildHTML()}</section>`;
+   <details${ui.scnOpen ? ' open' : ''} ontoggle="ui.scnOpen=this.open"><summary><b>Show the ${Object.keys(SCENS).length} scenarios</b> <span class="small muted">a scandal, an 0-12 program, cap hell, a labor war and more</span></summary>
+   <label class="fld inl mt"><span>Your name (Coach scenarios)</span><input id="x2scnname" maxlength="28" value="${esc(ui.x2scnName || 'Alex Morgan')}"></label>
+   <div class="x2scns">${Object.entries(by).map(([m, L]) => `<div><div class="lbl">${esc(SCN_MODE[m])}</div>${L.map(([k, s]) => `<div class="x2scn"><b>${esc(s.l)}</b><p class="small">${esc(s.d)}</p><ul class="small plainlist">${s.goals.map(g => `<li>· ${esc(g[1])}${g[2] ? ` <span class="muted">(${g[2] === 1 ? 'first season' : 'within ' + g[2] + ' seasons'})</span>` : ''}</li>`).join('')}</ul><button class="btn sm" data-act="x2scn" data-k="${k}">Start this scenario</button></div>`).join('')}</div>`).join('')}</div></details>${x2BuildHTML()}</section>`;
 }
 { const _ph = patchHomeHTML; patchHomeHTML = function () { return x2ScnHomeHTML() + _ph(); }; }
 // IDEA-06: the challenge builder (AD and NFL GM). Nothing starts until the setup passes its checks.
@@ -18883,16 +18955,16 @@ function x3PrepCard() {
 }
 function x3DailyCard() {
   if (!dailyOn()) return ''; const ch = state.chal; const h = (isPro() ? (PS().hist || []).map(x => ({ s: x.s, w: x.w, l: x.l })) : (state.history || []).map(x => ({ s: x.season, w: x.w, l: x.l }))).find(x => x.s === ch.s0);
-  return `<section class="card next"><div class="eyebrow">Daily challenge · ${esc(String(ch.id).slice(6))}</div><h2 class="h3">${h ? `Final: ${h.w}-${h.l}` : `One season at ${esc(teamName(ch.tid))}`}</h2><p class="small">${h ? 'Post your score to the leaderboard from the Save file page, then see how everyone else did on the Home screen.' : 'Everyone gets the same school and the same league today. Play the season, then post your score.'}</p>${h ? '<button class="btn primary sm" data-act="x3dailypost">Post my score</button>' : ''}</section>`;
+  return `<section class="card next"><div class="eyebrow">Daily challenge · ${esc(String(ch.id).slice(6))}</div><h2 class="h3">${h ? `Final: ${h.w}-${h.l}` : `One season at ${esc(teamName(ch.tid))}`}</h2><p class="small">${!shareHere() ? (h ? 'That is your result for today. A new challenge starts tomorrow.' : 'Everyone gets the same school and the same league today. Play the season and see how you do.') : h ? 'Post your score to the leaderboard from the Save file page, then see how everyone else did on the Home screen.' : 'Everyone gets the same school and the same league today. Play the season, then post your score.'}</p>${h && shareHere() ? '<button class="btn primary sm" data-act="x3dailypost">Post my score</button>' : ''}</section>`;
 }
 { const w = f => function () { return x3DailyCard() + x3PrepCard() + f.apply(this, arguments); }; vOffice = w(vOffice); vCoachOffice = w(vCoachOffice); vProOffice = w(vProOffice); }
 
 /* ---------- 4. the daily challenge (Home) ---------- */
 function x3DailyHomeHTML() {
   const D = dailyToday(); const chk = D.id + ':' + (lsGet(NS_PREFIX.ad + 'slots-meta') || ''); if (cui.dailyChk !== chk) { cui.dailyChk = chk; /* looked up again whenever the AD slots change */ x3DailySlot(D.id).then(i => { const v = i ? D.id : null; if (cui.dailyHave !== v) { cui.dailyHave = v; if (appMode === 'home') render(); } }).catch(() => { }); } const nm = CTEAMS0_AD[D.tid] ? CTEAMS0_AD[D.tid].name : D.tid; const board = (typeof share !== 'undefined' && share.board ? share.board.filter(x => x.chal === D.id) : []).sort((a, b) => b.score - a.score).slice(0, 8);
-  return `<section class="card" id="x3daily"><div class="head"><div><div class="eyebrow">Daily challenge · ${esc(D.k)} (your local date)</div><h2 class="h2">Today: ${esc(nm)}</h2></div><p class="hint">The same school and the same league for everyone today. Play one season as athletic director and post your score. A new one every day.</p></div>
+  return `<section class="card" id="x3daily"><div class="head"><div><div class="eyebrow">Daily challenge · ${esc(D.k)} (your local date)</div><h2 class="h2">Today: ${esc(nm)}</h2></div><p class="hint">The same school and the same league for everyone today. Play one season as athletic director${shareHere() ? ' and post your score' : ''}. A new one every day.</p></div>
    <div class="row gap"><button class="btn primary" data-act="x3daily">Play today's challenge</button>${cui.dailyHave === D.id ? (cui.confirm === 'x3restart' ? '<button class="btn danger" data-act="x3dailyre">Confirm: start it over</button>' : '<button class="btn ghost" data-act="cask2" data-k="x3restart">Start it over</button>') : ''}</div><p class="small muted">A new challenge starts at midnight on your device's clock. Playing again picks up the same save.</p>
-   ${board.length ? `<div class="tw mt"><table class="tbl"><thead><tr><th>#</th><th>Who</th><th>Record</th><th class="num">Score</th></tr></thead><tbody>${board.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(shareWho(x.uid))}</td><td>${x.w}-${x.l}</td><td class="num">${x.score}</td></tr>`).join('')}</tbody></table></div>` : `<p class="small muted mt">${typeof share !== 'undefined' && share.ok ? 'No scores posted yet today.' : 'Scores show up here when the game is opened from its claude.ai link.'}</p>`}</section>`;
+   ${board.length ? `<div class="tw mt"><table class="tbl"><thead><tr><th>#</th><th>Who</th><th>Record</th><th class="num">Score</th></tr></thead><tbody>${board.map((x, i) => `<tr><td>${i + 1}</td><td>${esc(shareWho(x.uid))}</td><td>${x.w}-${x.l}</td><td class="num">${x.score}</td></tr>`).join('')}</tbody></table></div>` : `<p class="small muted mt">${typeof share !== 'undefined' && share.ok ? 'No scores posted yet today.' : shareHere() ? 'Scores show up here once you are signed in.' : 'Your result is kept on this device.'}</p>`}</section>`;
 }
 { const _ph = patchHomeHTML; patchHomeHTML = function () { return x3DailyHomeHTML() + _ph(); }; }
 // the AD slot already holding today's challenge, if any (older saves' summaries don't say, so those are opened to check)
@@ -19081,7 +19153,7 @@ Object.assign(actions, {
   x3sf(d) { if (!STORY_F.some(f => f[0] === d.v)) return; if (appMode === 'career') cui.storyF = d.v; else ui.storyF = d.v; render(); },
   x3daily() { x3DailyStart(); },
   x3dailyre() { cui.confirm = null; x3DailyStart(true); },
-  async x3dailypost(d, el) { const r = typeof sharePost === 'function' ? await sharePost() : 'unavailable'; after(r === 'ok' ? 'Posted. See the board on the Home screen.' : r === 'empty' ? 'Finish the season first.' : 'The leaderboard is only reachable from the game\'s claude.ai link.'); },
+  async x3dailypost(d, el) { const r = typeof sharePost === 'function' ? await sharePost() : 'unavailable'; after(r === 'ok' ? 'Posted. See the board on the Home screen.' : r === 'empty' ? 'Finish the season first.' : 'The leaderboard is not available here yet.'); },
   x3firm() { const r = csFirm(); after(r === 'ok' ? 'Two more candidates are on the list.' : r === 'money' ? 'Not enough money in the reserve.' : ''); },
   x3ask(d) { const r = csAsk(d.id, d.v); after(r === 'none' ? 'No interviews left this year.' : ''); },
   x3reno() { const r = renoStart(); after({ ok: 'The renovation is on.', busy: 'A renovation is already under way.', money: 'You need half the cost in the reserve.', when: 'Renovations start in the offseason.' }[r] || ''); },
@@ -19626,7 +19698,7 @@ const TUT = {
     tS('Discipline', 'Every ruling you\'ve made and the precedent it set. Stay near your average and rulings look fair; go easy on a star and it looks like favoritism.', 'cdisc', ['tab', 'page']),
     tS('The money', () => (isPro() ? 'League revenue and the TV deal, the salary cap you set every offseason, the labor deal with the players and revenue sharing.' : 'League revenue and the TV deal, and how athletes get paid: the NIL rules, revenue sharing and the split of the playoff money.'), 'cmoney', ['tab', 'page']),
     tS('League and rules', () => (isPro() ? 'The rules committee, teams changing hands or moving, and the size of the league: add clubs or fold them in the offseason.' : 'The rules committee, the playoff format and realignment: drag any school to another conference on the map.'), 'cleague', ['tab', 'page']),
-    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em, the highlights and the friends league are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
+    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em and the highlights are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
     tS('Your legacy', 'Your legacy score, your achievements and the Hall of Fame class you induct every offseason.', 'clegacy', ['tab', 'page']),
     tS('Everything else', 'Home switches modes. Search finds any player, coach or team. The Inbox lists what\'s on your desk. Settings has the look, the gameplay options and this tutorial.', null, TUT_TOOLS),
   ],
@@ -21161,7 +21233,7 @@ const OWN_SCEN = { worst: ['The worst club in the smallest market', 'A cheap clu
 const OWN_PATHS = [['buy', 'Buy a club', 'Four clubs are for sale. Outbid the other groups, then win the owners\' vote.'], ['exp', 'Start an expansion club', 'Pick a city, build the brand, pay the fee and stock the roster in an expansion draft.'], ['worst', OWN_SCEN.worst[0], OWN_SCEN.worst[1]], ['frontier', OWN_SCEN.frontier[0], OWN_SCEN.frontier[1]], ['family', OWN_SCEN.family[0], OWN_SCEN.family[1]], ['partner', 'Buy in as a minority partner', 'A former player or GM from one of your other careers buys 10% of a club, with a deal to take control after a season.']];
 function ownHomeCardHTML() {
   const meta = slotsMetaOf('ad'); const last = +lsGet('mfad-last-own'); const have = meta[last] && meta[last].own && lsGet(SLOT_KEY(last)) ? last : [1, 2, 3, 4, 5].find(i => meta[i] && meta[i].own && lsGet(SLOT_KEY(i))); const m = have ? meta[have] : null;
-  return `<article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">Mode 5 · New</div><h2 class="h2">Owner</h2><p>Buy an NFL club or start an expansion team. Set ticket prices, build a stadium, hire the GM and head coach (or be your own GM), win votes at the owners' meeting, and build a legacy worth a Hall of Fame bust.</p>
+  return `<article class="mode"><div class="mglyph" aria-hidden="true">${IC.star}</div><div class="eyebrow">NFL</div><h2 class="h2">Owner</h2><p>Buy an NFL club or start an expansion team. Set ticket prices, build a stadium, hire the GM and head coach (or be your own GM), win votes at the owners' meeting, and build a legacy worth a Hall of Fame bust.</p>
     <div class="msave">${m ? `<b>${esc(m.owner || 'Owner')}</b> · ${esc(m.name)} · ${m.season} · ${m.phase === 'offseason' ? 'offseason' : esc(m.rec)} <span class="muted">· slot ${have}</span>` : '<span class="muted">Uses one of your five AD save slots.</span>'}</div>
     <div class="row gap">${m ? '<button class="btn primary" data-act="goowner">Continue as owner</button><button class="btn ghost" data-act="owsnew">New owner</button>' : '<button class="btn primary" data-act="owsnew">Become an owner</button>'}</div></article>`;
 }
@@ -22048,4 +22120,214 @@ function recRepair() {
 }
 { const _cs = cSettle; cSettle = function () { const r = _cs.apply(this, arguments); try { recRepair(); } catch (e) { console.error(e); } return r; }; }
 
+/* ===================== v9.53: fantasy draft start (NFL general manager) =====================
+ * A new GM career can begin with every player in the league in one pool. The 32 clubs draft in a random snake
+ * order until each has a full roster by position (PRO_ROSTER). Players keep their contracts. The league's real
+ * rosters stay in place while the draft runs and are swapped for the drafted ones in one step at the end, so a
+ * save made in the middle of the draft is always a valid league. The draft lives in PS().fd. */
+const fdOn = () => !!(state && state.lvl === 'nfl' && state.pro && state.pro.fd && !state.pro.fd.done);
+const FD_TABS = ['off', 'file', 'settings']; // every other page waits until the rosters exist
+const fdSize = () => POS_ORDER.reduce((a, pos) => a + PRO_ROSTER[pos], 0);
+function fdPlayers() { const m = {}; Object.values(PS().rost).forEach(list => list.forEach(p => { m[p.id] = p; })); state.roster.forEach(p => { m[p.id] = p; }); return m; }
+function fdTeamAt(i) { const o = PS().fd.order; const n = o.length; const rd = Math.floor(i / n), k = i % n; return o[rd % 2 ? n - 1 - k : k]; }
+function fdCount(tid, M) { const c = {}; PS().fd.got[tid].forEach(id => { const p = M[id]; if (p) c[p.pos] = (c[p.pos] || 0) + 1; }); return c; }
+// how much a club wants a player: rating, how much the position matters, age, and how full the position already is
+const fdScore = (p, have) => p.ovr + (PRO_POS_W[p.pos] - 1) * 14 + (p.age <= 25 ? 1.5 : p.age >= 31 ? -(p.age - 30) * 1.2 : 0) - 7 * ((have || 0) / PRO_ROSTER[p.pos]);
+function fdAvail(M) { const tk = PS().fd.taken; return Object.values(M).filter(p => !tk[p.id]); }
+function fdBest(tid, M, avail) {
+  const c = fdCount(tid, M); let best = null, bs = -1e9, cheap = null;
+  // a pick has to leave room under the cap to fill the rest of the roster at the minimum salary
+  const got = PS().fd.got[tid]; const pay = got.reduce((a, id) => a + (M[id] ? capHit(M[id]) : 0), 0); const room = proCap(capYear()) - pay - (fdSize() - got.length - 1) * PRO_MINSAL;
+  for (const p of avail) {
+    if ((c[p.pos] || 0) >= PRO_ROSTER[p.pos]) continue; const hit = capHit(p);
+    if (!cheap || hit < capHit(cheap)) cheap = p;
+    if (hit > room) continue; const s = fdScore(p, c[p.pos]); if (s > bs) { bs = s; best = p; }
+  }
+  return best || cheap;
+}
+function fdTake(tid, p) { const fd = PS().fd; fd.got[tid].push(p.id); fd.taken[p.id] = 1; fd.log.unshift([fd.i, tid, p.id]); if (fd.log.length > 40) fd.log.length = 40; fd.i++; }
+function fdStart() {
+  const L = PS(); const r = lrng(state.seed + ':fantasy'); const order = Object.keys(state.teams).map(t => [r(), t]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  L.fd = { order, i: 0, got: {}, taken: {}, log: [], auto: false, total: order.length * fdSize() }; order.forEach(t => { L.fd.got[t] = []; });
+  fdRun();
+}
+// Computer-run clubs pick until it is your turn (or to the end once your picks are on autopilot).
+function fdRun() {
+  const fd = PS().fd; if (!fd || fd.done) return; const M = fdPlayers(); let avail = fdAvail(M);
+  while (fd.i < fd.total) {
+    const tid = fdTeamAt(fd.i); if (tid === ME && !fd.auto && fdBest(ME, M, avail)) return;
+    const p = fdBest(tid, M, avail); if (!p) { fd.i++; continue; } // nobody left at a position this club still needs
+    fdTake(tid, p); avail = avail.filter(x => x !== p);
+  }
+  fdFinish(M);
+}
+function fdFinish(M) {
+  const L = PS(); const fd = L.fd; const lean = p => (p.st ? leanPro(p) : p);
+  let mine = [];
+  fd.order.forEach(t => { const list = fd.got[t].map(id => M[id]).filter(Boolean); if (t === ME) mine = list; else L.rost[t] = list.map(lean); });
+  mine.forEach(p => { enrichPro(p); p.yw = 0; }); state.roster = mine; rebuildPMap();
+  state.depth = {}; POS_ORDER.forEach(pos => { state.depth[pos] = state.roster.filter(p => p.pos === pos).sort((a, b) => b.ovr - a.ovr).map(p => p.id); });
+  state.captains = []; L.cin = { draft: [], fa: [], cut: [], trade: [], keep: [] }; L.dead = {};
+  proRateAll(); Object.keys(state.teams).forEach(t => { delete T(t).stars; proStars(t); });
+  L.fd = { done: true, at: state.season }; proHcWish('resign');
+  addNews(`The fantasy draft is over. ${myName()} drafted ${mine.length} players; the best is ${mine.slice().sort((a, b) => b.ovr - a.ovr)[0].n}.`);
+}
+function fdPick(id) {
+  const fd = PS().fd; if (!fdOn() || fdTeamAt(fd.i) !== ME) return 'wait'; const M = fdPlayers(); const p = M[id]; if (!p || fd.taken[id]) return 'gone';
+  const c = fdCount(ME, M); if ((c[p.pos] || 0) >= PRO_ROSTER[p.pos]) return 'full';
+  fdTake(ME, p); fdRun(); return 'ok';
+}
+function fdView() {
+  const fd = PS().fd; const M = fdPlayers(); const n = fd.order.length; const rd = Math.floor(fd.i / n) + 1, pk = fd.i % n + 1; const c = fdCount(ME, M); const f = ui.fdPos || 'ALL';
+  const avail = fdAvail(M).filter(p => (c[p.pos] || 0) < PRO_ROSTER[p.pos] && (f === 'ALL' || p.pos === f)).sort((a, b) => b.ovr - a.ovr || a.age - b.age).slice(0, 40);
+  const mine = fd.got[ME].map(id => M[id]).filter(Boolean); const pay = r1(mine.reduce((a, p) => a + capHit(p), 0)); const myPos = fd.order.indexOf(ME) + 1;
+  const tm = id => esc(T(id) ? T(id).name : id);
+  return `<section class="card decision"><div class="head"><div><div class="eyebrow">Fantasy draft · round ${rd} of ${fdSize()} · pick ${pk} of ${n}</div><h2 class="h2">${esc(myName())} are on the clock</h2></div><p class="hint">Every player in the league is in one pool. Clubs draft in a snake order (you pick ${myPos}${myPos === 1 ? 'st' : myPos === 2 ? 'nd' : myPos === 3 ? 'rd' : 'th'} in odd rounds) until every roster is full at each position. Players keep the contracts they have.</p></div>
+   <div class="row gap"><button class="btn" data-act="fdbest">Take the best fit</button>${cui.confirm === 'fdauto' ? '<button class="btn danger" data-act="fdauto">Confirm: finish the draft for me</button>' : '<button class="btn ghost" data-act="cask2" data-k="fdauto">Auto-draft the rest</button>'}</div>
+   <div class="mt">${seg('fdpos', f, [['ALL', 'All']].concat(POS_ORDER.filter(pos => (c[pos] || 0) < PRO_ROSTER[pos]).map(pos => [pos, `${pos} ${c[pos] || 0}/${PRO_ROSTER[pos]}`])))}</div>
+   <div class="tw mt"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th class="num">Age</th><th>Overall</th><th class="num">Potential</th><th class="num">Cap hit</th><th class="num">Years left</th><th></th></tr></thead><tbody>${avail.map(p => `<tr><td><b>${esc(p.n)}</b></td><td>${p.pos}</td><td class="num">${p.age}</td><td>${ovrTag(p.ovr)}</td><td class="num">${p.pot || p.ovr}</td><td class="num">${fmM(capHit(p))}</td><td class="num">${p.k ? p.k.yrs : 0}</td><td><button class="btn primary sm" data-act="fdpick" data-id="${p.id}">Draft</button></td></tr>`).join('') || '<tr><td colspan="8" class="muted">Nobody left at this position.</td></tr>'}</tbody></table></div></section>
+  <section class="card"><div class="head"><div><div class="eyebrow">Your picks · ${mine.length} of ${fdSize()}</div><h2 class="h3">Payroll so far ${fmM(pay)} of a ${fmM(proCap(capYear()))} cap</h2></div></div>
+   ${mine.length ? `<div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th class="num">Age</th><th>Overall</th><th class="num">Cap hit</th></tr></thead><tbody>${mine.map(p => `<tr><td>${esc(p.n)}</td><td>${p.pos}</td><td class="num">${p.age}</td><td>${ovrTag(p.ovr)}</td><td class="num">${fmM(capHit(p))}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">No picks yet.</p>'}</section>
+  <section class="card"><div class="eyebrow">Latest picks around the league</div><ul class="plainlist small">${fd.log.slice(0, 12).map(([i, t, id]) => `<li>${Math.floor(i / n) + 1}.${i % n + 1} · <b>${tm(t)}</b>: ${M[id] ? esc(M[id].n) + ' (' + M[id].pos + ', ' + M[id].ovr + ')' : ''}</li>`).join('') || '<li class="muted">You have the first pick.</li>'}</ul></section>`;
+}
+{ const _v = vProOff; vProOff = function () { return fdOn() ? fdView() : _v.apply(this, arguments); }; }
+{ const _n = proOffNext; proOffNext = function () { if (fdOn()) { ui.tab = 'off'; ui.flash = 'Finish the fantasy draft first.'; return false; } return _n.apply(this, arguments); }; }
+Object.assign(actions, {
+  fdpick(d) { const r = fdPick(d.id); cui.confirm = null; after(r === 'ok' ? (fdOn() ? '' : 'The draft is done. Your roster is set.') : r === 'full' ? 'You are full at that position.' : r === 'gone' ? 'He was just drafted.' : ''); },
+  fdbest() { if (!fdOn()) return; const M = fdPlayers(); const p = fdBest(ME, M, fdAvail(M)); if (p) actions.fdpick({ id: p.id }); },
+  fdauto() { if (!fdOn()) return; cui.confirm = null; PS().fd.auto = true; fdRun(); after('The draft is done. Your roster is set.'); window.scrollTo(0, 0); },
+  fdpos(d) { ui.fdPos = d.v; render(); refocus({ act: 'fdpos', v: d.v }); },
+  ncfd(d) { const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.fd = d.v === '1'; render(); refocus({ act: 'ncfd', v: d.v }); },
+});
+// Any other page asked for during the draft (the phone tab bar, a shortcut, a link) lands on the draft.
+{ const _r = renderAD; renderAD = function () { if (fdOn() && !FD_TABS.includes(ui.tab)) ui.tab = 'off'; return _r.apply(this, arguments); }; }
+/* ===================== v9.53: Ironman careers (athletic director and NFL general manager) =====================
+ * Chosen when the career starts and never turned off. An Ironman career has no undo, no admin tools, a fixed
+ * difficulty, and can't be rolled back to an earlier copy or replaced by a save code. The flag is X().iron. */
+const ironOn = () => !!(state && state.x && state.x.iron);
+const IRON_NO = 'This is an Ironman career: ';
+{ const _u = undoSnap; undoSnap = function () { return ironOn() ? null : _u.apply(this, arguments); }; }
+{ const _s = slotSummary; slotSummary = function () { const o = _s.apply(this, arguments); if (o && ironOn()) o.iron = true; return o; }; }
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { if (appMode === 'ad' && ironOn()) { const el = document.querySelector('#hdr .sub'); if (el && !el.querySelector('.ironpill')) el.insertAdjacentHTML('beforeend', ' <span class="pill maize ironpill">Ironman</span>'); } } catch (e) { } return r; }; }
+{
+  const guard = (name, test, msg) => { const f = actions[name]; if (typeof f !== 'function') return; actions[name] = function (d) { if (ironOn() && test(d || {})) { ui.confirm = null; return after(IRON_NO + msg); } return f.apply(this, arguments); }; };
+  guard('setgame', d => d.k === 'diff', 'the difficulty is locked.');
+  guard('restoregood', d => +d.i === slot, 'it can\'t be rolled back to an earlier copy.');
+  guard('import', () => true, 'a save code can\'t replace it. Load the code into another slot.');
+  Object.assign(actions, { nciron(d) { const sel = document.getElementById('nc-tid'); if (sel) ui.nc.tid = sel.value; const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.iron = d.v === '1'; render(); refocus({ act: 'nciron', v: d.v }); } });
+}
+
+/* ---------- v9.54: Ironman in every mode ----------
+ * Any career can be switched to Ironman from Settings. It can be turned on, never off. Coach, commissioner and
+ * owner careers live in `state`, so the rules above already apply to them. Player Career keeps its flag in CX().iron. */
+const cIronOn = () => !!(typeof cs !== 'undefined' && cs && cs.x && cs.x.iron);
+const anyIron = () => (appMode === 'career' ? cIronOn() : ironOn());
+function ironRowHTML() {
+  const on = anyIron(); const ask = (appMode === 'career' ? cui.confirm : ui.confirm) === 'iron';
+  return setRow('Ironman', on ? 'On for this career, for good: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.' : 'No undo, no admin tools, a locked difficulty, and no rolling back or replacing the save. Once it is on it stays on.',
+    on ? '<span class="pill maize">On</span>' : ask ? '<button class="btn danger sm" data-act="ironon">Confirm: turn on Ironman for good</button>' : '<button class="btn sm" data-act="ironask">Turn on Ironman</button>');
+}
+{ const _c = coachSettingsHTML; coachSettingsHTML = function () { return _c.apply(this, arguments) + `<section class="card"><div class="eyebrow">Ironman · slot ${slot}</div>${ironRowHTML()}</section>`; }; }
+{ const _s = cSummary; cSummary = function () { const o = _s.apply(this, arguments); if (o && cIronOn()) o.iron = true; return o; }; }
+{ const _v = cViewFor; cViewFor = function (k) { if (k === 'admin' && cIronOn()) return () => '<section class="card"><div class="eyebrow">Admin tools</div><p class="muted">This is an Ironman career. The admin tools are locked.</p></section>'; return _v.apply(this, arguments); }; }
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { if (appMode === 'career' && cIronOn()) { const el = document.querySelector('#hdr .sub'); if (el && !el.querySelector('.ironpill')) el.insertAdjacentHTML('beforeend', ' <span class="pill maize ironpill">Ironman</span>'); } } catch (e) { } return r; }; }
+{
+  const cguard = (name, test, msg) => { const f = actions[name]; if (typeof f !== 'function') return; actions[name] = function (d) { if (appMode === 'career' && cIronOn() && test(d || {})) { cui.confirm = null; cui.flash = IRON_NO + msg; return render(); } return f.apply(this, arguments); }; };
+  cguard('cdiff', () => true, 'the difficulty is locked.'); cguard('cgrowth', () => true, 'the growth setting is locked.');
+  cguard('crestoregood', d => +d.i === cslot, 'it can\'t be rolled back to an earlier copy.'); cguard('cimport', () => true, 'a save code can\'t replace it. Load the code into another slot.');
+  Object.assign(actions, {
+    ironask() { if (appMode === 'career') cui.confirm = 'iron'; else ui.confirm = 'iron'; render(); refocus({ act: 'ironon' }); },
+    ironon() {
+      if (appMode === 'career') { if (!cs) return; cui.confirm = null; CX().iron = true; CX().ironAt = cs.year; cui.flash = 'Ironman is on for this career.'; cSave(); return render(); }
+      if (!state) return; ui.confirm = null; ui.undo = null; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
+    },
+  });
+}
+/* ===================== v9.53: the website (collegefbsim.com) =====================
+ * Things that belong to the site the game is hosted on, not to the game itself: installing it as an app and
+ * playing offline, keeping browser storage safe, and optional visit counting. None of it changes a save. */
+const SITE = {
+  // The GoatCounter site code (the "mysite" in mysite.goatcounter.com). Empty turns visit counting off.
+  // GoatCounter uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
+  goatcounter: 'carsonm',
+  host: /(^|\.)collegefbsim\.com$/, // visits are only counted on the real site, never on a copy or a local file
+};
+// The live site, or a local server while developing (for the offline app shell)
+const siteLive = () => (location.protocol === 'https:' && SITE.host.test(location.hostname)) || location.hostname === 'localhost';
+const siteCounts = () => !!SITE.goatcounter && location.protocol === 'https:' && SITE.host.test(location.hostname);
+
+/* ---------- visit counting: which modes get played, and how many seasons get finished ---------- */
+const siteSeen = {};
+function siteTrack(name) {
+  if (!siteCounts() || siteSeen[name]) return; siteSeen[name] = 1;
+  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: 'event/' + name, title: name, event: true }); } catch (e) { }
+}
+function siteModeName() { if (appMode === 'career') return 'player'; if (appMode !== 'ad' || !state) return null; return isComm() ? 'commissioner' : isOwner() ? 'owner' : isCoach() ? (isPro() ? 'nfl-coach' : 'coach') : isPro() ? 'gm' : 'ad'; }
+let siteSeason = null;
+function siteAfterRender() {
+  const m = siteModeName(); if (!m) { siteSeason = null; return; }
+  siteTrack('play-' + m);
+  const yr = appMode === 'career' ? (cs && cs.year) : state.season; const key = m + ':' + (appMode === 'career' ? cslot : slot);
+  if (siteSeason && siteSeason.key === key && yr > siteSeason.yr) { delete siteSeen['season-' + m]; siteTrack('season-' + m); }
+  siteSeason = { key, yr };
+}
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { siteAfterRender(); } catch (e) { } return r; }; }
+
+/* ---------- storage: ask the browser to keep saves, and show how much room is left ---------- */
+const LS_ROOM = 5 * 1024 * 1024; // browsers allow about five million characters for a site
+function storageUsed() { let n = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); n += k.length + (localStorage.getItem(k) || '').length; } } catch (e) { } return n; }
+function storageNoteHTML() {
+  const u = storageUsed(); const pct = Math.round(u / LS_ROOM * 100); if (!u) return '';
+  const kept = SITE.persisted === true ? ' This browser has agreed to keep them.' : '';
+  return `<p class="small ${pct >= 80 ? 'bad' : 'muted'}" id="storagenote">Saves on this device use ${pct < 1 ? 'less than 1' : pct}% of the room this browser allows (${(u / 1048576).toFixed(1)} of about 5 MB).${pct >= 80 ? ' Room is running out: download a save file for the careers you care about, then delete a slot you no longer play.' : kept}</p>`;
+}
+function sitePersist() { try { if (navigator.storage && navigator.storage.persist && storageUsed() > 0) navigator.storage.persist().then(ok => { SITE.persisted = ok; }).catch(() => { }); } catch (e) { } }
+
+/* ---------- start-up: the app shell (offline play) and the visit counter ---------- */
+function siteBoot() {
+  sitePersist();
+  if (!siteLive()) return;
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
+  if (siteCounts() && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
+}
+try { siteBoot(); } catch (e) { console.error(e); }
+/* ===================== v9.53: a picture of your season to share =====================
+ * In the offseason the Office offers a 1200x630 picture of the season just finished, in the team's colors:
+ * the record, how it ended, and the career so far. It is drawn on a canvas in the browser; nothing is uploaded. */
+function seasonCardData() {
+  if (!state || appMode !== 'ad' || isComm() || typeof shareSeasons !== 'function') return null;
+  let ss; try { ss = shareSeasons(); } catch (e) { return null; } if (!ss || !ss.length) return null; const h = ss[ss.length - 1];
+  const sc = (typeof schoolColors === 'function' && schoolColors()) || { c1: '#FFCB05', c2: '#00274C' }; const p = teamPalette(sc.c1, sc.c2);
+  const role = isOwner() ? 'Owner' : isCoach() ? (state.co && state.co.name ? state.co.name : 'Coach') : isPro() ? 'General manager' : 'Athletic director';
+  return { team: myName(), season: h.s, w: h.w, l: h.l, end: h.title ? (isPro() ? 'Super Bowl champions' : 'National champions') : h.post ? (isPro() ? 'Playoff team' : 'Postseason team') : '', role,
+    n: ss.length, tw: ss.reduce((a, x) => a + x.w, 0), tl: ss.reduce((a, x) => a + x.l, 0), titles: ss.filter(x => x.title).length, iron: typeof ironOn === 'function' && ironOn(), bg: p.band, fg: p.bandText, hi: p.onBand || p.bandText };
+}
+function seasonCardCanvas(d) {
+  const W = 1200, H = 630; const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const disp = '"Big Shoulders Display", "Arial Narrow", Impact, sans-serif', body = '"Public Sans", system-ui, sans-serif';
+  g.fillStyle = d.bg; g.fillRect(0, 0, W, H); g.fillStyle = d.hi; g.fillRect(0, H - 16, W, 16);
+  const fit = (txt, font, size, max) => { do { g.font = font.replace('%', size); size -= 4; } while (g.measureText(txt).width > max && size > 24); };
+  g.textBaseline = 'alphabetic'; g.fillStyle = d.fg; g.globalAlpha = 0.72; g.font = `600 30px ${body}`; g.fillText(`${d.season} SEASON · ${d.role.toUpperCase()}${d.iron ? ' · IRONMAN' : ''}`, 72, 104); g.globalAlpha = 1;
+  g.fillStyle = d.hi; fit(d.team.toUpperCase(), `900 %px ${disp}`, 132, W - 144); g.fillText(d.team.toUpperCase(), 72, 236);
+  g.fillStyle = d.fg; g.font = `900 220px ${disp}`; g.fillText(`${d.w}-${d.l}`, 72, 440);
+  if (d.end) { const x = 72 + g.measureText(`${d.w}-${d.l}`).width + 40; g.fillStyle = d.hi; fit(d.end.toUpperCase(), `800 %px ${disp}`, 64, W - x - 72); g.fillText(d.end.toUpperCase(), x, 420); }
+  g.fillStyle = d.fg; g.globalAlpha = 0.8; g.font = `500 30px ${body}`; g.fillText(`Career: ${d.n} season${d.n > 1 ? 's' : ''}, ${d.tw}-${d.tl}${d.titles ? `, ${d.titles} title${d.titles > 1 ? 's' : ''}` : ''}`, 72, 520);
+  g.textAlign = 'right'; g.font = `600 28px ${body}`; g.fillText('Football Empire · collegefbsim.com', W - 72, 570); g.globalAlpha = 1; g.textAlign = 'left';
+  return c;
+}
+function seasonCardHTML() {
+  const d = state && state.phase === 'offseason' ? seasonCardData() : null; if (!d) return '';
+  return `<section class="card" id="seasoncard"><div class="head"><div><div class="eyebrow">Share your season</div><h2 class="h3">${esc(d.team)}, ${d.season}: ${d.w}-${d.l}${d.end ? ' · ' + esc(d.end) : ''}</h2></div><p class="hint">A picture of the season in your team's colors, made on this device.</p></div><div class="row gap"><button class="btn" data-act="seasoncard" data-v="save">Save the picture</button>${navigator.share && navigator.canShare ? '<button class="btn ghost" data-act="seasoncard" data-v="share">Share</button>' : ''}</div><p class="small muted" id="seasoncardmsg" role="status"></p></section>`;
+}
+{ const w = f => function () { return f.apply(this, arguments) + seasonCardHTML(); }; vOffice = w(vOffice); vCoachOffice = w(vCoachOffice); vProOffice = w(vProOffice); }
+Object.assign(actions, {
+  async seasoncard(d) {
+    const data = seasonCardData(); const msg = t => { const m = document.getElementById('seasoncardmsg'); if (m) m.textContent = t; }; if (!data) return;
+    try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('900 100px "Big Shoulders Display"'), document.fonts.load('600 30px "Public Sans"')]); } catch (e) { }
+    const name = `football-empire-${String(data.team).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${data.season}.png`;
+    const blob = await new Promise(res => seasonCardCanvas(data).toBlob(res, 'image/png')); if (!blob) return msg('The picture could not be made in this browser.');
+    if (d.v === 'share') { try { const file = new File([blob], name, { type: 'image/png' }); if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Football Empire', text: `${data.team} went ${data.w}-${data.l} in ${data.season}.` }); return msg('Shared.'); } } catch (e) { if (e && e.name === 'AbortError') return; } }
+    try { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); msg('Saved ' + name + '.'); } catch (e) { msg('Downloads are blocked here.'); }
+  },
+});
 </script>
