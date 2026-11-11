@@ -28,8 +28,8 @@ try {
 
 // 3) persistence
 try {
-  const out = run(['tests/persist.js']); const r = lastJson(out);
-  if (!r) fail.push('persist: no result: ' + out.slice(0, 200));
+  let out, r; for (let i = 0; i < 5; i++) { out = run(['tests/persist.js']); r = lastJson(out); if (!r || !r.retry) break; console.log('    persist: lost the owners\' vote (random), running again'); }
+  if (!r || r.retry) fail.push('persist: no result: ' + out.slice(0, 200));
   else if (r.errs && r.errs.length) fail.push('persist: page errors: ' + JSON.stringify(r.errs));
   else console.log('ok  persist: ' + JSON.stringify(r).slice(0, 200));
 } catch (e) { fail.push('persist crashed: ' + String(e.stderr || e.message).slice(0, 300)); }

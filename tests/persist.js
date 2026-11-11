@@ -13,6 +13,8 @@ const { chromium } = require('playwright');
     if (cui.own && cui.own.step === 'vote') { if (!cui.own.vote.ok) return { vote: cui.own.vote }; actions.owsfinish(); }
     await flushSave(); return { club: myName(), slot, meta: slotsMetaOf('ad')[slot] };
   });
+  // Buying a club ends in an owners' vote that can be lost (it is random by design). That is not a save problem: report it so the caller can run again.
+  if (out.own && out.own.vote) { console.log(JSON.stringify({ retry: "lost the owners' vote", vote: out.own.vote })); await b.close(); return; }
   await p.reload(); await p.waitForTimeout(600);
   out.home = await p.evaluate(() => document.querySelector('#view').textContent.includes('Continue as owner'));
   out.cont = await p.evaluate(async () => { await actions.goowner(); const bad = []; for (const [k] of PRO_TABS) { if (!tabVisible(k)) continue; ui.tab = k; try { render(); if (/could not be shown/.test(document.getElementById('view').textContent)) bad.push(k); } catch (e) { bad.push(k + ':' + e.message); } } if (isOwner()) actions.pnext(); return { owner: isOwner(), club: myName(), bad, step: isPro() && PS().off && PS().off.step, flash: ui.flash, kind: state.kind, appMode, meta: slotsMetaOf('ad') }; });
