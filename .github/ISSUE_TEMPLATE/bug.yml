@@ -1,0 +1,33 @@
+name: Bug report
+description: Something in the game is broken or wrong
+labels: [bug]
+body:
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options: [Athletic Director, Coach, Player Career, NFL General Manager, Commissioner, Owner, Home screen, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Game version
+      description: Shown in the patch notes card on the Home screen (for example 9.53).
+  - type: input
+    id: device
+    attributes:
+      label: Device and browser
+      placeholder: iPhone 15, Safari
+  - type: textarea
+    id: save
+    attributes:
+      label: Save code (optional)
+      description: From the Save file page. It lets the bug be reproduced exactly.

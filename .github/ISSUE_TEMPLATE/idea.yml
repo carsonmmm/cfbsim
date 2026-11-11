@@ -1,0 +1,18 @@
+name: Idea
+description: A new feature or an improvement
+labels: [idea]
+body:
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options: [Athletic Director, Coach, Player Career, NFL General Manager, Commissioner, Owner, Every mode, The website]
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should the game do, and why would it be more fun?
+    validations:
+      required: true

@@ -1,97 +1,123 @@
 # Developing Football Empire
 
-This is the developer guide. For what the game is, see the [README](../README.md); for where it is going, see the [roadmap](../ROADMAP.md).
+For what the game is, see the [README](../README.md). For where it is going, see the [roadmap](../ROADMAP.md).
+
+## The one rule
+
+**Edit files in `src/`, then run `node build.js`.** `index.html` is the built game that GitHub Pages serves. Never edit it by hand: the next build overwrites it, and `npm test` fails until it matches `src/` again.
+
+## Everyday commands
+
+Needs Node.js 20 or newer. The tests also need Playwright (`npm install`, then `npx playwright install chromium`).
+
+| Command | What it does |
+|---|---|
+| `npm start` | Serves the game at http://localhost:8080 and rebuilds whenever a file in `src/` changes. |
+| `npm run build` | Builds `index.html` from `src/` and checks that the JavaScript parses. A syntax error is reported with its source file and line. |
+| `npm test` | Everything GitHub checks on each push: the build is fresh, every mode opens, the feature tests and balance guardrails pass, the patch notes file is current, saves load. About 20 seconds. |
+| `npm run notes` | Rewrites `PATCH_NOTES.md` from the patch notes in the game. |
 
 ## What's in the repository
 
 | Path | What it is |
 |---|---|
-| `index.html` | **The game.** The whole site in one file. GitHub Pages serves it at collegefbsim.com. |
-| `PATCH_NOTES.md` | Every patch note, newest first, exported from the game. |
-| `build.sh` | Rebuilds `index.html` from `source/`, then checks the JavaScript syntax. |
-| `source/base_v947.html` | The v9.47 game. Every build starts from this file. |
-| `source/edits.py` | Exact text replacements applied to the base file (75 of them, patch notes included). |
-| `source/modules/*.js` | The code added since v9.47. Modules are appended in name order, before the final `</script>`. |
-| `tests/` | Automated checks that run the game in a headless browser (Playwright). `npm test` runs the main ones. |
-| `.github/workflows/ci.yml` | Runs `npm test` on every push and pull request. |
-| `favicon.svg`, `404.html`, `robots.txt`, `sitemap.xml`, `docs/img/` | Site extras: the tab icon, the not-found page, search engine files and images. |
+| `index.html` | **The built game.** Generated. GitHub Pages serves it at collegefbsim.com. |
+| `src/head.html`, `src/body.html`, `src/tail.html` | The page around the code: meta tags, the empty page skeleton, the closing tag. |
+| `src/css/*.css` | Styles, joined in name order. |
+| `src/js/*.js` | The game, joined in name order into one script. The number at the front of each name is its load order. |
+| `build.js` | Joins `src/` into `index.html`. |
+| `sw.js`, `manifest.webmanifest` | The installable app: offline loading and the home-screen icon. |
+| `tests/` | Automated checks that run the game in a headless browser. `tests/fixtures/v947.html` is an old build used to prove old saves still load. |
+| `scripts/` | `serve.js` (local server) and `patch-notes.js` (writes `PATCH_NOTES.md`). |
+| `.github/` | The check that runs on every push, plus pull request and issue templates. |
+| `favicon.svg`, `404.html`, `robots.txt`, `sitemap.xml`, `docs/img/` | Site extras. |
 
-`index.html` and the base file can each be opened on their own. Everything else is only needed if you change the code.
+## Where the code is
 
-## Two ways to make changes
+All of `src/js` shares one global scope, exactly as if it were one file. A file can use anything defined in a file with a lower number, and anything at all from inside a function that runs later.
 
-1. **Use the build (what this repository expects).** Add a module or a new edit, then run `./build.sh`. This keeps each update in its own small file, which is easier to review and undo. It's also how every update from 9.48 to 9.52 was made.
-2. **Edit `index.html` directly.** It's a normal HTML file with one big `<script>`. The catch: the next `./build.sh` overwrites direct edits, and `npm test` fails until `index.html` matches `source/` again. Avoid this unless you are retiring the build.
+| Files | Area |
+|---|---|
+| `010` to `050` | League data, the game engine, season systems, team systems |
+| `060`, `140`, `280` | Commissioner: classic rules, the engine, the screens |
+| `070` | Saving: slots, the save queue, import and export |
+| `080`, `260` | Coach mode: engine and screens |
+| `100` to `120`, `230`, `250`, `430` | Player Career: engine, games, the NFL, screens, actions, recruiting fixes. `230` also draws the Home screen. |
+| `130`, `270`, `370` | NFL front office (general manager and NFL coach): engine, screens, roster cuts |
+| `150` to `180`, `320` to `350` | Features added across versions 9.12 to 9.45 and their pages |
+| `190`, `200` | Rendering every page, and the field view |
+| `210` | Patch notes |
+| `240` | Button actions, keyboard input, start-up |
+| `300` | Sharing: leaderboards, challenges, cloud saves (needs a host that provides them) |
+| `310`, `410`, `420` | Quality of life, navigation and "Needs your attention", the Inbox |
+| `360` | Tutorials |
+| `380` to `400` | Owner mode |
+| `440` | Fantasy draft start |
+| `450` | Ironman careers |
+| `460` | The website: offline app, storage note, visit counting |
+| `470` | The share-your-season picture |
 
-## Building
-
-Needs Python 3 and Node.js.
-
-```sh
-./build.sh          # prints "ok 75 edits" and "SYNTAX-OK"
-```
-
-- **New module:** add `source/modules/C3_whatever.js`. Name order decides load order, so a later letter or number loads after the modules it depends on.
-- **New edit:** add `e("exact old text", "new text")` in `source/edits.py`, above `def apply`. The old text has to match exactly once in the base file, or the build stops with `EDIT FAILED`. Remember that edits match against the **v9.47 base**, not the current game.
-
-## Testing
-
-Needs Node.js and Playwright (`npm install` then `npx playwright install chromium`).
-
-```sh
-npm test                                # build is fresh, every mode opens, saves load; this is what CI runs
-node tests/run.js tests/smoke.js        # opens every mode; expect "errs":[] and "ok" for each
-node tests/persist.js                   # old saves still load in the new build
-node tests/inbox.js                     # inbox and "decisions first"
-node tests/run.js tests/rec4.js 80 307  # an elite recruit's offers each year (args: attributes, seed)
-node tests/run.js tests/rec5.js         # repairing a save that has no offers, college-path offers
-node tests/run.js tests/own1.js         # Owner mode engine paths (own3–own7 cover the rest)
-```
-
-- **Two kinds of test file:**
-  - Files run through `tests/run.js` are bodies that run inside the page, so they can call game functions directly. Arguments arrive as `ARGS`.
-  - Files run with plain `node` are standalone scripts.
-- **Testing another build:** set `GAME=/path/to/file.html` before `node tests/run.js …`.
-
-## How the code is organized
+## How the game is put together
 
 **Modes**
 - **Athletic Director and Coach (college):** the game lives in `state`. `state.kind` is `undefined` (AD), `'coach'`, `'comm'` (Commissioner) or `'owner'`.
-- **NFL modes:** `state.lvl === 'nfl'`.
+- **NFL modes:** `state.lvl === 'nfl'`. The league is `state.pro`, read through `PS()`.
 - **Player Career:** a separate object, `cs`. The page renders with `appMode === 'career'`, and the current tab is `cui.tab`.
 - **Extra save data:** `X()` (stored in `state.x`) and `CX()` (stored in `cs.x`). New features keep their data here so old saves stay valid.
 
-**Changing behavior**
-- **Wrapping a function:** functions written as `function name() {}` can be wrapped by reassigning them:
+**Adding to the game**
+- **A new feature gets a new file** with the next number, for example `src/js/480-my-feature.js`. Start it with a comment that says what it does and where its data lives.
+- **Buttons:** clicks are routed by `data-act="name"`, which runs `actions.name(dataset)`. Add yours with `Object.assign(actions, { … })`.
+- **Adding to an existing function from your new file:** functions written as `function name() {}` can be wrapped:
   ```js
   { const _f = name; name = function () { const r = _f.apply(this, arguments); /* extra */ return r; }; }
   ```
-  `const name = () => …` arrow functions can't be wrapped this way. Change those through `edits.py`.
-- **Buttons:** clicks are routed by `data-act="name"`, which runs `actions.name(dataset)`. Register new buttons with `Object.assign(actions, { … })`.
-- **After every render:** `qolAfterRender()` runs. The inbox module wraps it to move decisions to the top.
+  `const name = () => …` can't be wrapped. Edit those where they are defined.
+- **Changing existing behavior:** edit the function where it lives. That is the point of having plain source files.
+- **After every render:** `qolAfterRender()` runs.
+- **Which tabs show:** `tabVisible(k)` in `190-render.js`.
 - **Balance:** `balOn()` is true when the Updated balance setting is on.
 
-**Saving and patch notes**
-- **Old saves:** saves are checked on load. That happens in `checkPro` and `cValidate`, and in `cSettle()` for careers. Anything new should read old saves without the new fields and fill in defaults.
-- **Patch notes:** they live in the `PATCH_NOTES` array, newest first. The version shown in the game is `PATCH_NOTES[0]`. To add one, insert a `{ v: '9.53', t: 'Title', n: ['…'] }` entry before the 9.52 entry (see the last `e(...)` in `edits.py`).
+**Saving**
+- Saves are compressed and kept in the browser's `localStorage`, five slots per set. The AD set (`mfad-`) also holds general manager, commissioner and owner careers; Coach (`fecoach-`) and Player Career (`mfpc-`) have their own.
+- Saves are checked on load in `checkPro`, `cValidate` and `cSettle()`. Anything new must read an old save that lacks the new fields and fill in defaults.
 
-## Where the code for each mode is
+## Tests
 
-| Area | Where |
-|---|---|
-| Owner mode (9.48) | `modules/00_core.js` … `90_home.js` |
-| Owner mode expansion and removals (9.49) | `modules/B0_remove.js` … `B9_hooks.js` |
-| Main tabs plus More menu, "Needs your attention", guided first season, glossary, folding tables on phones (9.50) | `modules/C0_design.js` |
-| Inbox opens the right page, decisions move to the top (9.51) | `modules/C1_inbox.js` |
-| Recruiting fixes (9.52) | `modules/C2_recruit.js` |
-| Player Career recruiting engine | base file: `startRecruiting`, `recruitTick`, `schoolInterest`, `canOffer`, `offersList`, `doVisit`, `commitTo`, `portalRound` |
+`npm test` runs `tests/check.js`. To run one test by hand:
 
-## House rules used so far
+```sh
+node tests/run.js tests/smoke.js          # every mode opens and every tab draws
+node tests/run.js tests/home.js           # the Home screen
+node tests/run.js tests/fantasy-draft.js  # the fantasy draft start
+node tests/run.js tests/ironman.js        # Ironman careers
+node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
+node tests/persist.js                     # saves from the v9.47 build load in this one
+node tests/inbox.js                       # the Inbox and "decisions first"
+```
 
-- **Keep:**
-  - Old saves must keep loading.
-  - Features stay unless you approve removing them.
-  - The design stays: 5 themes, light and dark, sidebar or top tabs, and a layout that works on a 390px phone.
-- **Rosters:** teams outside Michigan use fictional rosters.
-- **Every update:** add a patch note, run the smoke and persist tests, and check the phone layout.
-- **When asking Claude for an enhancement:** attach `index.html`. The whole zip is better if you want the work done through the build. Say which modes it applies to.
+- **Files run through `tests/run.js`** are the body of a function that runs inside the game page, so they call game functions directly. Arguments arrive as `ARGS`. New ones should return `{ fail: [] }` with one line per problem, and be added to the list in `tests/check.js`.
+- **Files run with plain `node`** are standalone scripts.
+- **Testing another build:** set `GAME=/path/to/file.html` before `node tests/run.js …`.
+- `run.js` blocks network requests, so web fonts are missing in test screenshots.
+- The other files in `tests/` (`own*.js`, `rec*.js`, `coach.js`, `career.js`, `tabs.js`, `shot.js`) are probes from earlier updates. They print results for a person to read and are not part of `npm test`.
+
+## Shipping an update
+
+1. Make the change in `src/` on a branch.
+2. Add a patch note at the top of the list in `src/js/210-patch-notes.js`: `{ v: '9.54', t: 'Title', n: ['…'] }`. The version shown in the game is the first entry. Then run `npm run notes`. Skip this for changes players can't see.
+3. Run `npm test`.
+4. Open a pull request. The check runs by itself.
+5. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
+
+## Visit counting
+
+Off by default. To turn it on, create a free site at goatcounter.com, then put its code (the `mysite` in `mysite.goatcounter.com`) in `SITE.goatcounter` at the top of `src/js/460-site.js` and rebuild. It uses no cookies. It counts page views, which modes are opened (`play-ad`, `play-gm` and so on) and finished seasons (`season-ad` and so on). It only runs on the live site.
+
+## House rules
+
+- Old saves must keep loading.
+- Features stay unless the owner approves removing them.
+- The design stays: five themes, light and dark, sidebar or top tabs, and a layout that works on a 390px phone.
+- Teams outside Michigan use fictional rosters. Real players never get negative traits or off-field storylines.
+- Every update players can see gets a patch note.
