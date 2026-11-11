@@ -1,6 +1,17 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.53', t: 'A new front door', n: [
+    'Home screen: the career you played last is at the top with one Continue button. New players get three quick picks to start with. The scenarios fold away until you want them.',
+    'NFL General Manager has its own card on the Home screen. It was always in the game, behind the Athletic Director card.',
+    'New: a fantasy draft start for general managers. Every player in the league goes into one pool and all 32 clubs draft in a snake order until each roster is full. Make your own picks or let the club draft for you. Players keep their contracts, and clubs stay under the cap.',
+    'New: Ironman careers for athletic directors and general managers. Choose it when you start: no undo, no admin tools, a locked difficulty, and no rolling back to an earlier copy. The slot and the header show an Ironman badge.',
+    'New: share your season. In the offseason the Office offers a picture of the season in your team\'s colors, with the record and how it ended, to save or share.',
+    'Install the game: on collegefbsim.com you can add Football Empire to your home screen, and it opens with no connection once you have played it online.',
+    'The Save file page shows how much of the browser\'s storage your saves use, and the game asks the browser to keep them.',
+    'On collegefbsim.com the friends league and the leaderboard prompts are hidden, since they only work where the game is shared with sign-in.',
+    'Old saves load as before.',
+  ] },
   { v: '9.52', t: 'Everyone wants the No. 1 recruit', n: [
     'Player Career: fixed a recruit who was far better than every school getting no offers at all, even as the No. 1 player in the nation. The best players are now a perfect fit for the best programs, with long-shot offers from smaller schools close to home.',
     'Player Career: the "nobody reaches signing day without a place to play" guarantee now works. A senior with fewer than three offers gets them at the end of his last season.',

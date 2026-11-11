@@ -77,3 +77,5 @@ Object.assign(actions, {
   fdpos(d) { ui.fdPos = d.v; render(); refocus({ act: 'fdpos', v: d.v }); },
   ncfd(d) { const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.fd = d.v === '1'; render(); refocus({ act: 'ncfd', v: d.v }); },
 });
+// Any other page asked for during the draft (the phone tab bar, a shortcut, a link) lands on the draft.
+{ const _r = renderAD; renderAD = function () { if (fdOn() && !FD_TABS.includes(ui.tab)) ui.tab = 'off'; return _r.apply(this, arguments); }; }
