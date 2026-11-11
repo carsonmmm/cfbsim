@@ -1,58 +1,49 @@
 # Football Empire roadmap
 
-A plan for where to take the game next, written after a full review of version 9.52: the five modes, the home screen, the save system, the code and the site at collegefbsim.com.
+A plan for where to take the game next. It started as a full review of version 9.52 (the modes, the home screen, the save system, the code and the site at collegefbsim.com) and is updated as items ship.
 
 **The short version:** the game already has more features than most players will ever find. The biggest gains now are not more features. They are (1) fixing what is broken or missing on the website itself, (2) helping new players find the good parts, and (3) a small number of new modes that reuse systems you already built.
 
 Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
-## What I found
+## Status
 
-### Works well
+**Version 9.53 shipped the first round.** Done:
 
-- All five modes open and draw every tab with no errors. The automated smoke test and save test both pass.
-- Simulation is fast: six full seasons as athletic director run in about one second.
-- The design is consistent on desktop and on a 390px phone, with five themes, light and dark, and keyboard shortcuts.
-- Old saves keep loading, and the game has a save health center and downloadable save files.
-- The 9.50 and 9.51 work (main tabs plus More, "Needs your attention", the Inbox that takes you to the decision) is the right direction.
+- The build: plain source files in `src/` joined by `build.js`. The patch-against-v9.47 build is gone.
+- Tests on every push: every mode opens, feature tests, balance guardrails, saves load.
+- Home screen: a Continue card, quick picks for new players, a card for NFL General Manager, six cards in an even grid, scenarios folded away, no stale "NEW" labels.
+- Fantasy draft start for general managers.
+- Ironman careers for athletic directors and general managers.
+- Share your season: a picture in team colors.
+- Installable and playable offline.
+- A storage note on the Save file page, and the game asks the browser to keep saves.
+- Leaderboard prompts and the friends league are hidden where they can't work.
+- Visit counting is built in but off. It needs a free GoatCounter account and one line of setup (see `docs/DEVELOPMENT.md`).
+- Search and link-preview tags, an icon, a not-found page, a sitemap, the page language.
 
-### Problems
+**A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
+
+## Still open from the first review
 
 | # | Problem | Why it matters |
 |---|---|---|
-| 1 | **Online features are dead on collegefbsim.com.** The daily challenge leaderboard, cloud saves, the friends league and tutorial sync only work when the game is opened inside claude.ai. On your own domain, the home screen tells visitors "Scores show up here when the game is opened from its claude.ai link." | Visitors to your site see a feature they can't use and a link to somewhere else. The daily challenge has no reason to come back without a leaderboard. |
-| 2 | **Saves use browser storage with a hard limit of about 5 MB.** An AD save starts at 230 KB and grows about 45 KB a season after the first (582 KB after six seasons). With up to 15 slots across modes, a player with a few long dynasties will run out of room. | Losing a 20-season dynasty is the worst thing that can happen to a player of this kind of game. I did not check whether saves are compressed before they are stored; if they are, the limit is further away but still there. |
-| 3 | **You can't see how the game is played.** There are no visit or usage numbers. | You don't know which modes people play, where they quit, or whether an update helped. Every decision below is a guess without this. |
-| 4 | **The home screen is a wall.** A first-time visitor sees five mode cards, the daily challenge, nine scenarios, a challenge builder and patch notes. Three modes still say "NEW". The fifth card (Owner) sits alone on its own row. | New players have to pick a mode before they know what any of them feel like. |
-| 5 | **NFL general manager is hidden.** It is a full mode, but you reach it through the last sentence of the Athletic Director card. Commissioner and Owner both "use one of your five AD save slots." | Players who only want the NFL may never find it. Shared slots are confusing. |
-| 6 | **Athletic Director has 39 tabs**, the NFL has 37. The More menu hides them but does not reduce them. | Features get lost. Several tabs are different views of the same thing (feed, front page, pregame show, reels). |
-| 7 | **The build is fragile.** Every update is 75 exact-text replacements against a frozen copy of version 9.47, plus appended modules that wrap older functions. | Each new update gets harder to make and easier to break. One changed line in the base breaks an unrelated edit. |
-| 8 | **Real names carry legal risk.** The game uses real school names, real NFL club names and the real Michigan roster. | This is common for fan projects and usually tolerated while the game is free. Real player names are the riskiest part, and all of it becomes a real problem the day you add ads or payments. Talk to a lawyer before monetizing. |
-| 9 | **No offline play and no install.** The page needs a connection to load and fetches its fonts from Google. | A single-file game is the ideal installable app. Phones are where sim games get played. |
+| 1 | **Online features have no home on collegefbsim.com.** The daily challenge leaderboard, cloud saves and the friends league only work when the game is opened inside claude.ai. They are hidden on your domain now, not fixed. | The daily challenge has little pull without a leaderboard. This is Phase 2. |
+| 2 | **Visit counting is not switched on.** | Until it is, you can't see which modes people play or where they quit. It takes five minutes and an account only you can create. |
+| 3 | **Commissioner, Owner and General Manager share the five AD save slots.** | Confusing, and five slots across four kinds of career is tight. Changing it means moving existing saves, so it needs its own careful update. |
+| 4 | **Athletic Director has 39 tabs**, the NFL has 37. The More menu hides them but does not reduce them. | Features get lost. Several tabs are different views of the same thing (feed, front page, pregame show, reels). |
+| 5 | **Real names carry legal risk.** The game uses real school names, real NFL club names and the real Michigan roster. | Usually tolerated while a fan game is free. Real player names are the riskiest part, and all of it becomes a real problem the day you add ads or payments. Talk to a lawyer before monetizing. |
+| 6 | **Ironman and the fantasy draft cover only some modes.** Ironman is AD and GM; the fantasy draft is GM. | Coach, Player Career and Owner players will ask for them. |
 
-## Done on this branch
-
-- A README, this roadmap and a developer guide.
-- The full source, build script and tests are in the repository, not only the built file.
-- `npm test` and a GitHub check that runs on every push: the build is fresh, every mode opens, saves load.
-- Search and link-preview tags, a page title that says what the game is, a tab icon, a preview image, a not-found page, `robots.txt` and a sitemap.
-- The page now declares its language (`lang="en"`), which screen readers need.
-
-No gameplay changed, so the version is still 9.52.
-
-## Phase 1: fix the foundation
-
-Do these before any new feature. Together they are about two weeks of work.
+## Phase 1: finish the foundation
 
 | Item | What to do | Effort |
 |---|---|---|
-| **Usage numbers** | Add a privacy-friendly counter (Cloudflare Web Analytics, GoatCounter or Plausible; none need a cookie banner). Record page views plus a few events: mode started, season finished, save exported. | S |
-| **Hide the dead ends** | Until the online features work on your domain, hide the leaderboard text, cloud saves and the friends league there, so visitors don't see features they can't use. | S |
-| **Safer saves** | Move saves from `localStorage` to IndexedDB (hundreds of MB, not 5). Migrate existing saves on first load and keep the old copy until the new one is confirmed. Ask the browser for persistent storage. Show storage used in the save health center and warn at 80%. Nudge players to download a backup every few seasons. | M |
-| **Installable and offline** | Add a web app manifest and a small service worker that caches the page. Bundle the two fonts or fall back to system fonts. Players can then add the game to their home screen and play on a plane. | M |
-| **Home screen** | When a save exists, lead with one "Continue" card for the most recent career. For first-time visitors, add a "Which mode is for me?" row (three questions, one recommendation). Give NFL General Manager its own card. Fold scenarios behind one "Challenges" card. Drop the stale "NEW" labels. Use a six-card grid so no card is orphaned. | M |
-| **Own save slots for Commissioner and Owner** | Stop borrowing AD slots. Existing saves stay where they are; new ones get their own. | M |
-| **Accessibility pass** | The page has good basics (labels, focus rings, keyboard shortcuts). Run a full audit on contrast in all five themes, focus order in dialogs, and screen reader announcements for live game events. | M |
+| **Turn on visit counting** | Create a GoatCounter site and put its code in `src/js/460-site.js`. | S |
+| **Own save slots for General Manager, Commissioner and Owner** | Give each its own set of five. Existing saves stay where they are; new ones go to the new sets. | M |
+| **Ironman everywhere** | Extend it to Coach, Player Career, Commissioner and Owner. | S |
+| **Accessibility pass** | The page has good basics (labels, focus rings, keyboard shortcuts, a declared language). Run a full audit on contrast in all five themes, focus order in dialogs, and screen reader announcements for live game events. | M |
+| **Bundle the fonts** | The two fonts come from Google. Offline play already keeps a copy after the first visit; shipping them with the game removes the outside request altogether. | S |
 
 ## Phase 2: bring the online features home
 
@@ -60,10 +51,10 @@ Everything social in the game (leaderboards, cloud saves, friends league, shared
 
 | Item | What to do | Effort |
 |---|---|---|
-| **A backend of your own** | The sharing code is in one section of the game and checks for its host before it does anything. Give it a second host: a hosted service with a free tier. My recommendation is **Supabase** (database, sign-in and row-level security in one, and no server to run). Cloudflare Workers with D1 is a good alternative if you'd like everything in one place with your domain. | L |
+| **A backend of your own** | The sharing code is in one file (`src/js/300-sharing.js`) and already talks to a document database in the collection-and-document style that **Firebase Firestore** uses. So my recommendation changed from Supabase to Firebase: its free tier covers this, it includes sign-in, and the existing calls map onto it almost one for one. This needs a Firebase project that you create. | M |
 | **Sign-in** | Optional, never required to play. Email link or Google. Signing in turns on cloud saves and puts your name on leaderboards. | M |
 | **Daily challenge leaderboard** | The daily challenge already gives everyone the same school and league. With a leaderboard it becomes the reason to come back each day. Add a weekly and an all-time board. Validate scores on the server, or expect cheating. | M |
-| **Share cards** | After a title, a draft night, a Heisman or a fired coach, offer a "Share" button that makes a picture (team colors, record, headline) with a link back to the site. This is the cheapest growth feature available: every share is an ad. | M |
+| **More share cards** | The season picture is done. Add the same for draft night, a Heisman, a Hall of Fame induction and a Player Career. Every share is an ad for the site. | S |
 | **Friends league, then online leagues** | Turn the friends league back on first. Later, grow it into commissioner-run online leagues where each friend runs a program in the same world and the week advances when everyone is ready (or on a timer). | L, then L |
 
 ## Phase 3: new modes and features
@@ -74,8 +65,7 @@ Listed in the order I'd build them. Each reuses systems that already exist.
 
 | Idea | What it is | Why it's worth it | Effort |
 |---|---|---|---|
-| **Ironman** | One save, no reloading, no undo, saved after every decision. A badge on the career and its own leaderboard. | Cheap to build, and it gives your most dedicated players a reason to start over. | S |
-| **Fantasy draft start** | For NFL GM and Owner: every player goes into one pool and all 32 clubs draft from scratch. | A favorite in every franchise game, and the draft-night screen already exists. | M |
+| **Fantasy draft for owners** | The general manager version is done. Offer it when an owner buys a club or starts an expansion team. | Owners who act as their own GM will want it. | S |
 | **Start at the bottom** | Begin as AD or coach at an FCS school (the game already has FCS teams as opponents) and earn the move up to FBS: stadium size, budget, results. | Gives the college modes a real "climb" story, the way Coach mode has a ladder. | L |
 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. | A sixth mode that no other football sim has, built almost entirely on the negotiation system from 9.35 and the agents from 9.46. | L |
 | **Promotion and relegation** | A Commissioner option: tiers of conferences, with the bottom teams dropping and the top teams rising each year. | A "what if" that players love to argue about, and Commissioner mode already moves schools between conferences. | M |
@@ -116,32 +106,30 @@ Check each against what is already in the game before building; with 59 updates,
 
 - **Sound:** the game has only a few simple tones. Add an optional crowd, a whistle and a touchdown horn in the field view, with a mute button and off by default.
 - **Compare anything:** two players, two recruits, two teams or two seasons side by side.
-- **A season recap page:** one shareable page per season with the record, the best game, awards and the biggest decision. It doubles as the share card in Phase 2.
+- **A season recap page:** one shareable page per season with the record, the best game, awards and the biggest decision.
 - **Team packs gallery:** team packs and custom challenges already export to a file or code. A page on the site where players post and download them would make the game feel alive between updates.
 
-## Phase 4: make the code easier to change
-
-This can run alongside Phase 3. It adds nothing a player sees, but every later update gets cheaper.
+## Phase 4: keep the code easy to change
 
 | Item | What to do | Effort |
 |---|---|---|
-| **Retire the base-plus-edits build** | Apply the 75 edits to the base once and make the result the source. Then split the single 22,000-line script into files by area (engine, each mode, UI, saves) and have a bundler (esbuild) produce the same single `index.html`. | L |
-| **Balance tests** | The smoke test proves nothing crashes. Add tests that simulate 200 seasons on autopilot and check that the numbers stay in range: wins by roster strength, points per game, how often a top recruit gets no offers, how often a GM wins the Super Bowl. Versions 9.26 to 9.28, 9.47 and 9.52 were all balance fixes found by hand. | M |
-| **Save format tests** | Keep a real save file from each major version in `tests/saves/` and load every one on each build. | S |
+| **Fold the wrappers in** | Later updates added behavior by wrapping older functions from a new file. Now that the source is plain files, move each wrapper's code into the function it wraps, a few at a time, with `npm test` after each. | M |
+| **More balance tests** | The guardrails cover wins and scoring for an AD and a GM. Add coach promotions, Player Career draft position and recruiting offers, which were all fixed by hand in 9.47 and 9.52. | M |
+| **Save files from every version** | Keep a real save from each major version in `tests/fixtures/` and load every one on each build. Today only v9.47 is covered. | S |
 | **Preview builds** | Publish every pull request to a preview address so you can play a change on your phone before it goes live. | S |
 | **Decide the names question** | Before any monetization: get advice on school names, club names and the Michigan roster. A safe fallback is fictional names by default with real names available as a team pack the player loads. | S |
 
 ## Suggested order
 
-1. **Now:** usage numbers and hiding the dead ends (two small changes, both in Phase 1).
-2. **Next:** safer saves, then the home screen.
-3. **Then:** the backend, the daily leaderboard and share cards. This is the point where the game can start growing by itself.
-4. **After that:** Ironman and fantasy draft (small, popular), then Agent mode or "start at the bottom" as the next headline update.
-5. **In the background:** the code cleanup in Phase 4, starting with balance tests.
+1. **Now:** turn on visit counting. It needs you, and everything after it is better with numbers.
+2. **Next:** the Firebase backend, then the daily leaderboard. This is the point where the game can start growing by itself.
+3. **Then:** own save slots, Ironman everywhere, more share cards.
+4. **After that:** Agent mode or "start at the bottom" as the next headline update.
+5. **In the background:** Phase 4.
 
 ## What I'd hold off on
 
 - **More tabs in existing modes.** The modes are deep enough; new pages add to the finding problem.
 - **Real-time multiplayer.** Turn-based online leagues give most of the fun for a fraction of the work.
-- **A native phone app.** The installable web version in Phase 1 gets you the home-screen icon and offline play with no app store.
+- **A native phone app.** The installable web version, which is done, gets you the home-screen icon and offline play with no app store.
 - **Ads or payments,** until the names question is settled.
