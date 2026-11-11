@@ -27,18 +27,18 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
 ## The build list
 
-Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. Check each against what is already in the game before building; some may partly exist.
+Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. When all seven batches are done, the game becomes **version 10.00, "A New Beginning"**. Until then, updates keep the 9.x numbers. Check each against what is already in the game before building; some may partly exist.
 
 | Batch | Feature | What it is | Effort | Status |
 |---|---|---|---|---|
 | 1 | **Feedback button** | A button on the Home screen and in Settings that opens a pre-filled report with the version, mode and device. | S | Done in 9.55 |
 | 1 | **Season recap** | One page per finished season: the record, how it ended, the best win, the worst loss, awards and the biggest decision, with a picture to share. | S | Done in 9.55 |
 | 1 | **Career timeline picture** | One tall picture of a whole career, season by season, built for posting. | S | Done in 9.55 |
-| 2 | **Alumni network** | Former players send recruits your way, donate, or come back as assistants. | S | Next |
-| 2 | **Weather and travel** | Long road trips, altitude and cold-weather games nudge results, so scheduling becomes a real decision. | S | Next |
-| 2 | **Injuries with a human cost** | A medical-retirement decision, and a player who rushes back for the big game and pays for it later. | S | Next |
-| 3 | **Rival AI** | One rival athletic director or general manager who is the same person for your whole career, with a personality and a memory: poaches your coordinators, flips your recruits, talks about you in the press. | M | Planned |
-| 3 | **Scandals** | Ones you can cause: the under-the-table deal, the hidden injury, the suspended star who plays anyway. Bigger short-term gains, with an investigation that may or may not find it. | M | Planned |
+| 2 | **Alumni network** | Former players send recruits your way, donate, or come back as assistants. | S | Done in 9.56 |
+| 2 | **Weather and travel** | Long road trips, altitude and cold-weather games nudge results, so scheduling becomes a real decision. | S | Done in 9.56 |
+| 2 | **Injuries with a human cost** | A medical-retirement decision, and a player who rushes back for the big game and pays for it later. | S | Done in 9.56 |
+| 3 | **Rival AI** | One rival athletic director or general manager who is the same person for your whole career, with a personality and a memory: poaches your coordinators, flips your recruits, talks about you in the press. | M | Next |
+| 3 | **Scandals** | Ones you can cause: the under-the-table deal, the hidden injury, the suspended star who plays anyway. Bigger short-term gains, with an investigation that may or may not find it. | M | Next |
 | 4 | **Player stories** | One page per person that follows them across modes: the recruit you signed as an AD, drafted as a GM, hired as a coach. | M | Planned |
 | 4 | **Conference realignment** | Conferences raid each other over the years, and your school gets invitations with real money and travel trade-offs. | M | Planned |
 | 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Planned |

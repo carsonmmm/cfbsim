@@ -1,5 +1,12 @@
 # Football Empire patch notes
 
+## 9.56 — The road, the training room and the ones who left
+- Travel matters (Updated balance): a team that crosses time zones to play gives up a little, more for each zone, and so does a visitor playing a mile up at places like Air Force, Wyoming, Colorado, Utah, BYU or Denver. The game preview tells you when it applies. It is a small edge, about half a home-field advantage at most. Classic saves are unchanged.
+- Athletic director: two new decisions about injured players. When the doctors advise a player to stop, you can support a medical retirement, leave it to his family, or tell him the team needs him. And before a rivalry or top-10 game, a hurt starter may ask to play: let him, and about two times in five he makes it worse.
+- A player who comes back against medical advice is slower and gets hurt more often.
+- New: the alumni network, on the History page of college careers. Former players in the NFL give money back each offseason, recruits at a star's old position are easier to land, and now and then a former player applies to coach for you, for less than the going rate.
+- These decisions only involve fictional players. Old saves load as before.
+
 ## 9.55 — Look back on it
 - NFL seasons now get a recap, like college seasons: a season grade, the best win, the toughest loss, the comeback of the year and your top players. Open it from the History page. Seasons played before this update have no recap.
 - Every recap lists the decisions you made that season, and has a button to save or share a picture of that season in your team's colors.

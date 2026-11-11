@@ -394,6 +394,7 @@ function createSim(g, opts) {
   if (force) { const fs = force === 'h' ? 0 : 1; F[fs].off += 16; F[fs].def += 16; }
   const wx = forecast(g); const W = WX[wx.k] || {};
   ids.forEach((id, i) => { F[i].off += wxEdge(id, wx, id === ME); F[i].k += (W.kick || 0); });
+  { const tv = typeof travelEdge === 'function' ? travelEdge(g.h, g.a, g.neutral) : 0; if (tv) { F[1].off -= tv / 2; F[1].def -= tv / 2; } } // a long trip or thin air wears on the visitors (v9.56)
   if (detail && state.bulletin === oppId) { F[1 - mSide].off += 1.2; F[1 - mSide].def += 1.2; }
   const sim = {
     otRule: otRuleNow(), el: detail ? 0 : null, ckKey: detail ? (state.seed || 0) + ':' + state.season + ':' + g.wk + ':' + (g.type || '') + ':' + g.h + g.a : '', /* the drive-by-drive clock is kept for your games */

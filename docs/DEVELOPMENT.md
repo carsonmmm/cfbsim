@@ -57,6 +57,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `460` | The website: offline app, storage note, visit counting |
 | `470` | The share-your-season picture |
 | `480` | NFL season recaps, recap pictures, the career timeline picture, feedback links |
+| `490` | Travel and altitude, injury decisions, the alumni network |
 
 ## How the game is put together
 
@@ -93,6 +94,7 @@ node tests/run.js tests/home.js           # the Home screen
 node tests/run.js tests/fantasy-draft.js  # the fantasy draft start
 node tests/run.js tests/ironman.js        # Ironman careers
 node tests/run.js tests/recap.js          # season recaps, the career timeline picture, feedback links
+node tests/run.js tests/world.js          # travel, injury decisions, the alumni network
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark
