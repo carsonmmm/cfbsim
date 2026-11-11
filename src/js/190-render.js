@@ -173,7 +173,7 @@ const TABS = [['office', 'Office'], ['career', 'My career'], ['schedule', 'Sched
 const TAB_GROUPS = [['Season', ['office', 'schedule', 'poll', 'standings', 'scores', 'post', 'lghist']], ['Program', ['roster', 'depth', 'staff', 'recruit', 'awards', 'draft']], ['Business', ['money', 'payroll', 'fac']], ['Career', ['career', 'off', 'history', 'records', 'file', 'settings', 'admin']]];
 const MNAV = [['office', 'Office', 'home'], ['schedule', 'Schedule', 'cal'], ['roster', 'Roster', 'users'], ['recruit', 'Recruiting', 'star']];
 const tabLabel = k => (k === 'office' && isComm() ? 'League office' : k === 'career' && isOwner() ? 'Legacy' : k === 'office' && isOwner() ? 'Owner\'s suite' : (curTabs().find(t => t[0] === k) || [k, k])[1]);
-const tabVisible = k => (typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
+const tabVisible = k => (typeof fdOn === 'function' && fdOn() ? FD_TABS.includes(k) : typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
 function tabBtn(k, cls) { const on = ui.tab === k; return `<button class="${cls}${on ? ' on' : ''}${k === 'off' ? ' hot' : ''}${k === 'admin' ? ' adm' : ''}" data-act="tab" data-tab="${k}"${on ? ' aria-current="page"' : ''}>${esc(tabLabel(k))}</button>`; }
 function renderTabs() {
   const t = $('#tabs');

@@ -102,6 +102,7 @@ function adPickHTML() {
   return `<section class="card newcareer"><div class="head"><div><div class="eyebrow">Athletic Director · new career</div><h1 class="h2">${gm ? 'Pick your NFL club' : 'Pick your school'}</h1></div><p class="hint">${gm ? 'Run an NFL front office as general manager: the draft, the salary cap, free agency, trades and the head coach. Good GMs hear from big college programs, and good ADs hear from the NFL.' : 'Every FBS program, in its 2026 conference. You can start more careers, or a custom program, from the Save file tab later.'}</p></div>
    <div>${seg('adpicklvl', gm ? 'nfl' : 'col', [['col', 'College athletic director'], ['nfl', 'NFL general manager']])}</div>
    ${gm ? nflPickerHTML(f) : schoolPickerHTML(f)}
+   ${gm ? `<div class="eyebrow mt">Rosters</div><div>${seg('ncfd', f.fd ? '1' : '0', [['0', 'Start with the current rosters'], ['1', 'Fantasy draft: all 32 clubs draft from one pool']])}</div>` : ''}
    <div class="eyebrow mt">Difficulty</div><div class="diffs">${Object.entries(DIFF).map(([k, d]) => `<button class="evopt${ui.newDiff === k ? ' on' : ''}" data-act="adpickdiff" data-v="${k}"><b>${d.label}</b><span>${esc(d.desc)}</span></button>`).join('')}</div>
    <div class="row gap mt"><button class="btn primary" data-act="adpickstart">${gm ? `Become GM of the ${esc(nflName(NFL_BY[f.nfl] ? f.nfl : 'DET'))}` : `Become athletic director at ${esc(CTEAMS0_AD[f.tid].name)}`}</button><button class="btn ghost" data-act="adpickcancel">Back</button></div></section>`;
 }

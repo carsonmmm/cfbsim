@@ -129,7 +129,8 @@ Object.assign(actions, {
     // with other careers in the AD slots (a commissioner, say), the new one goes in a free slot instead of loading theirs
     if ([1, 2, 3, 4, 5].some(i => lsGet(SLOT_KEY(i)))) { if (state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL); const free = firstFreeSlot(); if (!free) { state = null; await boot(); ui.tab = 'file'; ui.flash = 'All five AD save slots are in use. Delete one here, then pick your school again from the Home screen.'; render(); return; }
       newGame(ui.newDiff || 'normal', null, null, gm ? 'MICH' : ui.nc.tid); if (gm) { goPro(gm, { role: 'gm' }); state.tline = []; } setActiveSlot(free); resetUi(); applyTheme(); save(); }
-    else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); } ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
+    else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); }
+    if (gm && ui.nc.fd && state && isPro() && !PS().fd) { fdStart(); save(); } ui.nc.fd = false; ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
   chlwatch(d) { hlCareer(+d.i); },
   patchall() { openModal(patchAllHTML(), 'Patch notes'); },
   gocareer(d) { enterCareer(d.v); },
