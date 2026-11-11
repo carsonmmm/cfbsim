@@ -1,0 +1,113 @@
+/* ================= home screen and Player Career ================= */
+[data-app=home] #tabs,[data-app=home] #mnav,[data-app=home] #ticker{display:none!important}
+@media (min-width:721px){[data-app=home][data-nav=side] body{padding-left:0!important}}
+[data-app=home] #hdr{grid-template-columns:1fr auto!important;grid-template-areas:"brand acts"!important}
+[data-app=home] #hdr .acts{justify-self:end;align-self:center}
+.homehero{padding:18px 4px 4px;max-width:720px}
+.homehero .h2{font-size:44px}
+.homehero p{font-size:16px;margin:6px 0 0}
+.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.mode{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;min-width:0}
+.mode::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--maize)}
+.mode p{margin:0}
+.mode .h2{font-size:34px;margin:0}
+.mglyph{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;background:var(--maize-bg);color:var(--accent)}
+.mglyph svg{width:28px;height:28px}
+.msave{border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.mode .btn{align-self:flex-start}
+.stars .dimstar{opacity:.22}
+.stars.big{font-size:24px;letter-spacing:2px}
+.grade{display:inline-grid;place-items:center;min-width:54px;height:54px;padding:0 8px;border-radius:10px;font-family:var(--disp);font-weight:900;font-size:32px;line-height:1;background:var(--surface-2);color:var(--text);flex:none}
+.grade.sm{min-width:30px;height:24px;font-size:15px;border-radius:5px;padding:0 5px}
+.grade.good{background:var(--good-bg);color:var(--good)} .grade.maize{background:var(--maize-bg);color:var(--accent)} .grade.bad{background:var(--bad-bg);color:var(--bad)}
+.sline{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.sline b{color:var(--text);font-family:var(--disp);font-size:18px;font-weight:800;margin-right:2px}
+.gsrow{display:flex;gap:14px;align-items:flex-start;margin:8px 0}
+.gsum{border:2px solid var(--maize);border-radius:8px;padding:14px;margin:10px 0;background:var(--surface-2)}
+.myline{margin:8px 0 2px}
+.look{margin:6px 0 2px;padding:8px 10px;border-left:3px solid var(--maize);background:var(--surface)}
+.livelog li.mine{background:var(--me)}
+.livelog .you{color:var(--accent);font-weight:600}
+.pch{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.jn{font-family:var(--disp);font-weight:900;font-size:38px;line-height:1;min-width:58px;height:58px;display:grid;place-items:center;border-radius:10px;background:var(--band);color:var(--band-text);border-bottom:3px solid var(--maize)}
+.attrs{list-style:none;margin:10px 0 0;padding:0}
+.attrs li{display:grid;grid-template-columns:minmax(0,1.3fr) 34px minmax(60px,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.attrs .an{font-weight:600}
+.attrs .av{font-family:var(--disp);font-weight:800;font-size:20px;text-align:right;font-variant-numeric:tabular-nums}
+.attrs .bar{margin:0}
+[data-app=career] .steps{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:4px 0 14px;padding:0;counter-reset:st}
+[data-app=career] .steps li{counter-increment:st;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted)}
+[data-app=career] .steps li::before{content:counter(st) ". "}
+[data-app=career] .steps li.done{background:var(--good-bg);border-color:transparent;color:var(--good)}
+[data-app=career] .steps li.cur{background:var(--maize);border-color:var(--maize);color:var(--maize-ink)}
+.ib{display:flex;align-items:center;gap:6px;min-width:90px}
+.ib .bar{flex:1;margin:0}
+.tbl.rec td{vertical-align:top}
+.tbl.rec .row.gap{gap:4px;flex-wrap:nowrap}
+.cdepth{list-style:none;margin:0;padding:0}
+.cdepth li{display:grid;grid-template-columns:24px minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line)}
+.cdepth li.st{box-shadow:inset 3px 0 0 var(--good)}
+.cdepth li.me{background:var(--me)}
+.cdepth .ord{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.cdepth .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.posgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.posgrid .evopt b{font-family:var(--disp);font-size:20px}
+.fld.inl{flex-direction:row;align-items:center;gap:6px;margin-left:auto}
+.fld.inl select{width:auto}
+.donec .h2{font-size:38px}
+p.big{font-size:18px}
+.newcareer{border-width:2px}
+.num.pos{color:var(--good)} .num.neg,.neg{color:var(--bad)}
+.offc .tiles{margin:6px 0}
+@media (max-width:1000px){.modes{grid-template-columns:1fr}.homehero .h2{font-size:34px}}
+@media (max-width:720px){
+  .posgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .attrs li{grid-template-columns:minmax(0,1fr) 30px auto;row-gap:4px}
+  .attrs li .bar{grid-column:1/-1;grid-row:2}
+  .mode{padding:16px}
+  .fld.inl{margin-left:0}
+  .gsrow{flex-direction:row}
+}
+[data-skin=gazette] .mode{border-radius:0;border:0;border-top:3px double var(--rule);background:transparent}
+[data-skin=gazette] .mode::after{display:none}
+[data-skin=gazette] .jn{background:transparent;color:var(--text);border:2px solid var(--text);border-radius:0}
+[data-skin=scoreboard] .jn{font-family:var(--led);font-weight:400;color:#ffb319;background:#111;text-shadow:0 0 8px #ff8c00}
+[data-skin=broadcast] .mode{border-radius:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%)}
+[data-skin=dashboard] .mode{border-radius:18px}
+
+/* phone: header tools (Home, light/dark, Settings) sit top right, so the name keeps clear of them */
+@media (max-width:720px){
+  .brand{padding-right:128px}
+  [data-skin=broadcast] .brand,[data-skin=scoreboard] .brand{margin-right:124px;padding-right:12px}
+  [data-skin=gazette] .brand{padding-right:0}
+  html[data-comm="1"] .brand .wm{font-size:24px}
+  #hdr:has(.tools > .tbtn:nth-child(4)) .brand{padding-right:140px}#hdr:has(.tools > .tbtn:nth-child(5)) .brand{padding-right:176px}
+  [data-skin=broadcast] #hdr:has(.tools > .tbtn:nth-child(4)) .brand,[data-skin=scoreboard] #hdr:has(.tools > .tbtn:nth-child(4)) .brand{margin-right:140px;padding-right:12px}[data-skin=broadcast] #hdr:has(.tools > .tbtn:nth-child(5)) .brand,[data-skin=scoreboard] #hdr:has(.tools > .tbtn:nth-child(5)) .brand{margin-right:176px;padding-right:12px}
+  [data-skin=gazette] #hdr .brand{padding-right:0}
+  #hdr{grid-template-columns:minmax(0,1fr)!important}
+  .brand,.board{min-width:0}
+  .brand .wm{overflow-wrap:anywhere}
+  .brand .wm.long{font-size:clamp(20px,6.6vw,28px)!important;line-height:1.05}
+  [data-skin=scoreboard] .brand .wm{font-size:24px}
+  [data-skin=broadcast] .brand .wm{font-size:28px}
+  .tbl.rec thead{display:none}
+  .tbl.rec,.tbl.rec tbody{display:block}
+  .tbl.rec tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;padding:12px 2px;border-bottom:1px solid var(--line)}
+  .tbl.rec td{border:0;padding:0}
+  .tbl.rec td:first-child,.tbl.rec td:last-child,.tbl.rec td.dc{grid-column:1/-1}
+  .tbl.rec td[data-l]::before{content:attr(data-l);display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .tbl.rec .row.gap{flex-wrap:wrap}
+  .tbl.rec td.vis:empty{display:none}
+}
+
+.codebox{width:100%;min-height:84px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);word-break:break-all;margin-top:8px}
+/* career scorebug and header on phones */
+.bug .bn .abbr{display:none}
+.cgame .lhead{padding-right:84px}
+@media (max-width:720px){
+  .cgame .bug .bn .full{display:none}.cgame .bug .bn .abbr{display:inline}
+  .board{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;row-gap:6px}
+  .board .cell{flex:1 1 auto}
+  [data-skin=broadcast] .brand .wm.long,[data-skin=scoreboard] .brand .wm.long{font-size:20px!important}
+}
+
