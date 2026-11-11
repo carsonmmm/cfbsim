@@ -1,5 +1,12 @@
 # Football Empire patch notes
 
+## 9.55 — Look back on it
+- NFL seasons now get a recap, like college seasons: a season grade, the best win, the toughest loss, the comeback of the year and your top players. Open it from the History page. Seasons played before this update have no recap.
+- Every recap lists the decisions you made that season, and has a button to save or share a picture of that season in your team's colors.
+- New: the career timeline. One tall picture of your whole career, season by season, to save or post. It is on the History page, and on the Stats page in Player Career.
+- New: feedback. The Home screen and Settings have buttons to report a problem or suggest an idea. They open a short form with your game version, mode and device already filled in.
+- Old saves load as before.
+
 ## 9.54 — Ironman everywhere
 - Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.
 - Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.

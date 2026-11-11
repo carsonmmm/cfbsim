@@ -33,14 +33,14 @@ Also on the home screen:
 - **Game day:** a field view where all 22 players move, with four cameras, weather, live play calling, game plans, halftime adjustments and a two-minute drill.
 - **A living world:** a fan feed, a weekly pregame show, a front page, rivalry trophies, award night, record books, a Hall of Fame and league history that carries from one career to the next.
 - **Front office depth:** recruiting with uncertain scouting, promises, the transfer portal, the NFL draft, the salary cap, free agency, trades, agents and one negotiation system shared by every mode.
-- **Share your season:** a picture of your record in your team's colors, to save or post.
+- **Share it:** a picture of any season in your team's colors, and one tall picture of your whole career, to save or post.
 - **Made for long saves:** five save slots per mode, save files you can download, a save health center, and old saves that keep loading after every update.
 - **Yours to shape:** five themes, light and dark, a sidebar or top tabs, keyboard shortcuts, color-blind friendly colors, team packs with your own names and colors, and a tutorial for every mode.
 - **Works on a phone:** the layout fits a 390px screen.
 
 <img src="docs/img/phone.png" alt="The home screen on a phone" width="280">
 
-All 61 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.54**.
+All 62 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.55**.
 
 ## Good to know
 

@@ -160,7 +160,7 @@ function vProLeague() {
    <section class="card"><div class="eyebrow">Super Bowl champions</div><table class="mini wide">${champs || '<tr><td class="muted">None yet.</td></tr>'}</table></section>${predCardHTML()}</div></div>${weeklyCardHTML()}`;
 }
 function vProHistory() {
-  const L = PS(); const rows = L.hist.slice().reverse().map(h => `<tr><td>${h.s}</td><td>${tchip(h.tm, { norank: true })}</td><td>${esc(h.role === 'GM' ? 'General manager' : roleTitle(h.role))}</td><td class="num">${h.w}-${h.l}</td><td>${esc(PO_LABEL[h.po])}${h.seed ? ` <span class="small muted">(No. ${h.seed} seed)</span>` : ''}</td><td class="num">${h.exp}</td></tr>`).join('');
+  const L = PS(); const rows = L.hist.slice().reverse().map(h => `<tr><td>${h.s}${h.recap ? ` <button class="lnk small" data-act="precap" data-s="${h.s}">Recap</button>` : ''}</td><td>${tchip(h.tm, { norank: true })}</td><td>${esc(h.role === 'GM' ? 'General manager' : roleTitle(h.role))}</td><td class="num">${h.w}-${h.l}</td><td>${esc(PO_LABEL[h.po])}${h.seed ? ` <span class="small muted">(No. ${h.seed} seed)</span>` : ''}</td><td class="num">${h.exp}</td></tr>`).join('');
   const tx = L.tx.slice(0, 40).map(t => `<li><span class="when">${t.s}${t.wk ? ' · Wk ' + t.wk : ' · Off'}</span>${esc(t.txt)}</li>`).join('');
   const h2 = L.h2h || []; const rivals = NFL.filter(t => t.id !== ME && T(t.id) && T(t.id).conf === T(ME).conf && T(t.id).div === T(ME).div).map(t => { const log = h2.filter(x => x.opp === t.id); const st = h2hStats(log); return `<div class="rival"><h3 class="h3">vs. ${esc(t.name)}</h3><div class="big">${st ? st.w + '-' + st.l : '0-0'}</div>${h2hLine(st) || '<p class="small muted">No games yet.</p>'}</div>`; }).join('');
   const ring = L.ring || [];
