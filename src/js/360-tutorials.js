@@ -128,7 +128,7 @@ const TUT = {
     tS('Discipline', 'Every ruling you\'ve made and the precedent it set. Stay near your average and rulings look fair; go easy on a star and it looks like favoritism.', 'cdisc', ['tab', 'page']),
     tS('The money', () => (isPro() ? 'League revenue and the TV deal, the salary cap you set every offseason, the labor deal with the players and revenue sharing.' : 'League revenue and the TV deal, and how athletes get paid: the NIL rules, revenue sharing and the split of the playoff money.'), 'cmoney', ['tab', 'page']),
     tS('League and rules', () => (isPro() ? 'The rules committee, teams changing hands or moving, and the size of the league: add clubs or fold them in the offseason.' : 'The rules committee, the playoff format and realignment: drag any school to another conference on the map.'), 'cleague', ['tab', 'page']),
-    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em, the highlights and the friends league are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
+    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em and the highlights are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
     tS('Your legacy', 'Your legacy score, your achievements and the Hall of Fame class you induct every offseason.', 'clegacy', ['tab', 'page']),
     tS('Everything else', 'Home switches modes. Search finds any player, coach or team. The Inbox lists what\'s on your desk. Settings has the look, the gameplay options and this tutorial.', null, TUT_TOOLS),
   ],

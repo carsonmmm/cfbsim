@@ -2,17 +2,19 @@
  * Things that belong to the site the game is hosted on, not to the game itself: installing it as an app and
  * playing offline, keeping browser storage safe, and optional visit counting. None of it changes a save. */
 const SITE = {
-  // Visit counting is OFF until a GoatCounter site code is put here (the "mysite" in mysite.goatcounter.com).
-  // GoatCounter is free for small sites and uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
-  goatcounter: '',
+  // The GoatCounter site code (the "mysite" in mysite.goatcounter.com). Empty turns visit counting off.
+  // GoatCounter uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
+  goatcounter: 'carsonm',
+  host: /(^|\.)collegefbsim\.com$/, // visits are only counted on the real site, never on a copy or a local file
 };
-// A real website (https, not inside another host's frame that provides its own features)
-const siteLive = () => (location.protocol === 'https:' || location.hostname === 'localhost') && !(typeof shareHere === 'function' && shareHere());
+// The live site, or a local server while developing (for the offline app shell)
+const siteLive = () => (location.protocol === 'https:' && SITE.host.test(location.hostname)) || location.hostname === 'localhost';
+const siteCounts = () => !!SITE.goatcounter && location.protocol === 'https:' && SITE.host.test(location.hostname);
 
 /* ---------- visit counting: which modes get played, and how many seasons get finished ---------- */
 const siteSeen = {};
 function siteTrack(name) {
-  if (!SITE.goatcounter || !siteLive() || siteSeen[name]) return; siteSeen[name] = 1;
+  if (!siteCounts() || siteSeen[name]) return; siteSeen[name] = 1;
   try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: 'event/' + name, title: name, event: true }); } catch (e) { }
 }
 function siteModeName() { if (appMode === 'career') return 'player'; if (appMode !== 'ad' || !state) return null; return isComm() ? 'commissioner' : isOwner() ? 'owner' : isCoach() ? (isPro() ? 'nfl-coach' : 'coach') : isPro() ? 'gm' : 'ad'; }
@@ -41,6 +43,6 @@ function siteBoot() {
   sitePersist();
   if (!siteLive()) return;
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
-  if (SITE.goatcounter && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
+  if (siteCounts() && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
 }
 try { siteBoot(); } catch (e) { console.error(e); }

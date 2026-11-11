@@ -12300,6 +12300,7 @@ function vSettings() {
   const gameSeg = (k, cur, opts) => seg('setgame', String(cur), opts, `data-k="${k}"`);
   if (isCoach()) return displaySettingsHTML('ad', coachSettingsHTML());
   return displaySettingsHTML('ad', `<section class="card"><div class="eyebrow">Gameplay · slot ${slot}</div>
+   ${typeof ironRowHTML === 'function' ? ironRowHTML() : ''}
    ${setRow('Difficulty', `${esc(DIFF[st.diff].desc)} Legacy points count ×${LEGACY_MULT[st.diff]}.`, gameSeg('diff', st.diff, Object.entries(DIFF).map(([k, d]) => [k, d.label])))}
    ${setRow('Big calls in live games', 'Halftime adjustments, fourth downs and the final drive.', gameSeg('ask', !!st.ask, [['true', 'Ask me'], ['false', 'Coach decides']]))}
    ${setRow('Live game speed', 'How fast live games start. You can change it during a game.', prefSeg('liveSpeed', [[1, 'Normal'], [2, 'Fast'], [3, 'Very fast']]))}
@@ -12830,7 +12831,7 @@ function vFile() {
   ${ui.exportCode ? `<textarea id="exportbox" class="code" readonly aria-label="Save code">${esc(ui.exportCode)}</textarea><p class="hint" id="copyhint">${(ui.exportCode.length / 1024).toFixed(0)} KB of text.</p>` : ''}</section>
   <section class="card"><div class="eyebrow">Load a save code into slot ${slot}</div><textarea id="importbox" class="code" aria-label="Paste save code" placeholder="Paste a save code here">${ui.confirm === 'import' ? esc(ui.importCode || '') : ''}</textarea><div class="row gap">${ui.confirm === 'import' ? `<button class="btn danger" data-act="import">Confirm: replace ${esc(teamName(ME))} ${state.season} in slot ${slot}</button><button class="btn ghost" data-act="unconfirm">Cancel</button>` : `<button class="btn" data-act="askimport">Load into slot ${slot}</button>`}</div>${ui.importMsg ? `<p class="hint">${esc(ui.importMsg)}</p>` : ''}</section></div>
   <section class="card"><div class="eyebrow">Settings</div><p class="hint">Theme, light or dark mode, navigation, sound and difficulty are in <button class="lnk" data-act="tab" data-tab="settings">Settings</button>.</p></section>
-  <section class="card"><div class="eyebrow">About this game</div><p class="muted nosub">Football Empire covers all 138 FBS programs in their 2026 conferences. Michigan's 2026 roster, coaching staff and schedule come from the official team site as of September 2026; every other school's roster and staff are generated. The preseason poll is the real 2026 AP order, and Michigan's rivalry series records are real through 2025. Stadiums, capacities and colors are approximations. Star players and head coaches at other schools are fictional, and real players never receive negative traits or off-field storylines. Everything after Week 1 kickoff is simulated, and all ratings, salaries and budgets are game estimates. No team logos or marks are used.</p></section>`;
+  <section class="card"><div class="eyebrow">About this game</div><p class="muted nosub">Football Empire covers all 138 FBS programs in their 2026 conferences. Michigan's 2026 roster, coaching staff and schedule come from the official team site as of September 2026; every other school's roster and staff are generated. The preseason poll is the real 2026 AP order, and Michigan's rivalry series records are real through 2025. Stadiums, capacities and colors are approximations. Star players and head coaches at other schools are fictional, and real players never receive negative traits or off-field storylines. Everything after Week 1 kickoff is simulated, and all ratings, salaries and budgets are game estimates. No team logos or marks are used. collegefbsim.com counts visits and which modes get opened, with no cookies and nothing that identifies you.</p></section>`;
 }
 // School picker: all 138 FBS programs by conference, with a preview of the one selected.
 function schoolTier(r) { return r >= 86 ? 'National power' : r >= 78 ? 'Contender' : r >= 70 ? 'Solid program' : r >= 60 ? 'Rebuild job' : 'Long climb'; }
@@ -15510,6 +15511,7 @@ function aiHeisList() { const L = cs.league; const top = Object.values(L.teams).
 /* ---------- Settings ---------- */
 function vCSettings() {
   return `${displaySettingsHTML('career')}${cs ? `<section class="card"><div class="eyebrow">Gameplay · career slot ${cslot}</div>
+   ${typeof ironRowHTML === 'function' ? ironRowHTML() : ''}
    ${setRow('Difficulty', esc(cdiff().desc), seg('cdiff', cs.diff, Object.entries(CDIFF).map(([k, d]) => [k, d.label])))}
    ${setRow('Pace', esc(PACES[cs.pace][1]), seg('cpace', cs.pace, Object.entries(PACES).map(([k, v]) => [k, v[0]])))}
    ${setRow('Career growth', cs.balV >= 2 ? 'Updated: every player has a natural ceiling, some offseasons are bigger than others, and Pro Bowls go to the best seasons in the league.' : 'Generous: steady growth and easier honors, as before v9.28.', seg('cgrowth', cs.balV >= 2 ? 'upd' : 'gen', [['upd', 'Updated'], ['gen', 'Generous']]))}
@@ -17649,14 +17651,18 @@ Object.assign(actions, {
 // and everyone reads all of them. A challenge is a shared document: a school, a seed and a number of seasons, so
 // everyone who takes it starts from the same league. Only ids are stored about people; names come from the
 // platform when the board is drawn.
-// True where the sharing features can work at all (the host provides them). On a plain website they are hidden.
-const shareHere = () => !!(window.claude && typeof window.claude.use === 'function');
+// ONLINE is the one switch for every online feature: leaderboards, posting scores, cloud saves, the friends
+// league and tutorial sync. While it is false they are hidden everywhere and nothing is sent or fetched.
+// Turn it on when the site has its own sign-in and database (see ROADMAP.md, Phase 2).
+const ONLINE = false;
+// True where the sharing features can work at all: the switch is on and the host provides them.
+const shareHere = () => ONLINE && !!(window.claude && typeof window.claude.use === 'function');
 var share = { db: null, user: null, uid: null, tried: false, ok: false, board: null, chals: null, names: {}, err: '', busy: false, filter: 'all', loadedAt: 0 };
 const SHARE_MAX = 25; // careers kept per player
 async function shareInit() {
   if (share.tried) return share.ok; share.tried = true;
   try {
-    const c = window.claude; if (!c || typeof c.use !== 'function') return false;
+    if (!shareHere()) return false; const c = window.claude;
     share.db = await c.use('db').catch(() => null); share.user = await c.use('user').catch(() => null);
     share.uid = share.user ? await share.user.id() : null; share.ok = !!(share.db && share.uid);
   } catch (e) { share.ok = false; } finally { share.ready = true; }
@@ -19685,7 +19691,7 @@ const TUT = {
     tS('Discipline', 'Every ruling you\'ve made and the precedent it set. Stay near your average and rulings look fair; go easy on a star and it looks like favoritism.', 'cdisc', ['tab', 'page']),
     tS('The money', () => (isPro() ? 'League revenue and the TV deal, the salary cap you set every offseason, the labor deal with the players and revenue sharing.' : 'League revenue and the TV deal, and how athletes get paid: the NIL rules, revenue sharing and the split of the playoff money.'), 'cmoney', ['tab', 'page']),
     tS('League and rules', () => (isPro() ? 'The rules committee, teams changing hands or moving, and the size of the league: add clubs or fold them in the offseason.' : 'The rules committee, the playoff format and realignment: drag any school to another conference on the map.'), 'cleague', ['tab', 'page']),
-    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em, the highlights and the friends league are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
+    tS('The fans', 'The fan feed reacts to your rulings and the games. Pick\'em and the highlights are next to it.', 'feed', ['tab', 'tab:pickem', 'page']),
     tS('Your legacy', 'Your legacy score, your achievements and the Hall of Fame class you induct every offseason.', 'clegacy', ['tab', 'page']),
     tS('Everything else', 'Home switches modes. Search finds any player, coach or team. The Inbox lists what\'s on your desk. Settings has the look, the gameplay options and this tutorial.', null, TUT_TOOLS),
   ],
@@ -22203,21 +22209,50 @@ const IRON_NO = 'This is an Ironman career: ';
   guard('import', () => true, 'a save code can\'t replace it. Load the code into another slot.');
   Object.assign(actions, { nciron(d) { const sel = document.getElementById('nc-tid'); if (sel) ui.nc.tid = sel.value; const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.iron = d.v === '1'; render(); refocus({ act: 'nciron', v: d.v }); } });
 }
+
+/* ---------- v9.54: Ironman in every mode ----------
+ * Any career can be switched to Ironman from Settings. It can be turned on, never off. Coach, commissioner and
+ * owner careers live in `state`, so the rules above already apply to them. Player Career keeps its flag in CX().iron. */
+const cIronOn = () => !!(typeof cs !== 'undefined' && cs && cs.x && cs.x.iron);
+const anyIron = () => (appMode === 'career' ? cIronOn() : ironOn());
+function ironRowHTML() {
+  const on = anyIron(); const ask = (appMode === 'career' ? cui.confirm : ui.confirm) === 'iron';
+  return setRow('Ironman', on ? 'On for this career, for good: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.' : 'No undo, no admin tools, a locked difficulty, and no rolling back or replacing the save. Once it is on it stays on.',
+    on ? '<span class="pill maize">On</span>' : ask ? '<button class="btn danger sm" data-act="ironon">Confirm: turn on Ironman for good</button>' : '<button class="btn sm" data-act="ironask">Turn on Ironman</button>');
+}
+{ const _c = coachSettingsHTML; coachSettingsHTML = function () { return _c.apply(this, arguments) + `<section class="card"><div class="eyebrow">Ironman · slot ${slot}</div>${ironRowHTML()}</section>`; }; }
+{ const _s = cSummary; cSummary = function () { const o = _s.apply(this, arguments); if (o && cIronOn()) o.iron = true; return o; }; }
+{ const _v = cViewFor; cViewFor = function (k) { if (k === 'admin' && cIronOn()) return () => '<section class="card"><div class="eyebrow">Admin tools</div><p class="muted">This is an Ironman career. The admin tools are locked.</p></section>'; return _v.apply(this, arguments); }; }
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { if (appMode === 'career' && cIronOn()) { const el = document.querySelector('#hdr .sub'); if (el && !el.querySelector('.ironpill')) el.insertAdjacentHTML('beforeend', ' <span class="pill maize ironpill">Ironman</span>'); } } catch (e) { } return r; }; }
+{
+  const cguard = (name, test, msg) => { const f = actions[name]; if (typeof f !== 'function') return; actions[name] = function (d) { if (appMode === 'career' && cIronOn() && test(d || {})) { cui.confirm = null; cui.flash = IRON_NO + msg; return render(); } return f.apply(this, arguments); }; };
+  cguard('cdiff', () => true, 'the difficulty is locked.'); cguard('cgrowth', () => true, 'the growth setting is locked.');
+  cguard('crestoregood', d => +d.i === cslot, 'it can\'t be rolled back to an earlier copy.'); cguard('cimport', () => true, 'a save code can\'t replace it. Load the code into another slot.');
+  Object.assign(actions, {
+    ironask() { if (appMode === 'career') cui.confirm = 'iron'; else ui.confirm = 'iron'; render(); refocus({ act: 'ironon' }); },
+    ironon() {
+      if (appMode === 'career') { if (!cs) return; cui.confirm = null; CX().iron = true; CX().ironAt = cs.year; cui.flash = 'Ironman is on for this career.'; cSave(); return render(); }
+      if (!state) return; ui.confirm = null; ui.undo = null; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
+    },
+  });
+}
 /* ===================== v9.53: the website (collegefbsim.com) =====================
  * Things that belong to the site the game is hosted on, not to the game itself: installing it as an app and
  * playing offline, keeping browser storage safe, and optional visit counting. None of it changes a save. */
 const SITE = {
-  // Visit counting is OFF until a GoatCounter site code is put here (the "mysite" in mysite.goatcounter.com).
-  // GoatCounter is free for small sites and uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
-  goatcounter: '',
+  // The GoatCounter site code (the "mysite" in mysite.goatcounter.com). Empty turns visit counting off.
+  // GoatCounter uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
+  goatcounter: 'carsonm',
+  host: /(^|\.)collegefbsim\.com$/, // visits are only counted on the real site, never on a copy or a local file
 };
-// A real website (https, not inside another host's frame that provides its own features)
-const siteLive = () => (location.protocol === 'https:' || location.hostname === 'localhost') && !(typeof shareHere === 'function' && shareHere());
+// The live site, or a local server while developing (for the offline app shell)
+const siteLive = () => (location.protocol === 'https:' && SITE.host.test(location.hostname)) || location.hostname === 'localhost';
+const siteCounts = () => !!SITE.goatcounter && location.protocol === 'https:' && SITE.host.test(location.hostname);
 
 /* ---------- visit counting: which modes get played, and how many seasons get finished ---------- */
 const siteSeen = {};
 function siteTrack(name) {
-  if (!SITE.goatcounter || !siteLive() || siteSeen[name]) return; siteSeen[name] = 1;
+  if (!siteCounts() || siteSeen[name]) return; siteSeen[name] = 1;
   try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: 'event/' + name, title: name, event: true }); } catch (e) { }
 }
 function siteModeName() { if (appMode === 'career') return 'player'; if (appMode !== 'ad' || !state) return null; return isComm() ? 'commissioner' : isOwner() ? 'owner' : isCoach() ? (isPro() ? 'nfl-coach' : 'coach') : isPro() ? 'gm' : 'ad'; }
@@ -22246,7 +22281,7 @@ function siteBoot() {
   sitePersist();
   if (!siteLive()) return;
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
-  if (SITE.goatcounter && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
+  if (siteCounts() && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
 }
 try { siteBoot(); } catch (e) { console.error(e); }
 /* ===================== v9.53: a picture of your season to share =====================

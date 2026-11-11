@@ -4,14 +4,18 @@
 // and everyone reads all of them. A challenge is a shared document: a school, a seed and a number of seasons, so
 // everyone who takes it starts from the same league. Only ids are stored about people; names come from the
 // platform when the board is drawn.
-// True where the sharing features can work at all (the host provides them). On a plain website they are hidden.
-const shareHere = () => !!(window.claude && typeof window.claude.use === 'function');
+// ONLINE is the one switch for every online feature: leaderboards, posting scores, cloud saves, the friends
+// league and tutorial sync. While it is false they are hidden everywhere and nothing is sent or fetched.
+// Turn it on when the site has its own sign-in and database (see ROADMAP.md, Phase 2).
+const ONLINE = false;
+// True where the sharing features can work at all: the switch is on and the host provides them.
+const shareHere = () => ONLINE && !!(window.claude && typeof window.claude.use === 'function');
 var share = { db: null, user: null, uid: null, tried: false, ok: false, board: null, chals: null, names: {}, err: '', busy: false, filter: 'all', loadedAt: 0 };
 const SHARE_MAX = 25; // careers kept per player
 async function shareInit() {
   if (share.tried) return share.ok; share.tried = true;
   try {
-    const c = window.claude; if (!c || typeof c.use !== 'function') return false;
+    if (!shareHere()) return false; const c = window.claude;
     share.db = await c.use('db').catch(() => null); share.user = await c.use('user').catch(() => null);
     share.uid = share.user ? await share.user.id() : null; share.ok = !!(share.db && share.uid);
   } catch (e) { share.ok = false; } finally { share.ready = true; }

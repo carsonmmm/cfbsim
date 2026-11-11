@@ -481,6 +481,7 @@ function aiHeisList() { const L = cs.league; const top = Object.values(L.teams).
 /* ---------- Settings ---------- */
 function vCSettings() {
   return `${displaySettingsHTML('career')}${cs ? `<section class="card"><div class="eyebrow">Gameplay · career slot ${cslot}</div>
+   ${typeof ironRowHTML === 'function' ? ironRowHTML() : ''}
    ${setRow('Difficulty', esc(cdiff().desc), seg('cdiff', cs.diff, Object.entries(CDIFF).map(([k, d]) => [k, d.label])))}
    ${setRow('Pace', esc(PACES[cs.pace][1]), seg('cpace', cs.pace, Object.entries(PACES).map(([k, v]) => [k, v[0]])))}
    ${setRow('Career growth', cs.balV >= 2 ? 'Updated: every player has a natural ceiling, some offseasons are bigger than others, and Pro Bowls go to the best seasons in the league.' : 'Generous: steady growth and easier honors, as before v9.28.', seg('cgrowth', cs.balV >= 2 ? 'upd' : 'gen', [['upd', 'Updated'], ['gen', 'Generous']]))}
