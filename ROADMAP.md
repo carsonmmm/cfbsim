@@ -25,6 +25,27 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
 **A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
 
+## The build list
+
+Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. Check each against what is already in the game before building; some may partly exist.
+
+| Batch | Feature | What it is | Effort | Status |
+|---|---|---|---|---|
+| 1 | **Feedback button** | A button on the Home screen and in Settings that opens a pre-filled report with the version, mode and device. | S | Next |
+| 1 | **Season recap** | One page per finished season: the record, how it ended, the best win, the worst loss, awards and the biggest decision, with a picture to share. | S | Next |
+| 1 | **Career timeline picture** | One tall picture of a whole career, season by season, built for posting. | S | Next |
+| 2 | **Alumni network** | Former players send recruits your way, donate, or come back as assistants. | S | Planned |
+| 2 | **Weather and travel** | Long road trips, altitude and cold-weather games nudge results, so scheduling becomes a real decision. | S | Planned |
+| 2 | **Injuries with a human cost** | A medical-retirement decision, and a player who rushes back for the big game and pays for it later. | S | Planned |
+| 3 | **Rival AI** | One rival athletic director or general manager who is the same person for your whole career, with a personality and a memory: poaches your coordinators, flips your recruits, talks about you in the press. | M | Planned |
+| 3 | **Scandals** | Ones you can cause: the under-the-table deal, the hidden injury, the suspended star who plays anyway. Bigger short-term gains, with an investigation that may or may not find it. | M | Planned |
+| 4 | **Player stories** | One page per person that follows them across modes: the recruit you signed as an AD, drafted as a GM, hired as a coach. | M | Planned |
+| 4 | **Conference realignment** | Conferences raid each other over the years, and your school gets invitations with real money and travel trade-offs. | M | Planned |
+| 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Planned |
+| 5 | **Balance dashboard** | A page built by the tests that charts hundreds of simulated seasons: wins by rating, scoring, upsets, draft outcomes. For the developer, not players. | M | Planned |
+| 6 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. Built on the shared negotiation system. | L | Planned |
+| 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Planned |
+
 ## Still open from the first review
 
 | # | Problem | Why it matters |
@@ -65,7 +86,6 @@ Listed in the order I'd build them. Each reuses systems that already exist.
 |---|---|---|---|
 | **Fantasy draft for owners** | The general manager version is done. Offer it when an owner buys a club or starts an expansion team. | Owners who act as their own GM will want it. | S |
 | **Start at the bottom** | Begin as AD or coach at an FCS school (the game already has FCS teams as opponents) and earn the move up to FBS: stadium size, budget, results. | Gives the college modes a real "climb" story, the way Coach mode has a ladder. | L |
-| **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. | A sixth mode that no other football sim has, built almost entirely on the negotiation system from 9.35 and the agents from 9.46. | L |
 | **Promotion and relegation** | A Commissioner option: tiers of conferences, with the bottom teams dropping and the top teams rising each year. | A "what if" that players love to argue about, and Commissioner mode already moves schools between conferences. | M |
 | **Dynasty handoff** | When a career ends (retired, fired, sold), offer to continue in the same world in a different role: the retired player becomes a coach, the fired coach becomes an AD, the AD buys a club. | The shared world from 9.45 already keeps history. This makes it one long story across modes. | M |
 
@@ -104,7 +124,6 @@ Check each against what is already in the game before building; with 59 updates,
 
 - **Sound:** the game has only a few simple tones. Add an optional crowd, a whistle and a touchdown horn in the field view, with a mute button and off by default.
 - **Compare anything:** two players, two recruits, two teams or two seasons side by side.
-- **A season recap page:** one shareable page per season with the record, the best game, awards and the biggest decision.
 - **Team packs gallery:** team packs and custom challenges already export to a file or code. A page on the site where players post and download them would make the game feel alive between updates.
 
 ## Phase 4: keep the code easy to change
@@ -118,11 +137,10 @@ Check each against what is already in the game before building; with 59 updates,
 
 ## Suggested order
 
-1. **Now:** let the visit numbers build up for a couple of weeks.
-2. **Next:** own save slots, more share cards, the fantasy draft for owners.
-3. **When you are ready for online features:** the Firebase backend, then the daily leaderboard. This is the point where the game can start growing by itself.
-4. **After that:** Agent mode or "start at the bottom" as the next headline update.
-5. **In the background:** Phase 4.
+1. **Now:** the build list above, one batch at a time.
+2. **Alongside:** read the visit numbers after a couple of weeks and reorder the batches around which modes people actually play.
+3. **When you are ready for online features:** the Firebase backend, then the daily leaderboard.
+4. **In the background:** Phase 4.
 
 ## What I'd hold off on
 
