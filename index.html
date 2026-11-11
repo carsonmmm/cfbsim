@@ -3,13 +3,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Football Empire: a free college football and NFL simulator</title>
-<meta name="description" content="Football Empire is a free football management sim that runs in your browser. Run any of the 138 FBS programs as athletic director, coach your way up the ladder, play a career from high school to the NFL, run the league as commissioner, or buy an NFL club as its owner.">
+<meta name="description" content="Football Empire is a free football management sim that runs in your browser. Run any of the 138 FBS programs as athletic director, coach your way up the ladder, play a career from high school to the NFL, run the league as commissioner, build an NFL roster as general manager, or buy an NFL club as its owner.">
 <link rel="canonical" href="https://collegefbsim.com/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="docs/img/icon-192.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Football Empire">
-<meta property="og:title" content="Football Empire: five ways to run football">
-<meta property="og:description" content="A free college football and NFL sim in your browser. Athletic director, coach, player career, commissioner and owner modes. No download, no account.">
+<meta property="og:title" content="Football Empire: six ways to run football">
+<meta property="og:description" content="A free college football and NFL sim in your browser. Athletic director, coach, player career, general manager, commissioner and owner modes. No download, no account.">
 <meta property="og:url" content="https://collegefbsim.com/">
 <meta property="og:image" content="https://collegefbsim.com/docs/img/social.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -12820,7 +12822,7 @@ function vFile() {
     return `<div class="slotcard${active ? ' on' : ''}"><div class="eyebrow">Slot ${i}</div>${info}<div class="row gap mt">${btns}</div></div>`;
   }).join('');
   const liveNote = liveBusy() ? `<p class="flash">A live game is paused (${esc(liveScoreText())}). Finish it before switching careers. If you leave the site now, that game will be waiting where you left it when you return to this career.</p>` : '';
-  cloudKick(); return `${liveNote}${cloudCardHTML()}<section class="card"><div class="head"><div><div class="eyebrow">Save slots</div><h2 class="h2">Five careers at once</h2></div><p class="hint" id="savemsg">${esc(ui.saveMsg || 'Progress saves automatically after every action.')}</p></div>${saveBlocked ? '<p class="flash bad">This career is not saved yet because every slot holds a save that could not be read. Delete one of them and this career will be saved in its place.</p>' : ''}<div class="slots5">${cards}</div>
+  cloudKick(); return `${liveNote}${cloudCardHTML()}${typeof storageNoteHTML === 'function' ? storageNoteHTML() : ''}<section class="card"><div class="head"><div><div class="eyebrow">Save slots</div><h2 class="h2">Five careers at once</h2></div><p class="hint" id="savemsg">${esc(ui.saveMsg || 'Progress saves automatically after every action.')}</p></div>${saveBlocked ? '<p class="flash bad">This career is not saved yet because every slot holds a save that could not be read. Delete one of them and this career will be saved in its place.</p>' : ''}<div class="slots5">${cards}</div>
   ${NS === 'coach' ? '<p class="hint">Delete empties a slot. Saves live in this browser, so clearing site data or using a private window can erase them.</p>' : `<p class="hint">Reset restarts a slot from Week 1 of 2026 with the same program and difficulty. Delete empties it. Saves live in this browser, so clearing site data or using a private window can erase them.</p>`}</section>
   ${ui.newSlot ? (isCoach() || NS === 'coach' ? coachSetupHTML(ui.newSlot) : newCareerForm()) : ''}
   <div class="grid2"><section class="card"><div class="eyebrow">Back up slot ${slot}</div><p class="hint">Create a save code to keep a copy you control, or to move this career to another device.</p>
@@ -15525,7 +15527,7 @@ function vCSaves() {
    <label class="fld wide mt"><span>Paste a save code (starts with MFPC)</span><textarea id="cimportbox" class="codebox" aria-label="Paste a save code">${esc(cui.importCode || '')}</textarea></label>
    ${cui.importMsg ? `<p class="flash bad">${esc(cui.importMsg)}</p>` : ''}
    <div class="row gap mt">${cui.confirm === 'cimp' ? `<button class="btn danger sm" data-act="cimport">Confirm: replace ${esc(cName(cs.p))} in slot ${cslot}</button>` : `<button class="btn sm" data-act="cask2" data-k="cimp">Load this code into slot ${cslot}</button>`}</div></section>` : `<section class="card"><div class="eyebrow">Save codes</div><label class="fld wide"><span>Paste a save code (starts with MFPC)</span><textarea id="cimportbox" class="codebox" aria-label="Paste a save code">${esc(cui.importCode || '')}</textarea></label>${cui.importMsg ? `<p class="flash bad">${esc(cui.importMsg)}</p>` : ''}<div class="row gap mt"><button class="btn sm" data-act="cimport">Load this code</button></div></section>`;
-  cloudKick(); return `${cui.form ? newPlayerForm() : ''}${cloudCardHTML()}<section class="card"><div class="head"><div><div class="eyebrow">Player Career</div><h2 class="h2">Five save slots</h2></div><p class="hint" id="csavemsg">${esc(cui.saveMsg || 'These are separate from your five AD mode slots. Careers save automatically after every action.')}</p></div><div class="slots5">${cards}</div></section>${codes}`;
+  cloudKick(); return `${cui.form ? newPlayerForm() : ''}${cloudCardHTML()}${typeof storageNoteHTML === 'function' ? storageNoteHTML() : ''}<section class="card"><div class="head"><div><div class="eyebrow">Player Career</div><h2 class="h2">Five save slots</h2></div><p class="hint" id="csavemsg">${esc(cui.saveMsg || 'These are separate from your five AD mode slots. Careers save automatically after every action.')}</p></div><div class="slots5">${cards}</div></section>${codes}`;
 }
 function newPlayerForm() {
   const f = cui.form; const styles = CSTYLES[f.pos]; const om = lsGet(CSLOT_KEY(f.slot)) ? (cMeta()[f.slot] || {}) : null; const over = om ? (om.name || 'a career') : '';
@@ -22188,4 +22190,50 @@ const IRON_NO = 'This is an Ironman career: ';
   guard('import', () => true, 'a save code can\'t replace it. Load the code into another slot.');
   Object.assign(actions, { nciron(d) { const sel = document.getElementById('nc-tid'); if (sel) ui.nc.tid = sel.value; const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.iron = d.v === '1'; render(); refocus({ act: 'nciron', v: d.v }); } });
 }
+/* ===================== v9.53: the website (collegefbsim.com) =====================
+ * Things that belong to the site the game is hosted on, not to the game itself: installing it as an app and
+ * playing offline, keeping browser storage safe, and optional visit counting. None of it changes a save. */
+const SITE = {
+  // Visit counting is OFF until a GoatCounter site code is put here (the "mysite" in mysite.goatcounter.com).
+  // GoatCounter is free for small sites and uses no cookies. See docs/DEVELOPMENT.md, "Visit counting".
+  goatcounter: '',
+};
+// A real website (https, not inside another host's frame that provides its own features)
+const siteLive = () => (location.protocol === 'https:' || location.hostname === 'localhost') && !(typeof shareHere === 'function' && shareHere());
+
+/* ---------- visit counting: which modes get played, and how many seasons get finished ---------- */
+const siteSeen = {};
+function siteTrack(name) {
+  if (!SITE.goatcounter || !siteLive() || siteSeen[name]) return; siteSeen[name] = 1;
+  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: 'event/' + name, title: name, event: true }); } catch (e) { }
+}
+function siteModeName() { if (appMode === 'career') return 'player'; if (appMode !== 'ad' || !state) return null; return isComm() ? 'commissioner' : isOwner() ? 'owner' : isCoach() ? (isPro() ? 'nfl-coach' : 'coach') : isPro() ? 'gm' : 'ad'; }
+let siteSeason = null;
+function siteAfterRender() {
+  const m = siteModeName(); if (!m) { siteSeason = null; return; }
+  siteTrack('play-' + m);
+  const yr = appMode === 'career' ? (cs && cs.year) : state.season; const key = m + ':' + (appMode === 'career' ? cslot : slot);
+  if (siteSeason && siteSeason.key === key && yr > siteSeason.yr) { delete siteSeen['season-' + m]; siteTrack('season-' + m); }
+  siteSeason = { key, yr };
+}
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { siteAfterRender(); } catch (e) { } return r; }; }
+
+/* ---------- storage: ask the browser to keep saves, and show how much room is left ---------- */
+const LS_ROOM = 5 * 1024 * 1024; // browsers allow about five million characters for a site
+function storageUsed() { let n = 0; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); n += k.length + (localStorage.getItem(k) || '').length; } } catch (e) { } return n; }
+function storageNoteHTML() {
+  const u = storageUsed(); const pct = Math.round(u / LS_ROOM * 100); if (!u) return '';
+  const kept = SITE.persisted === true ? ' This browser has agreed to keep them.' : '';
+  return `<p class="small ${pct >= 80 ? 'bad' : 'muted'}" id="storagenote">Saves on this device use ${pct < 1 ? 'less than 1' : pct}% of the room this browser allows (${(u / 1048576).toFixed(1)} of about 5 MB).${pct >= 80 ? ' Room is running out: download a save file for the careers you care about, then delete a slot you no longer play.' : kept}</p>`;
+}
+function sitePersist() { try { if (navigator.storage && navigator.storage.persist && storageUsed() > 0) navigator.storage.persist().then(ok => { SITE.persisted = ok; }).catch(() => { }); } catch (e) { } }
+
+/* ---------- start-up: the app shell (offline play) and the visit counter ---------- */
+function siteBoot() {
+  sitePersist();
+  if (!siteLive()) return;
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => { });
+  if (SITE.goatcounter && /^[a-z0-9-]+$/i.test(SITE.goatcounter)) { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://' + SITE.goatcounter + '.goatcounter.com/count'; document.head.appendChild(s); }
+}
+try { siteBoot(); } catch (e) { console.error(e); }
 </script>
