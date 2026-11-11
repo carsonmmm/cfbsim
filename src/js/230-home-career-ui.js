@@ -103,6 +103,7 @@ function adPickHTML() {
    <div>${seg('adpicklvl', gm ? 'nfl' : 'col', [['col', 'College athletic director'], ['nfl', 'NFL general manager']])}</div>
    ${gm ? nflPickerHTML(f) : schoolPickerHTML(f)}
    ${gm ? `<div class="eyebrow mt">Rosters</div><div>${seg('ncfd', f.fd ? '1' : '0', [['0', 'Start with the current rosters'], ['1', 'Fantasy draft: all 32 clubs draft from one pool']])}</div>` : ''}
+   <div class="eyebrow mt">Ironman</div><div>${seg('nciron', f.iron ? '1' : '0', [['0', 'Off'], ['1', 'On: no undo, no admin tools, difficulty locked']])}</div>
    <div class="eyebrow mt">Difficulty</div><div class="diffs">${Object.entries(DIFF).map(([k, d]) => `<button class="evopt${ui.newDiff === k ? ' on' : ''}" data-act="adpickdiff" data-v="${k}"><b>${d.label}</b><span>${esc(d.desc)}</span></button>`).join('')}</div>
    <div class="row gap mt"><button class="btn primary" data-act="adpickstart">${gm ? `Become GM of the ${esc(nflName(NFL_BY[f.nfl] ? f.nfl : 'DET'))}` : `Become athletic director at ${esc(CTEAMS0_AD[f.tid].name)}`}</button><button class="btn ghost" data-act="adpickcancel">Back</button></div></section>`;
 }

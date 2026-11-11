@@ -12233,7 +12233,7 @@ const TABS = [['office', 'Office'], ['career', 'My career'], ['schedule', 'Sched
 const TAB_GROUPS = [['Season', ['office', 'schedule', 'poll', 'standings', 'scores', 'post', 'lghist']], ['Program', ['roster', 'depth', 'staff', 'recruit', 'awards', 'draft']], ['Business', ['money', 'payroll', 'fac']], ['Career', ['career', 'off', 'history', 'records', 'file', 'settings', 'admin']]];
 const MNAV = [['office', 'Office', 'home'], ['schedule', 'Schedule', 'cal'], ['roster', 'Roster', 'users'], ['recruit', 'Recruiting', 'star']];
 const tabLabel = k => (k === 'office' && isComm() ? 'League office' : k === 'career' && isOwner() ? 'Legacy' : k === 'office' && isOwner() ? 'Owner\'s suite' : (curTabs().find(t => t[0] === k) || [k, k])[1]);
-const tabVisible = k => (typeof fdOn === 'function' && fdOn() ? FD_TABS.includes(k) : typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
+const tabVisible = k => (typeof fdOn === 'function' && fdOn() ? FD_TABS.includes(k) : k === 'admin' && typeof ironOn === 'function' && ironOn() ? false : typeof xTabVis === 'function' && xTabVis(k) != null ? xTabVis(k) : isComm() ? COMM_TABS.has(k) : isPro() ? proTabVisible(k) : (k !== 'off' || state.phase === 'offseason') && (k !== 'career' || isCoach() || !!(state.jobs && state.jobs.length)) && !(isCoach() && ['money', 'payroll', 'fac'].includes(k)));
 function tabBtn(k, cls) { const on = ui.tab === k; return `<button class="${cls}${on ? ' on' : ''}${k === 'off' ? ' hot' : ''}${k === 'admin' ? ' adm' : ''}" data-act="tab" data-tab="${k}"${on ? ' aria-current="page"' : ''}>${esc(tabLabel(k))}</button>`; }
 function renderTabs() {
   const t = $('#tabs');
@@ -12810,7 +12810,7 @@ function vFile() {
   const meta = slotsMeta();
   const cards = [1, 2, 3, 4, 5].map(i => {
     const m = meta[i]; const active = i === slot && !saveBlocked; const has = !!lsGet(SLOT_KEY(i));
-    const info = has && m ? `${m.chal ? '<span class="pill maize">Daily challenge</span> ' : ''}${m.scn ? `<span class="pill">${esc(m.scn)}</span> ` : ''}${m.edited ? '<span class="pill bad" title="Changed with the admin tools">Edited</span> ' : ''}<b>${m.coach ? esc(m.coach.name) + ' · ' + esc(roleTitle(m.coach.role)) + ', ' : m.own ? 'Owner, ' : m.lvl === 'nfl' && !m.comm ? 'GM, ' : ''}${esc(m.name)}</b><div class="small muted">${m.season} · ${m.phase === 'offseason' ? 'offseason' : m.rec} · ${DIFF[m.diff] ? DIFF[m.diff].label : ''} · ${m.seasons} season${m.seasons === 1 ? '' : 's'} done${m.legacy != null ? ' · legacy ' + m.legacy : ''}${m.fired ? ' · fired' : ''}</div><div class="small muted">Saved ${new Date(m.saved).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>` : has ? '<span class="muted">Saved data with no summary (it may be damaged). Try loading it, or delete it.</span>' : '<span class="muted">Empty slot</span>';
+    const info = has && m ? `${m.chal ? '<span class="pill maize">Daily challenge</span> ' : ''}${m.scn ? `<span class="pill">${esc(m.scn)}</span> ` : ''}${m.edited ? '<span class="pill bad" title="Changed with the admin tools">Edited</span> ' : ''}${m.iron ? '<span class="pill maize" title="No undo, no admin tools, fixed difficulty">Ironman</span> ' : ''}<b>${m.coach ? esc(m.coach.name) + ' · ' + esc(roleTitle(m.coach.role)) + ', ' : m.own ? 'Owner, ' : m.lvl === 'nfl' && !m.comm ? 'GM, ' : ''}${esc(m.name)}</b><div class="small muted">${m.season} · ${m.phase === 'offseason' ? 'offseason' : m.rec} · ${DIFF[m.diff] ? DIFF[m.diff].label : ''} · ${m.seasons} season${m.seasons === 1 ? '' : 's'} done${m.legacy != null ? ' · legacy ' + m.legacy : ''}${m.fired ? ' · fired' : ''}</div><div class="small muted">Saved ${new Date(m.saved).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</div>` : has ? '<span class="muted">Saved data with no summary (it may be damaged). Try loading it, or delete it.</span>' : '<span class="muted">Empty slot</span>';
     const ck = ui.confirm; const g = has && !active && (ui.badSlots || []).includes(i) ? goodCopy(NS_PREFIX[NS]) : null; const gd = g && g.i === i ? g : null;
     const restore = gd ? (ck === 'rg-' + i ? `<button class="btn danger sm" data-act="restoregood" data-i="${i}">Confirm: restore the copy from ${esc(goodWhen(gd))}</button>` : `<button class="btn sm" data-act="ask" data-k="rg-${i}">Restore last good copy</button>`) : '';
     const btns = has ? `${restore}${active ? '<span class="pill maize">Playing now</span>' : `<button class="btn sm" data-act="slotload" data-i="${i}">Load</button>`}
@@ -15119,6 +15119,7 @@ function adPickHTML() {
    <div>${seg('adpicklvl', gm ? 'nfl' : 'col', [['col', 'College athletic director'], ['nfl', 'NFL general manager']])}</div>
    ${gm ? nflPickerHTML(f) : schoolPickerHTML(f)}
    ${gm ? `<div class="eyebrow mt">Rosters</div><div>${seg('ncfd', f.fd ? '1' : '0', [['0', 'Start with the current rosters'], ['1', 'Fantasy draft: all 32 clubs draft from one pool']])}</div>` : ''}
+   <div class="eyebrow mt">Ironman</div><div>${seg('nciron', f.iron ? '1' : '0', [['0', 'Off'], ['1', 'On: no undo, no admin tools, difficulty locked']])}</div>
    <div class="eyebrow mt">Difficulty</div><div class="diffs">${Object.entries(DIFF).map(([k, d]) => `<button class="evopt${ui.newDiff === k ? ' on' : ''}" data-act="adpickdiff" data-v="${k}"><b>${d.label}</b><span>${esc(d.desc)}</span></button>`).join('')}</div>
    <div class="row gap mt"><button class="btn primary" data-act="adpickstart">${gm ? `Become GM of the ${esc(nflName(NFL_BY[f.nfl] ? f.nfl : 'DET'))}` : `Become athletic director at ${esc(CTEAMS0_AD[f.tid].name)}`}</button><button class="btn ghost" data-act="adpickcancel">Back</button></div></section>`;
 }
@@ -16304,6 +16305,7 @@ Object.assign(actions, {
     if ([1, 2, 3, 4, 5].some(i => lsGet(SLOT_KEY(i)))) { if (state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL); const free = firstFreeSlot(); if (!free) { state = null; await boot(); ui.tab = 'file'; ui.flash = 'All five AD save slots are in use. Delete one here, then pick your school again from the Home screen.'; render(); return; }
       newGame(ui.newDiff || 'normal', null, null, gm ? 'MICH' : ui.nc.tid); if (gm) { goPro(gm, { role: 'gm' }); state.tline = []; } setActiveSlot(free); resetUi(); applyTheme(); save(); }
     else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); }
+    if (ui.nc.iron && state) { X().iron = true; save(); } ui.nc.iron = false;
     if (gm && ui.nc.fd && state && isPro() && !PS().fd) { fdStart(); save(); } ui.nc.fd = false; ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
   chlwatch(d) { hlCareer(+d.i); },
   patchall() { openModal(patchAllHTML(), 'Patch notes'); },
@@ -22171,4 +22173,19 @@ Object.assign(actions, {
   fdpos(d) { ui.fdPos = d.v; render(); refocus({ act: 'fdpos', v: d.v }); },
   ncfd(d) { const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.fd = d.v === '1'; render(); refocus({ act: 'ncfd', v: d.v }); },
 });
+/* ===================== v9.53: Ironman careers (athletic director and NFL general manager) =====================
+ * Chosen when the career starts and never turned off. An Ironman career has no undo, no admin tools, a fixed
+ * difficulty, and can't be rolled back to an earlier copy or replaced by a save code. The flag is X().iron. */
+const ironOn = () => !!(state && state.x && state.x.iron);
+const IRON_NO = 'This is an Ironman career: ';
+{ const _u = undoSnap; undoSnap = function () { return ironOn() ? null : _u.apply(this, arguments); }; }
+{ const _s = slotSummary; slotSummary = function () { const o = _s.apply(this, arguments); if (o && ironOn()) o.iron = true; return o; }; }
+{ const _q = qolAfterRender; qolAfterRender = function () { const r = _q.apply(this, arguments); try { if (appMode === 'ad' && ironOn()) { const el = document.querySelector('#hdr .sub'); if (el && !el.querySelector('.ironpill')) el.insertAdjacentHTML('beforeend', ' <span class="pill maize ironpill">Ironman</span>'); } } catch (e) { } return r; }; }
+{
+  const guard = (name, test, msg) => { const f = actions[name]; if (typeof f !== 'function') return; actions[name] = function (d) { if (ironOn() && test(d || {})) { ui.confirm = null; return after(IRON_NO + msg); } return f.apply(this, arguments); }; };
+  guard('setgame', d => d.k === 'diff', 'the difficulty is locked.');
+  guard('restoregood', d => +d.i === slot, 'it can\'t be rolled back to an earlier copy.');
+  guard('import', () => true, 'a save code can\'t replace it. Load the code into another slot.');
+  Object.assign(actions, { nciron(d) { const sel = document.getElementById('nc-tid'); if (sel) ui.nc.tid = sel.value; const sn = document.getElementById('nc-nfl'); if (sn) ui.nc.nfl = sn.value; ui.nc.iron = d.v === '1'; render(); refocus({ act: 'nciron', v: d.v }); } });
+}
 </script>
