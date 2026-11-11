@@ -1,0 +1,12 @@
+{
+  "name": "football-empire",
+  "private": true,
+  "description": "Football Empire: a single-file college football and NFL simulator.",
+  "scripts": {
+    "build": "./build.sh",
+    "test": "node tests/check.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

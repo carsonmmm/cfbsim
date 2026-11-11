@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /source/
+Disallow: /tests/
+
+Sitemap: https://collegefbsim.com/sitemap.xml
