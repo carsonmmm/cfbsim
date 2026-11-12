@@ -83,7 +83,8 @@ const actions = {
     const n = ui.neg; const o = { sal: n.sal, yrs: n.yrs, buy: n.buy, incConf: n.incConf, incCFP: n.incCFP };
     const r = n.ext ? negotiateExt(n.role, o) : hireCoach(n.role, n.cid, false, o);
     if (r === 'counter') { ui.negMsg = 'He said no, but he is still listening. Improve the offer.'; openModal(negView()); return; }
-    ui.neg = null; hideModal(); after(r === 'hired' || r === 'signed' ? 'Deal done.' : r === 'done' ? 'He already signed an extension this season.' : 'Talks are over.');
+    if (r === 'pool') { ui.negMsg = hireMsg(r, n.role) + ' Lower the salary and try again.'; openModal(negView()); return; }
+    ui.neg = null; hideModal(); after(r === 'hired' || r === 'signed' ? 'Deal done.' : r === 'done' ? 'He already signed an extension this season.' : r === 'declined' ? 'Talks are over.' : hireMsg(r, n.role));
   },
   rcontact(d) { extraContact(d.id); after('Extra contact made. NCAA risk went up.'); },
   deal(d) { signDeal(d.id, d.k); after('Deal signed.'); },
@@ -172,7 +173,7 @@ const actions = {
   release(d) { const p = P(d.id); if (!p) return; const no = canRelease(d.id); if (no) return notify(no); releasePlayer(d.id); ui.confirm = null; hideModal(); after(`${p.n} was released. Roster: ${state.roster.length}.`); },
   askfire(d) { ui.confirm = 'fire-' + d.role; render(); }, ask(d) { ui.confirm = d.k; render(); }, unconfirm() { ui.confirm = null; render(); },
   fire(d) { const c = state.staff[d.role]; const b = c ? buyout(c) : 0; fireCoach(d.role); ui.confirm = null; after(c ? `${c.name} fired as ${ROLE_TITLE[d.role]}. Buyout: ${fm(b)}.` : ''); },
-  hire(d) { const r = hireCoach(d.role, d.id, false); after(r === 'hired' ? 'Hired.' : r === 'declined' ? 'Offer declined.' : ''); },
+  hire(d) { const r = hireCoach(d.role, d.id, false); after(hireMsg(r, d.role)); },
   pollv(d) { ui.poll = d.v; ui.pollIdx = -1; render(); }, sconf(d) { ui.sconf = d.c; render(); }, sfilter(d) { ui.sfilter = d.v; render(); }, bookv(d) { ui.book = d.v; render(); },
   tix(d) { if (adjustLever('ticket', +d.d)) after(); },
   rev(d) { if (adjustLever('revPct', +d.d)) after(); },

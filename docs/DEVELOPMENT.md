@@ -65,6 +65,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `530` | The shell for the self-contained modes: saves, header, tabs, Home cards (`appMode === 'mini'`, the game is `mm`) |
 | `540` | Agent mode |
 | `550` | High School Coach |
+| `560` | Coach mode: running your staff, interim promotions, the job market |
 
 ## How the game is put together
 
@@ -109,6 +110,7 @@ node tests/run.js tests/stories.js        # player stories and realignment
 node tests/run.js tests/classfiles.js     # recruiting class and draft class files
 node tests/run.js tests/agent.js          # Agent mode: twelve years played by a simple strategy
 node tests/run.js tests/hscoach.js        # High School Coach: fifteen seasons, the recruiting link and the college job
+node tests/run.js tests/coachjobs.js      # Coach mode: hiring and firing as head coach, interim promotions, the job market
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark

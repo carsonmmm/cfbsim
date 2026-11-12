@@ -323,13 +323,13 @@ function genCandidates(role, n) {
     if (role === 'HC') {
       const b = tier < 0.2 ? 84 : tier < 0.6 ? 78 : 72;
       const c = mkCoach({ name: genName(), role, title: ROLE_TITLE[role], real: false, bg: pick(bgHC), off: clamp(b + ri(-8, 8), 55, 95), def: clamp(b + ri(-8, 8), 55, 95), rec: clamp(b + ri(-10, 10), 50, 97), dev: clamp(b + ri(-8, 8), 55, 95), gm: clamp(b + ri(-8, 8), 55, 95), age: ri(36, 64), years: ri(4, 7) });
-      c.salary = r1(clamp(2.5 + (coachOvr(c) - 70) * 0.4 + rnd(-0.6, 0.6), 2.0, 11) * (typeof state !== 'undefined' && state && state.me ? Math.max(0.3, econ()) : 1));
+      c.salary = r1(clamp(2.5 + (coachOvr(c) - 70) * 0.4 + rnd(-0.6, 0.6), 2.0, 11) * (typeof state !== 'undefined' && state && state.my ? Math.max(0.3, econ()) : 1));
       out.push(c);
     } else {
       const b = tier < 0.2 ? 82 : tier < 0.6 ? 76 : 70;
       const c = mkCoach({ name: genName(), role, title: ROLE_TITLE[role], real: false, bg: pick(bgC), ovr: clamp(b + ri(-6, 6), 55, 94), rec: clamp(b + ri(-10, 10), 50, 96), dev: clamp(b + ri(-8, 8), 55, 94), age: ri(30, 60), years: ri(2, 4) });
       const baseSal = ['OC', 'DC'].includes(role) ? 1.0 : role === 'ST' ? 0.5 : 0.35;
-      c.salary = r1(clamp(baseSal + (c.ovr - 70) * (['OC', 'DC'].includes(role) ? 0.09 : 0.04) + rnd(-0.15, 0.15), 0.25, 3.5) * (typeof state !== 'undefined' && state && state.me ? Math.max(0.3, econ()) : 1));
+      c.salary = r1(clamp(baseSal + (c.ovr - 70) * (['OC', 'DC'].includes(role) ? 0.09 : 0.04) + rnd(-0.15, 0.15), 0.25, 3.5) * (typeof state !== 'undefined' && state && state.my ? Math.max(0.3, econ()) : 1));
       out.push(c);
     }
   }
