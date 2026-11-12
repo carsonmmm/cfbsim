@@ -6,6 +6,7 @@
     "start": "node scripts/serve.js",
     "build": "node build.js",
     "notes": "node scripts/patch-notes.js",
+    "balance": "node scripts/balance-report.js",
     "test": "node tests/check.js"
   },
   "devDependencies": {

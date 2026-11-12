@@ -16,6 +16,7 @@ Needs Node.js 20 or newer. The tests also need Playwright (`npm install`, then `
 | `npm run build` | Builds `index.html` from `src/` and checks that the JavaScript parses. A syntax error is reported with its source file and line. |
 | `npm test` | Everything GitHub checks on each push: the build is fresh, every mode opens, the feature tests and balance guardrails pass, the patch notes file is current, saves load. About 20 seconds. |
 | `npm run notes` | Rewrites `PATCH_NOTES.md` from the patch notes in the game. |
+| `npm run balance` | Plays about 30 college and 24 NFL seasons on autopilot and writes `docs/balance.html`, the balance dashboard. Add `-- --big` for five times as many. |
 
 ## What's in the repository
 
@@ -60,6 +61,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `490` | Travel and altitude, injury decisions, the alumni network |
 | `500` | The nemesis, and scandals you can cause |
 | `510` | Player stories, and conference raids and invitations |
+| `520` | Recruiting class and draft class files |
 
 ## How the game is put together
 
@@ -100,6 +102,7 @@ node tests/run.js tests/recap.js          # season recaps, the career timeline p
 node tests/run.js tests/world.js          # travel, injury decisions, the alumni network
 node tests/run.js tests/rivals.js         # the nemesis and scandals
 node tests/run.js tests/stories.js        # player stories and realignment
+node tests/run.js tests/classfiles.js     # recruiting class and draft class files
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark
@@ -121,6 +124,10 @@ node tests/inbox.js                       # the Inbox and "decisions first"
 4. For a version that changes what a save holds, run `node scripts/make-save-fixture.js` and commit the new file in `tests/fixtures/`. From then on every build must load those careers.
 5. Open a pull request. The check runs by itself.
 6. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
+
+## The balance dashboard
+
+`npm run balance` writes `docs/balance.html`: wins by team rating, how often the better team wins by rating gap, scoring, how many games NFL clubs win, and what a draft pick is worth, each with the real-world figure to compare against where there is one. Run it after any change to the game engine, read it, and commit the new page with the change so the history of the file is the history of the game's balance. It is published at collegefbsim.com/docs/balance.html and is not linked from the game.
 
 ## Visit counting
 

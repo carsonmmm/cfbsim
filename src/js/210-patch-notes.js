@@ -1,6 +1,11 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.59', t: 'Bring your own class', n: [
+    'New: class files. The Save file page can save the current recruiting class (college) or draft class (NFL) as a spreadsheet file, and load one back. Edit a class, build your own, or swap one with a friend. Add players to the class or replace it; recruits who have already committed stay.',
+    'A class file is one player a line: name, position, then stars, rating, potential and hometown for recruits, or age, rating, potential and college for draft prospects.',
+    'Old saves load as before.',
+  ] },
   { v: '9.58', t: 'Every player has a story', n: [
     'New: player stories. Every player page now ends with his story: how he was signed and who else wanted him, each season, his awards, his injuries, and for former players how he left and what became of him. Open a former player from the History page, where a new card lists the ones people still talk about.',
     'Stories carry between careers on this device. Players an athletic director sends to the NFL Draft can turn up in the same year\'s draft class in a general manager career (Shared world on), and their page there tells the college half: that you signed them, where, and what they won.',
