@@ -29,7 +29,9 @@ Needs Node.js 20 or newer. The tests also need Playwright (`npm install`, then `
 | `build.js` | Joins `src/` into `index.html`. |
 | `sw.js`, `manifest.webmanifest` | The installable app: offline loading and the home-screen icon. |
 | `tests/` | Automated checks that run the game in a headless browser. `tests/fixtures/v947.html` is an old build used to prove old saves still load. |
-| `scripts/` | `serve.js` (local server), `patch-notes.js` (writes `PATCH_NOTES.md`) and `make-save-fixture.js` (saves one career of every kind for the tests). |
+| `scripts/` | `serve.js` (local server), `patch-notes.js` (writes `PATCH_NOTES.md`), `make-save-fixture.js` (saves one career of every kind for the tests), and `fetch-real-data.js` and `build-real-pack.js` (the real pack). |
+| `packs/real-2026.json` | The optional real pack: rosters and the schedule. Generated; fetched by the game only when a player turns it on. |
+| `data/real/espn-teams.json` | Which team in the data feed is which school in the game. |
 | `.github/` | The check that runs on every push, plus pull request and issue templates. |
 | `favicon.svg`, `404.html`, `robots.txt`, `sitemap.xml`, `docs/img/` | Site extras. |
 
@@ -66,6 +68,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `540` | Agent mode |
 | `550` | High School Coach |
 | `560` | Coach mode: running your staff, interim promotions, the job market |
+| `570` | The optional real 2026 pack: loading it, real identities on your roster, the real schedule |
 
 ## How the game is put together
 
@@ -112,6 +115,7 @@ node tests/run.js tests/agent.js          # Agent mode: twelve years played by a
 node tests/run.js tests/hscoach.js        # High School Coach: fifteen seasons, the recruiting link and the college job
 node tests/run.js tests/coachjobs.js      # Coach mode: hiring and firing as head coach, interim promotions, the job market
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
+node tests/realpack.js                    # the real 2026 pack file, and a career started with it
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark
 node tests/persist.js                     # saves from the v9.47 build load in this one
@@ -132,6 +136,19 @@ node tests/inbox.js                       # the Inbox and "decisions first"
 4. For a version that changes what a save holds, run `node scripts/make-save-fixture.js` and commit the new file in `tests/fixtures/`. From then on every build must load those careers.
 5. Open a pull request. The check runs by itself.
 6. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
+
+## The real pack
+
+`packs/real-2026.json` is built in two steps, and both need network access to `site.api.espn.com` (the cloud environment named `cfbsim` allows it):
+
+```sh
+node scripts/fetch-real-data.js 2026 --fresh   # downloads every roster and schedule into data/real/cache/ (not committed, about 120 MB)
+node scripts/build-real-pack.js 2026           # writes packs/real-2026.json and prints anything odd it found
+```
+
+The pack holds names, positions, classes, numbers, sizes, hometowns and the schedule. It holds no ratings. In the game (`570-real-pack.js`) each real player takes over a generated player at his position, so a school plays at the same strength with or without the pack; `tests/realpack.js` checks that. To refresh rosters during the season, run both steps again and commit the new pack. For a new season, run them with the new year, then change `REAL.url` and the wording in `570-real-pack.js`.
+
+Things the builder does that are worth knowing: a school outside the game's 138 becomes an `FCS:Name` opponent; late-August "Week 0" games and Army-Navy are moved to a week when both schools are otherwise off, moving one other game if it has to; players listed as DL or DB are split by weight; and one school's linemen, filed in the feed as linebackers, are moved to the line by weight.
 
 ## The balance dashboard
 

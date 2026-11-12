@@ -22,6 +22,8 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 - Visit counting is on, through GoatCounter, on the live site only.
 - A contrast check of all five themes in light and dark, with the faint spots fixed, and a test that loads one saved career of every kind on each build.
 - Search and link-preview tags, an icon, a not-found page, a sitemap, the page language.
+- Coach mode: hiring and firing as head coach, interim promotions and a better job market (9.62).
+- The optional real 2026 pack: real rosters for all 138 schools and the real 2026 schedule (9.63).
 
 **A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
 

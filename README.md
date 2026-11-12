@@ -38,11 +38,12 @@ Also on the home screen:
 - **Share it:** a picture of any season in your team's colors, and one tall picture of your whole career, to save or post.
 - **Made for long saves:** five save slots per mode, save files you can download, a save health center, and old saves that keep loading after every update.
 - **Yours to shape:** five themes, light and dark, a sidebar or top tabs, keyboard shortcuts, color-blind friendly colors, team packs with your own names and colors, and a tutorial for every mode.
+- **The real 2026 season, if you want it:** an optional pack gives your school its real 2026 roster and gives every school its real 2026 schedule. It is off by default.
 - **Works on a phone:** the layout fits a 390px screen.
 
 <img src="docs/img/phone.png" alt="The home screen on a phone" width="280">
 
-All 69 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.62**.
+All 70 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.63**.
 
 ## Good to know
 
@@ -77,4 +78,4 @@ Publishing is automatic: GitHub Pages serves the `main` branch at collegefbsim.c
 
 ## Disclaimer
 
-Football Empire is an unofficial fan project. It is not affiliated with, endorsed by or sponsored by the NCAA, the NFL, any conference, any university or any professional club. Team and school names are used only to identify them. Stadiums, capacities and colors are approximations, and all ratings, salaries, budgets and results are simulated.
+Football Empire is an unofficial fan project. It is not affiliated with, endorsed by or sponsored by the NCAA, the NFL, any conference, any university or any professional club. Team and school names are used only to identify them. Stadiums, capacities and colors are approximations, and all ratings, salaries, budgets and results are simulated. The optional real 2026 pack contains player names and schedules taken from public rosters; it contains no ratings, and every rating shown in the game is the game's own estimate.
