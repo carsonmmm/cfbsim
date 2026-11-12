@@ -6,9 +6,9 @@
 
 No download, no account, no ads. Your careers are saved in your own browser, and you can install the game on your phone and play offline.
 
-![The Football Empire home screen, showing the six modes](docs/img/home.png)
+![The Football Empire home screen, showing the modes](docs/img/home.png)
 
-## Six ways to play
+## Eight ways to play
 
 | Mode | You are | What you do |
 |---|---|---|
@@ -18,6 +18,8 @@ No download, no account, no ads. Your careers are saved in your own browser, and
 | **General Manager** | The GM of an NFL club | Run the draft, the salary cap, free agency and trades. Start with the current rosters, or with a fantasy draft where all 32 clubs pick from one pool. |
 | **Commissioner** | The head of college football or the NFL | Rule on suspensions and appeals, handle scandals, set the salary cap and TV deals, steer the rules committee and survive the vote on your term. |
 | **Owner** | The owner of an NFL club | Buy a club or start an expansion team, set prices, build a stadium, hire the GM and coach, and win votes at the owners' meeting. |
+| **Agent** | The head of a sports agency | Win draft prospects away from the big agencies, get them drafted high, negotiate their contracts against the clubs, and keep their trust. You earn 3% of every deal. |
+| **High School Coach** | The coach of a small-town team | Develop players over four years, win on Friday nights, send your seniors to college, and move up until a college calls. |
 
 Also on the home screen:
 
@@ -33,14 +35,14 @@ Also on the home screen:
 - **Game day:** a field view where all 22 players move, with four cameras, weather, live play calling, game plans, halftime adjustments and a two-minute drill.
 - **A living world:** a fan feed, a weekly pregame show, a front page, rivalry trophies, award night, record books, a Hall of Fame and league history that carries from one career to the next.
 - **Front office depth:** recruiting with uncertain scouting, promises, the transfer portal, the NFL draft, the salary cap, free agency, trades, agents and one negotiation system shared by every mode.
-- **Share your season:** a picture of your record in your team's colors, to save or post.
+- **Share it:** a picture of any season in your team's colors, and one tall picture of your whole career, to save or post.
 - **Made for long saves:** five save slots per mode, save files you can download, a save health center, and old saves that keep loading after every update.
 - **Yours to shape:** five themes, light and dark, a sidebar or top tabs, keyboard shortcuts, color-blind friendly colors, team packs with your own names and colors, and a tutorial for every mode.
 - **Works on a phone:** the layout fits a 390px screen.
 
 <img src="docs/img/phone.png" alt="The home screen on a phone" width="280">
 
-All 61 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.54**.
+All 68 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **9.61**.
 
 ## Good to know
 

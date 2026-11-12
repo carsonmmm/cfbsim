@@ -1,9 +1,9 @@
 /* ===================== v9.53: a picture of your season to share =====================
  * In the offseason the Office offers a 1200x630 picture of the season just finished, in the team's colors:
  * the record, how it ended, and the career so far. It is drawn on a canvas in the browser; nothing is uploaded. */
-function seasonCardData() {
+function seasonCardData(season) {
   if (!state || appMode !== 'ad' || isComm() || typeof shareSeasons !== 'function') return null;
-  let ss; try { ss = shareSeasons(); } catch (e) { return null; } if (!ss || !ss.length) return null; const h = ss[ss.length - 1];
+  let ss; try { ss = shareSeasons(); } catch (e) { return null; } if (!ss || !ss.length) return null; if (season) ss = ss.slice(0, ss.findIndex(x => x.s === +season) + 1); if (!ss.length) return null; const h = ss[ss.length - 1];
   const sc = (typeof schoolColors === 'function' && schoolColors()) || { c1: '#FFCB05', c2: '#00274C' }; const p = teamPalette(sc.c1, sc.c2);
   const role = isOwner() ? 'Owner' : isCoach() ? (state.co && state.co.name ? state.co.name : 'Coach') : isPro() ? 'General manager' : 'Athletic director';
   return { team: myName(), season: h.s, w: h.w, l: h.l, end: h.title ? (isPro() ? 'Super Bowl champions' : 'National champions') : h.post ? (isPro() ? 'Playoff team' : 'Postseason team') : '', role,
@@ -29,7 +29,7 @@ function seasonCardHTML() {
 { const w = f => function () { return f.apply(this, arguments) + seasonCardHTML(); }; vOffice = w(vOffice); vCoachOffice = w(vCoachOffice); vProOffice = w(vProOffice); }
 Object.assign(actions, {
   async seasoncard(d) {
-    const data = seasonCardData(); const msg = t => { const m = document.getElementById('seasoncardmsg'); if (m) m.textContent = t; }; if (!data) return;
+    const data = seasonCardData(d.s); const msg = t => { const m = document.querySelector('#modal:not([hidden]) .seasoncardmsg') || document.getElementById('seasoncardmsg'); if (m) m.textContent = t; }; if (!data) return;
     try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('900 100px "Big Shoulders Display"'), document.fonts.load('600 30px "Public Sans"')]); } catch (e) { }
     const name = `football-empire-${String(data.team).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${data.season}.png`;
     const blob = await new Promise(res => seasonCardCanvas(data).toBlob(res, 'image/png')); if (!blob) return msg('The picture could not be made in this browser.');

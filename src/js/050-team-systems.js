@@ -319,7 +319,7 @@ function setRehab(id, k) {
   return true;
 }
 function doctorNote(p) { const t = String(p.injType || 'injury').toLowerCase(); const fast = Math.max(1, Math.ceil(p.inj * 0.5)); return `Team doctor: "With ${aAn(t)}, the standard plan is ${p.inj} more week${p.inj > 1 ? 's' : ''}. We could have him back in ${fast}, but I would not do it before a game that doesn't matter much."`; }
-const rehabInjF = p => (p.reinj > 0 ? 4 : 1) * (p.prot > 0 ? 0.5 : 1);
+const rehabInjF = p => (p.reinj > 0 ? 4 : 1) * (p.prot > 0 ? 0.5 : 1) * (p.medBack ? 2.5 : 1); /* medBack: came back against medical advice (v9.56) */
 function rehabWeek(played) { state.roster.forEach(p => { if (p.inj > 0) return; if (p.reinj > 0 && played) p.reinj--; if (p.prot > 0 && played) p.prot--; if (p.rehab && !p.reinj && !p.prot) p.rehab = null; }); }
 
 /* ===================== SCOUTING STAFF ===================== */

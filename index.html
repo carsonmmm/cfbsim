@@ -10,8 +10,8 @@
 <link rel="apple-touch-icon" href="docs/img/icon-192.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Football Empire">
-<meta property="og:title" content="Football Empire: six ways to run football">
-<meta property="og:description" content="A free college football and NFL sim in your browser. Athletic director, coach, player career, general manager, commissioner and owner modes. No download, no account.">
+<meta property="og:title" content="Football Empire: eight ways to run football">
+<meta property="og:description" content="A free college football and NFL sim in your browser. Athletic director, coach, player career, general manager, commissioner, owner, agent and high school coach modes. No download, no account.">
 <meta property="og:url" content="https://collegefbsim.com/">
 <meta property="og:image" content="https://collegefbsim.com/docs/img/social.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -1032,7 +1032,7 @@ details summary{cursor:pointer;font-weight:600}
 .homehero{padding:18px 4px 4px;max-width:720px}
 .homehero .h2{font-size:44px}
 .homehero p{font-size:16px;margin:6px 0 0}
-.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}@media (max-width:1180px){.modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .mode{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;min-width:0}
 .mode::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--maize)}
 .mode p{margin:0}
@@ -2078,6 +2078,7 @@ function createSim(g, opts) {
   if (force) { const fs = force === 'h' ? 0 : 1; F[fs].off += 16; F[fs].def += 16; }
   const wx = forecast(g); const W = WX[wx.k] || {};
   ids.forEach((id, i) => { F[i].off += wxEdge(id, wx, id === ME); F[i].k += (W.kick || 0); });
+  { const tv = typeof travelEdge === 'function' ? travelEdge(g.h, g.a, g.neutral) : 0; if (tv) { F[1].off -= tv / 2; F[1].def -= tv / 2; } } // a long trip or thin air wears on the visitors (v9.56)
   if (detail && state.bulletin === oppId) { F[1 - mSide].off += 1.2; F[1 - mSide].def += 1.2; }
   const sim = {
     otRule: otRuleNow(), el: detail ? 0 : null, ckKey: detail ? (state.seed || 0) + ':' + state.season + ':' + g.wk + ':' + (g.type || '') + ':' + g.h + g.a : '', /* the drive-by-drive clock is kept for your games */
@@ -4150,7 +4151,7 @@ function setRehab(id, k) {
   return true;
 }
 function doctorNote(p) { const t = String(p.injType || 'injury').toLowerCase(); const fast = Math.max(1, Math.ceil(p.inj * 0.5)); return `Team doctor: "With ${aAn(t)}, the standard plan is ${p.inj} more week${p.inj > 1 ? 's' : ''}. We could have him back in ${fast}, but I would not do it before a game that doesn't matter much."`; }
-const rehabInjF = p => (p.reinj > 0 ? 4 : 1) * (p.prot > 0 ? 0.5 : 1);
+const rehabInjF = p => (p.reinj > 0 ? 4 : 1) * (p.prot > 0 ? 0.5 : 1) * (p.medBack ? 2.5 : 1); /* medBack: came back against medical advice (v9.56) */
 function rehabWeek(played) { state.roster.forEach(p => { if (p.inj > 0) return; if (p.reinj > 0 && played) p.reinj--; if (p.prot > 0 && played) p.prot--; if (p.rehab && !p.reinj && !p.prot) p.rehab = null; }); }
 
 /* ===================== SCOUTING STAFF ===================== */
@@ -7709,7 +7710,7 @@ function nflValidate(c, bad, num) {
 const isPro = () => !!(typeof state !== 'undefined' && state && state.lvl === 'nfl');
 const isGM = () => isPro() && !isCoach() && !(typeof ownHands === 'function' && ownHands());
 // keys that belong to the save, not to a world
-const WORLD_SHARED = new Set(['v', 'seed', 'hashV', 'settings', 'created', 'nextId', 'ach', 'kind', 'co', 'lvl', 'pro', 'colW', 'news', 'jobs', 'exec', 'gameOver', 'achToast', 'rng', 'liveWk', 'liveRng', 'pendingArrive', 'tline', 'mile']);
+const WORLD_SHARED = new Set(['v', 'seed', 'hashV', 'settings', 'created', 'nextId', 'ach', 'kind', 'co', 'lvl', 'pro', 'colW', 'news', 'jobs', 'exec', 'gameOver', 'achToast', 'rng', 'liveWk', 'liveRng', 'pendingArrive', 'tline', 'mile', 'nem', 'iron']); /* nem: your nemesis (v9.57); iron: Ironman (v9.57; before that it lived in x and was lost on a move) */
 const PRO_ROSTER = { QB: 3, RB: 4, WR: 6, TE: 3, OL: 9, DE: 5, DT: 4, LB: 6, CB: 6, S: 4, K: 1, P: 1, LS: 1 }; // 53
 const PRO_OFF_MAX = 75;
 // the in-season roster limit comes from the league rules (53 unless you change it)
@@ -13323,7 +13324,7 @@ function achGrid() {
 }
 function alumniCard() {
   const a = state.alumni.slice().reverse().slice(0, 40); if (!a.length) return '';
-  return `<section class="card"><div class="eyebrow">Where are they now</div><div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Last season</th><th>Now</th><th>Career with you</th></tr></thead><tbody>${a.map(x => `<tr><td>${esc(x.n)}</td><td>${x.pos}</td><td>${x.last}</td><td class="small">${esc(x.where || x.why)}</td><td class="small muted">${esc(statLine({ pos: x.pos }, x.cs))}</td></tr>`).join('')}</tbody></table></div></section>`;
+  return `<section class="card"><div class="eyebrow">Where are they now</div><div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Last season</th><th>Now</th><th>Career with you</th></tr></thead><tbody>${a.map(x => `<tr><td><button class="lnk" data-act="alumstory" data-n="${esc(x.n)}" data-s="${x.last}">${esc(x.n)}</button></td><td>${x.pos}</td><td>${x.last}</td><td class="small">${esc(x.where || x.why)}</td><td class="small muted">${esc(statLine({ pos: x.pos }, x.cs))}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 function recapView(r, season, h) {
   if (!r) return '<p class="muted">No recap for this season.</p>';
@@ -14501,6 +14502,60 @@ function pfCrowd(P) {
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.61', t: 'Friday nights', n: [
+    'New: High School Coach, on the Home screen. Take over a small-town team: about forty kids, four years each, ten games and the playoffs.',
+    'Develop them. Players improve with practice, faster if they work hard, and fastest if you spend your own time on them. Set how the team practices and what offense it runs each preseason.',
+    'Decisions on and off the field: a star who is failing algebra, a booster\'s son who is not playing, a private school after your best junior, and a college scout with time to watch one senior.',
+    'Signing day: your seniors sign with colleges, from two-star to five-star. With Shared world on, they are on the recruiting board of the same year in your athletic director careers on this device.',
+    'Build the program with the booster fund (weight room, youth program, film room), win state titles, and earn seven milestones.',
+    'Move up. Bigger high schools call when you have earned it, and in time a college does. Taking the college job starts a Coach career there with a reputation head start. Three save slots.',
+    'The Home screen is back to four cards across, now that there are eight ways to play.',
+  ] },
+  { v: '9.60', t: 'Agent mode', n: [
+    'New: Agent mode, on the Home screen. Run a sports agency. You earn 3% of every contract your clients sign, every year it runs.',
+    'Signing season: draft prospects are choosing agents. Each wants something different from his career: the biggest contract, a club that wins, a starting job, or to play near home. Find out what, pitch it, and he may choose you over the big agencies.',
+    'The draft: decide how each rookie prepares. Where he is taken sets his first contract, and your fee, for four years.',
+    'Free agency: clubs make offers and you negotiate. Asking for more can raise an offer or end the talk; more bidders give you more leverage. A deal that misses what your client wanted costs you his trust, and a client who stops trusting you fires you.',
+    'The season: holdouts, trade requests, endorsements, bad headlines, and rival agencies taking your stars to dinner.',
+    'Build the agency: hire scouting, negotiation and marketing staff, earn a reputation, and chase seven milestones. Three save slots.',
+    'Agent mode is a game of its own with a lighter league behind it. It does not share players with your other careers yet.',
+  ] },
+  { v: '9.59', t: 'Bring your own class', n: [
+    'New: class files. The Save file page can save the current recruiting class (college) or draft class (NFL) as a spreadsheet file, and load one back. Edit a class, build your own, or swap one with a friend. Add players to the class or replace it; recruits who have already committed stay.',
+    'A class file is one player a line: name, position, then stars, rating, potential and hometown for recruits, or age, rating, potential and college for draft prospects.',
+    'Old saves load as before.',
+  ] },
+  { v: '9.58', t: 'Every player has a story', n: [
+    'New: player stories. Every player page now ends with his story: how he was signed and who else wanted him, each season, his awards, his injuries, and for former players how he left and what became of him. Open a former player from the History page, where a new card lists the ones people still talk about.',
+    'Stories carry between careers on this device. Players an athletic director sends to the NFL Draft can turn up in the same year\'s draft class in a general manager career (Shared world on), and their page there tells the college half: that you signed them, where, and what they won.',
+    'Realignment has teeth. Strong conferences now take schools from weaker power conferences, and the league that was raided fills the hole from below. The Standings page has a table of every conference by strength, with who moved and when.',
+    'A conference may invite your school (athletic director). The offer lays out the TV money, the level of play, where you would rank, the travel and the exit fee. Accept, ask them to cover the fee and risk losing the offer, or decline. If your rival stays behind, some fans will not forgive it.',
+    'Old saves load as before. Players signed before this update have a shorter first chapter.',
+  ] },
+  { v: '9.57', t: 'Someone who remembers', n: [
+    'New: your nemesis (athletic directors and general managers). One of your rival front offices is now a person who lasts your whole career, with the same name and style wherever you go. If you change jobs, even from college to the NFL, he turns up at a rival of the new one.',
+    'He remembers. The Rivals page shows your head-to-head record and everything that has happened between you, and what he says to the press after you play depends on it.',
+    'He makes moves aimed at you. In the offseason he may offer your best coordinator a job: match it, go after his staff instead, or let him go. In college he may go after a recruit who is leaning your way: answer with money, send the head coach, or let it go. A move you do not answer goes his way.',
+    'New: scandals you can cause (college athletic director). Three temptations can come up: a man with an envelope for a top recruit, a star\'s failed test days before a big game, and an injury kept off the report. Each gives you something now and raises your NCAA risk.',
+    'A secret stays live for three seasons. If the NCAA finds a violation while one is live, the story names it and you choose how to answer: take responsibility, fire a coordinator and blame him, or fight it in public. The History page lists what only you know and what came out.',
+    'The newer decisions (injuries and scandals) come up more often than in 9.56, where they were too rare.',
+    'Fixed: an Ironman athletic director who moved to the NFL lost Ironman. It now carries over.',
+    'Scandals only involve fictional players. Old saves load as before, and a nemesis appears in them from the next week you play.',
+  ] },
+  { v: '9.56', t: 'The road, the training room and the ones who left', n: [
+    'Travel matters (Updated balance): a team that crosses time zones to play gives up a little, more for each zone, and so does a visitor playing a mile up at places like Air Force, Wyoming, Colorado, Utah, BYU or Denver. The game preview tells you when it applies. It is a small edge, about half a home-field advantage at most. Classic saves are unchanged.',
+    'Athletic director: two new decisions about injured players. When the doctors advise a player to stop, you can support a medical retirement, leave it to his family, or tell him the team needs him. And before a rivalry or top-10 game, a hurt starter may ask to play: let him, and about two times in five he makes it worse.',
+    'A player who comes back against medical advice is slower and gets hurt more often.',
+    'New: the alumni network, on the History page of college careers. Former players in the NFL give money back each offseason, recruits at a star\'s old position are easier to land, and now and then a former player applies to coach for you, for less than the going rate.',
+    'These decisions only involve fictional players. Old saves load as before.',
+  ] },
+  { v: '9.55', t: 'Look back on it', n: [
+    'NFL seasons now get a recap, like college seasons: a season grade, the best win, the toughest loss, the comeback of the year and your top players. Open it from the History page. Seasons played before this update have no recap.',
+    'Every recap lists the decisions you made that season, and has a button to save or share a picture of that season in your team\'s colors.',
+    'New: the career timeline. One tall picture of your whole career, season by season, to save or post. It is on the History page, and on the Stats page in Player Career.',
+    'New: feedback. The Home screen and Settings have buttons to report a problem or suggest an idea. They open a short form with your game version, mode and device already filled in.',
+    'Old saves load as before.',
+  ] },
   { v: '9.54', t: 'Ironman everywhere', n: [
     'Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.',
     'Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.',
@@ -15109,7 +15164,7 @@ function renderHome() {
   if (cui.coSetup) { $('#view').innerHTML = coachSetupHTML(null); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.ownSetup) { $('#view').innerHTML = ownSetupHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
   if (cui.adPick) { $('#view').innerHTML = adPickHTML(); cui.flash = ''; document.title = 'Football Empire'; setInert(!$('#modal').hidden); return; }
-  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">Six ways to play</h1><p class="muted">Run a college program, coach on the sideline, play a career from high school to the NFL, build an NFL roster as general manager, run a whole league as commissioner, or buy a club and own it.</p></section>
+  $('#view').innerHTML = (cui.flash ? `<div class="flash toast">${esc(cui.flash)}</div>` : '') + `<section class="homehero"><div class="eyebrow">Football Empire</div><h1 class="h2">${6 + miniCount()} ways to play</h1><p class="muted">Run a college program, coach on the sideline, play a career from high school to the NFL, build an NFL roster as general manager, run a whole league as commissioner, buy a club and own it, or try one of the newer modes at the end of the list.</p></section>
   ${lead}<div class="modes">
    <article class="mode"><div class="mglyph" aria-hidden="true">${IC.grid}</div><div class="eyebrow">College</div><h2 class="h2">Athletic Director</h2><p>Pick any of the 138 FBS schools, or create your own. Hire and fire coaches, set the budget, recruit and build a dynasty. Good ADs hear from the NFL.</p>
     <div class="msave">${a ? `<b>${esc(a.name)}</b> · ${a.season} · ${a.phase === 'offseason' ? 'offseason' : esc(a.rec)} <span class="muted">· slot ${aSlot}</span>` : '<span class="muted">No AD career yet. Pick your school to start in 2026.</span>'}<div class="small muted">${nAD} of 5 save slots used</div></div>
@@ -16327,7 +16382,7 @@ Object.assign(actions, {
     if ([1, 2, 3, 4, 5].some(i => lsGet(SLOT_KEY(i)))) { if (state && !saveBlocked && !(await saveNow())) return notify(AD_SAVE_FAIL); const free = firstFreeSlot(); if (!free) { state = null; await boot(); ui.tab = 'file'; ui.flash = 'All five AD save slots are in use. Delete one here, then pick your school again from the Home screen.'; render(); return; }
       newGame(ui.newDiff || 'normal', null, null, gm ? 'MICH' : ui.nc.tid); if (gm) { goPro(gm, { role: 'gm' }); state.tline = []; } setActiveSlot(free); resetUi(); applyTheme(); save(); }
     else { state = null; await boot({ tid: ui.nc.tid, diff: ui.newDiff || 'normal', gm }); }
-    if (ui.nc.iron && state) { X().iron = true; save(); } ui.nc.iron = false;
+    if (ui.nc.iron && state) { state.iron = true; X().iron = true; save(); } ui.nc.iron = false;
     if (gm && ui.nc.fd && state && isPro() && !PS().fd) { fdStart(); save(); } ui.nc.fd = false; ui.tab = isPro() ? 'off' : 'office'; render(); window.scrollTo(0, 0); },
   chlwatch(d) { hlCareer(+d.i); },
   patchall() { openModal(patchAllHTML(), 'Patch notes'); },
@@ -16973,7 +17028,7 @@ function vProLeague() {
    <section class="card"><div class="eyebrow">Super Bowl champions</div><table class="mini wide">${champs || '<tr><td class="muted">None yet.</td></tr>'}</table></section>${predCardHTML()}</div></div>${weeklyCardHTML()}`;
 }
 function vProHistory() {
-  const L = PS(); const rows = L.hist.slice().reverse().map(h => `<tr><td>${h.s}</td><td>${tchip(h.tm, { norank: true })}</td><td>${esc(h.role === 'GM' ? 'General manager' : roleTitle(h.role))}</td><td class="num">${h.w}-${h.l}</td><td>${esc(PO_LABEL[h.po])}${h.seed ? ` <span class="small muted">(No. ${h.seed} seed)</span>` : ''}</td><td class="num">${h.exp}</td></tr>`).join('');
+  const L = PS(); const rows = L.hist.slice().reverse().map(h => `<tr><td>${h.s}${h.recap ? ` <button class="lnk small" data-act="precap" data-s="${h.s}">Recap</button>` : ''}</td><td>${tchip(h.tm, { norank: true })}</td><td>${esc(h.role === 'GM' ? 'General manager' : roleTitle(h.role))}</td><td class="num">${h.w}-${h.l}</td><td>${esc(PO_LABEL[h.po])}${h.seed ? ` <span class="small muted">(No. ${h.seed} seed)</span>` : ''}</td><td class="num">${h.exp}</td></tr>`).join('');
   const tx = L.tx.slice(0, 40).map(t => `<li><span class="when">${t.s}${t.wk ? ' · Wk ' + t.wk : ' · Off'}</span>${esc(t.txt)}</li>`).join('');
   const h2 = L.h2h || []; const rivals = NFL.filter(t => t.id !== ME && T(t.id) && T(t.id).conf === T(ME).conf && T(t.id).div === T(ME).div).map(t => { const log = h2.filter(x => x.opp === t.id); const st = h2hStats(log); return `<div class="rival"><h3 class="h3">vs. ${esc(t.name)}</h3><div class="big">${st ? st.w + '-' + st.l : '0-0'}</div>${h2hLine(st) || '<p class="small muted">No games yet.</p>'}</div>`; }).join('');
   const ring = L.ring || [];
@@ -22204,7 +22259,8 @@ Object.assign(actions, {
 /* ===================== v9.53: Ironman careers (athletic director and NFL general manager) =====================
  * Chosen when the career starts and never turned off. An Ironman career has no undo, no admin tools, a fixed
  * difficulty, and can't be rolled back to an earlier copy or replaced by a save code. The flag is X().iron. */
-const ironOn = () => !!(state && state.x && state.x.iron);
+// state.iron carries between college and the NFL. Careers from 9.53 to 9.56 kept the flag in x, which did not.
+const ironOn = () => !!(state && (state.iron || (state.x && state.x.iron) || (state.colW && state.colW.x && state.colW.x.iron)));
 const IRON_NO = 'This is an Ironman career: ';
 { const _u = undoSnap; undoSnap = function () { return ironOn() ? null : _u.apply(this, arguments); }; }
 { const _s = slotSummary; slotSummary = function () { const o = _s.apply(this, arguments); if (o && ironOn()) o.iron = true; return o; }; }
@@ -22239,7 +22295,7 @@ function ironRowHTML() {
     ironask() { if (appMode === 'career') cui.confirm = 'iron'; else ui.confirm = 'iron'; render(); refocus({ act: 'ironon' }); },
     ironon() {
       if (appMode === 'career') { if (!cs) return; cui.confirm = null; CX().iron = true; CX().ironAt = cs.year; cui.flash = 'Ironman is on for this career.'; cSave(); return render(); }
-      if (!state) return; ui.confirm = null; ui.undo = null; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
+      if (!state) return; ui.confirm = null; ui.undo = null; state.iron = true; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
     },
   });
 }
@@ -22294,9 +22350,9 @@ try { siteBoot(); } catch (e) { console.error(e); }
 /* ===================== v9.53: a picture of your season to share =====================
  * In the offseason the Office offers a 1200x630 picture of the season just finished, in the team's colors:
  * the record, how it ended, and the career so far. It is drawn on a canvas in the browser; nothing is uploaded. */
-function seasonCardData() {
+function seasonCardData(season) {
   if (!state || appMode !== 'ad' || isComm() || typeof shareSeasons !== 'function') return null;
-  let ss; try { ss = shareSeasons(); } catch (e) { return null; } if (!ss || !ss.length) return null; const h = ss[ss.length - 1];
+  let ss; try { ss = shareSeasons(); } catch (e) { return null; } if (!ss || !ss.length) return null; if (season) ss = ss.slice(0, ss.findIndex(x => x.s === +season) + 1); if (!ss.length) return null; const h = ss[ss.length - 1];
   const sc = (typeof schoolColors === 'function' && schoolColors()) || { c1: '#FFCB05', c2: '#00274C' }; const p = teamPalette(sc.c1, sc.c2);
   const role = isOwner() ? 'Owner' : isCoach() ? (state.co && state.co.name ? state.co.name : 'Coach') : isPro() ? 'General manager' : 'Athletic director';
   return { team: myName(), season: h.s, w: h.w, l: h.l, end: h.title ? (isPro() ? 'Super Bowl champions' : 'National champions') : h.post ? (isPro() ? 'Playoff team' : 'Postseason team') : '', role,
@@ -22322,7 +22378,7 @@ function seasonCardHTML() {
 { const w = f => function () { return f.apply(this, arguments) + seasonCardHTML(); }; vOffice = w(vOffice); vCoachOffice = w(vCoachOffice); vProOffice = w(vProOffice); }
 Object.assign(actions, {
   async seasoncard(d) {
-    const data = seasonCardData(); const msg = t => { const m = document.getElementById('seasoncardmsg'); if (m) m.textContent = t; }; if (!data) return;
+    const data = seasonCardData(d.s); const msg = t => { const m = document.querySelector('#modal:not([hidden]) .seasoncardmsg') || document.getElementById('seasoncardmsg'); if (m) m.textContent = t; }; if (!data) return;
     try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('900 100px "Big Shoulders Display"'), document.fonts.load('600 30px "Public Sans"')]); } catch (e) { }
     const name = `football-empire-${String(data.team).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${data.season}.png`;
     const blob = await new Promise(res => seasonCardCanvas(data).toBlob(res, 'image/png')); if (!blob) return msg('The picture could not be made in this browser.');
@@ -22330,4 +22386,1056 @@ Object.assign(actions, {
     try { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); msg('Saved ' + name + '.'); } catch (e) { msg('Downloads are blocked here.'); }
   },
 });
+/* ===================== v9.55: season recaps everywhere, the career timeline picture, feedback =====================
+ * College careers already had a season recap (buildRecap, recapView). This adds the same for the NFL (kept on each
+ * PS().hist entry as `recap`), lists the decisions made that season from the decision journal, and puts a
+ * "save the picture" button on every recap. The career timeline is one tall picture of every season.
+ * Nothing new is required in a save: a season without a recap simply has no Recap link. */
+
+/* ---------- the NFL season recap ---------- */
+function proBuildRecap() {
+  const L = PS(); const games = mGames().filter(g => g.done); if (!games.length) return null;
+  const mine = g => (g.h === ME ? g.hs - g.as : g.as - g.hs); const val = g => { const o = T(g.h === ME ? g.a : g.h); return (o && o.elo ? o.elo : 1500) + mine(g) * 5; };
+  const nm = g => { const o = T(g.h === ME ? g.a : g.h); return o ? o.name : ''; }; const sc = g => (g.h === ME ? `${g.hs}-${g.as}` : `${g.as}-${g.hs}`);
+  const wins = games.filter(g => mine(g) > 0), losses = games.filter(g => mine(g) < 0);
+  const best = wins.sort((a, b) => val(b) - val(a))[0], worst = losses.sort((a, b) => val(a) - val(b))[0]; const comeback = wins.filter(g => (g.minM || 0) <= -10).sort((a, b) => a.minM - b.minM)[0];
+  const top = state.roster.filter(p => p.st && Object.keys(p.st).length && !['K', 'P', 'LS'].includes(p.pos)).sort((a, b) => b.ovr - a.ovr).slice(0, 3).map(p => ({ n: p.n, pos: p.pos, line: statLineRaw(p.pos, p.st) }));
+  const me = T(ME); const d = (me.w - (L.expW || 8.5)) * 3 + [0, 3, 6, 9, 12, 20][proPoResult(ME)] ;
+  return { best: best ? { opp: nm(best), score: sc(best) } : null, worst: worst ? { opp: nm(worst), score: sc(worst) } : null, comeback: comeback ? { opp: nm(comeback), score: sc(comeback), down: -comeback.minM } : null, top, grade: d >= 12 ? 'A' : d >= 5 ? 'B' : d >= -2 ? 'C' : d >= -8 ? 'D' : 'F' };
+}
+{ const _p = proStartOffseason; proStartOffseason = function (fresh) {
+  let rc = null; const s = state.season; if (!fresh) { try { rc = proBuildRecap(); } catch (e) { console.error(e); } }
+  const r = _p.apply(this, arguments);
+  try { const h = PS().hist[PS().hist.length - 1]; if (rc && h && h.s === s && h.tm === ME) h.recap = rc; } catch (e) { }
+  return r;
+}; }
+
+/* ---------- on every recap: the decisions of that season, and a picture to share ---------- */
+function recapExtrasHTML(season) {
+  if (!state || !season) return ''; let dj = []; try { dj = djOf(X()).filter(j => j.s === +season).slice(-4); } catch (e) { }
+  const pic = seasonCardData(season) ? `<div class="row gap mt"><button class="btn sm" data-act="seasoncard" data-v="save" data-s="${season}">Save the picture</button>${navigator.share && navigator.canShare ? `<button class="btn ghost sm" data-act="seasoncard" data-v="share" data-s="${season}">Share</button>` : ''}</div><p class="small muted seasoncardmsg" role="status"></p>` : '';
+  return `${dj.length ? `<div class="eyebrow mt">Decisions that shaped it</div><ul class="plainlist small">${dj.map(j => `<li>· ${esc(j.t)}</li>`).join('')}</ul>` : ''}${pic}`;
+}
+{ const _r = recapView; recapView = function (r, season, h) { const html = _r.apply(this, arguments); return r && h ? html + recapExtrasHTML(season) : html; }; }
+Object.assign(actions, {
+  precap(d) { const h = PS().hist.find(x => x.s === +d.s && x.recap); if (!h) return; openModal(recapView(h.recap, h.s, { w: h.w, l: h.l, bowl: PO_LABEL[h.po] }).replace('Board grade', 'Season grade')); },
+});
+
+/* ---------- the career timeline picture ---------- */
+function timelineData() {
+  if (appMode === 'career') {
+    if (!cs || !cs.p || !(cs.p.seasons || []).length) return null; const p = cs.p;
+    const tn = e => { try { return e.lvl === 'hs' ? e.team : e.lvl === 'nfl' ? nflName(e.team) : cTeamName(e.team); } catch (x) { return String(e.team || ''); } };
+    return { title: cName(p), sub: `${p.pos} · PLAYER CAREER${typeof cIronOn === 'function' && cIronOn() ? ' · IRONMAN' : ''}`, rows: p.seasons.map(e => ({ y: e.year, a: tn(e), b: e.rec || '', c: `${e.cls || ''}${e.ovr ? ' · ' + e.ovr + ' overall' : ''}`, star: !!(e.awards && e.awards.length), note: e.awards && e.awards.length ? String(e.awards[0]) : '' })),
+      foot: `${p.seasons.length} season${p.seasons.length > 1 ? 's' : ''}`, bg: '#00274C', fg: '#F4F7FB', hi: '#FFCB05' };
+  }
+  const d = seasonCardData(); if (!d) return null; const pro = isPro(); const ss = shareSeasons(); const hist = pro ? PS().hist : state.history;
+  return { title: d.team, sub: `${d.role.toUpperCase()}${d.iron ? ' · IRONMAN' : ''}`, rows: ss.map((h, i) => { const x = hist[i] || {}; return { y: h.s, a: pro ? (T(x.tm) ? T(x.tm).name : d.team) : (x.hc ? 'Coach ' + x.hc : ''), b: `${h.w}-${h.l}`, c: pro ? (PO_LABEL[x.po] || '') : (x.bowl || '') + (x.rank ? (x.bowl ? ' · ' : '') + 'No. ' + x.rank : ''), star: h.title, note: h.title ? (pro ? 'Super Bowl champions' : 'National champions') : '' }; }),
+    foot: `${d.n} season${d.n > 1 ? 's' : ''} · ${d.tw}-${d.tl}${d.titles ? ` · ${d.titles} title${d.titles > 1 ? 's' : ''}` : ''}`, bg: d.bg, fg: d.fg, hi: d.hi };
+}
+function timelineCanvas(d) {
+  const rows = d.rows.slice(-60); const rh = rows.length > 40 ? 40 : rows.length > 24 ? 50 : 62; const W = 1200, top = 290, H = top + rows.length * rh + 130;
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d'); const disp = '"Big Shoulders Display", "Arial Narrow", Impact, sans-serif', body = '"Public Sans", system-ui, sans-serif';
+  const clip = (t, max) => { t = String(t || ''); if (g.measureText(t).width <= max) return t; while (t.length > 1 && g.measureText(t + '…').width > max) t = t.slice(0, -1); return t + '…'; };
+  g.fillStyle = d.bg; g.fillRect(0, 0, W, H); g.fillStyle = d.hi; g.fillRect(0, H - 16, W, 16); g.textBaseline = 'alphabetic';
+  g.fillStyle = d.fg; g.globalAlpha = 0.72; g.font = `600 30px ${body}`; g.fillText(clip(d.sub, W - 144), 72, 100); g.globalAlpha = 1;
+  let size = 124; do { g.font = `900 ${size}px ${disp}`; size -= 4; } while (g.measureText(d.title.toUpperCase()).width > W - 144 && size > 40); g.fillStyle = d.hi; g.fillText(d.title.toUpperCase(), 72, 222);
+  const fs = Math.round(rh * 0.5);
+  rows.forEach((r, i) => {
+    const y = top + i * rh; if (r.star) { g.fillStyle = d.hi; g.globalAlpha = 0.16; g.fillRect(56, y - rh * 0.7, W - 112, rh * 0.94); g.globalAlpha = 1; }
+    g.fillStyle = d.fg; g.globalAlpha = 0.25; g.fillRect(72, y + rh * 0.24, W - 144, 1); g.globalAlpha = 1;
+    g.font = `800 ${fs + 4}px ${disp}`; g.fillStyle = d.hi; g.fillText(String(r.y), 72, y); g.fillStyle = d.fg; g.fillText(String(r.b), 190, y);
+    g.font = `600 ${fs - 4}px ${body}`; g.fillText(clip(r.a, 360), 340, y); g.globalAlpha = 0.8; g.font = `500 ${fs - 4}px ${body}`; g.fillText(clip(r.note || r.c, 400), 728, y); g.globalAlpha = 1;
+  });
+  g.fillStyle = d.fg; g.font = `600 30px ${body}`; g.fillText(d.foot + (d.rows.length > rows.length ? ` (last ${rows.length} shown)` : ''), 72, H - 62); g.globalAlpha = 0.8; g.textAlign = 'right'; g.font = `600 26px ${body}`; g.fillText('Football Empire · collegefbsim.com', W - 72, H - 62); g.globalAlpha = 1; g.textAlign = 'left';
+  return c;
+}
+function timelineCardHTML() {
+  const d = timelineData(); if (!d) return '';
+  return `<section class="card" id="timelinecard"><div class="head"><div><div class="eyebrow">Career timeline</div><h2 class="h3">Your whole career in one picture</h2></div><p class="hint">Every season, the record and how it ended, made on this device to save or post.</p></div><div class="row gap"><button class="btn" data-act="timelinepic" data-v="save">Save the picture</button>${navigator.share && navigator.canShare ? '<button class="btn ghost" data-act="timelinepic" data-v="share">Share</button>' : ''}</div><p class="small muted" id="timelinemsg" role="status"></p></section>`;
+}
+{ const w = f => function () { return f.apply(this, arguments) + (isComm() ? '' : timelineCardHTML()); }; vHistory = w(vHistory); vProHistory = w(vProHistory); }
+{ const _c = vCStats; vCStats = function () { return _c.apply(this, arguments) + timelineCardHTML(); }; }
+Object.assign(actions, {
+  async timelinepic(d) {
+    const data = timelineData(); const msg = t => { const m = document.getElementById('timelinemsg'); if (m) m.textContent = t; }; if (!data) return;
+    try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('900 100px "Big Shoulders Display"'), document.fonts.load('600 30px "Public Sans"')]); } catch (e) { }
+    const name = `football-empire-${String(data.title).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-career.png`;
+    const blob = await new Promise(res => timelineCanvas(data).toBlob(res, 'image/png')); if (!blob) return msg('The picture could not be made in this browser.');
+    if (d.v === 'share') { try { const file = new File([blob], name, { type: 'image/png' }); if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Football Empire', text: `${data.title}: ${data.foot}.` }); return msg('Shared.'); } } catch (e) { if (e && e.name === 'AbortError') return; } }
+    try { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); msg('Saved ' + name + '.'); } catch (e) { msg('Downloads are blocked here.'); }
+  },
+});
+
+/* ---------- feedback: a report that already knows the version, the mode and the device ---------- */
+const FEEDBACK_REPO = 'https://github.com/carsonmmm/cfbsim/issues/new';
+function feedbackDevice() { const u = navigator.userAgent || ''; const os = /iPhone|iPad/.test(u) ? 'iOS' : /Android/.test(u) ? 'Android' : /Mac OS X/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windows' : /Linux/.test(u) ? 'Linux' : 'Other'; const br = /Edg\//.test(u) ? 'Edge' : /Firefox\//.test(u) ? 'Firefox' : /Chrome\//.test(u) ? 'Chrome' : /Safari\//.test(u) ? 'Safari' : 'browser'; return `${os}, ${br}, ${window.innerWidth}px wide`; }
+function feedbackMode() { if (appMode === 'career') return 'Player Career'; if (appMode !== 'ad' || !state) return 'Home screen'; return isComm() ? 'Commissioner' : isOwner() ? 'Owner' : isCoach() ? 'Coach' : isPro() ? 'NFL General Manager' : 'Athletic Director'; }
+function feedbackURL(kind) { const q = new URLSearchParams({ template: kind === 'idea' ? 'idea.yml' : 'bug.yml', mode: kind === 'idea' && feedbackMode() === 'Home screen' ? 'Every mode' : feedbackMode() }); if (kind !== 'idea') { q.set('version', PATCH_NOTES[0].v); q.set('device', feedbackDevice()); } return FEEDBACK_REPO + '?' + q.toString(); }
+function feedbackHTML() {
+  return `<section class="card feedback"><div class="head"><div><div class="eyebrow">Feedback</div><h2 class="h3">Found a bug, or have an idea?</h2></div><p class="hint">Opens a short form on GitHub with the game version, the mode you are in and your device already filled in. You need a free GitHub account to send it.</p></div><div class="row gap"><a class="btn sm" href="${esc(feedbackURL('bug'))}" target="_blank" rel="noopener">Report a problem</a><a class="btn ghost sm" href="${esc(feedbackURL('idea'))}" target="_blank" rel="noopener">Suggest an idea</a></div></section>`;
+}
+{ const _d = displaySettingsHTML; displaySettingsHTML = function () { return _d.apply(this, arguments) + feedbackHTML(); }; }
+{ const _ph = patchHomeHTML; patchHomeHTML = function () { return _ph.apply(this, arguments) + feedbackHTML(); }; }
+/* ===================== v9.56: travel, injuries with a human cost, and the alumni network =====================
+ * Travel: visitors who cross time zones, or play at altitude, give up a little. It applies in every mode that uses
+ *   the main game engine, on the Updated balance only, so Classic saves play exactly as before.
+ * Injuries: two decisions for a college athletic director (fictional players only): a player the doctors advise
+ *   to stop playing, and a hurt starter who wants to play in a big game.
+ * Alumni: former players give back each offseason: gifts, a word with recruits, and a place on your staff.
+ * New save data: X().alum (totals) and optional fields on players (medBack, gut). Old saves need none of it. */
+
+/* ---------- travel ---------- */
+const TZ_STATE = {}; // hours behind Eastern time
+[['', 0], ['AL AR IL IA KS LA MN MS MO NE ND OK SD TN TX WI', 1], ['AZ CO ID MT NM UT WY', 2], ['CA NV OR WA', 3], ['AK', 4], ['HI', 5]].forEach(([s, z]) => s.split(' ').forEach(st => { if (st) TZ_STATE[st] = z; }));
+const TZ_NFL = { ARI: 2, DEN: 2, LV: 3, LAC: 3, LAR: 3, SF: 3, SEA: 3, CHI: 1, DAL: 1, GB: 1, HOU: 1, KC: 1, MIN: 1, NO: 1, TEN: 1 };
+const HIGH_HOME = new Set(['AF', 'WYO', 'COLO', 'CSU', 'UTAH', 'BYU', 'USU', 'UNM', 'DEN']); // a mile up, or close to it
+const tzOf = id => (isPro() ? TZ_NFL[id] || 0 : TZ_STATE[TEAM_STATE[id]] || 0);
+function travelInfo(h, a, neutral) {
+  if (neutral || !h || !a || !T(h) || !T(a) || (typeof isFCS === 'function' && (isFCS(h) || isFCS(a)))) return { z: 0, alt: false, pts: 0 };
+  const z = Math.abs(tzOf(h) - tzOf(a)); const alt = HIGH_HOME.has(h) && !HIGH_HOME.has(a);
+  return { z, alt, pts: Math.min(1.5, [0, 0.3, 0.7, 1.1, 1.3, 1.5][Math.min(5, z)] + (alt ? 0.6 : 0)) };
+}
+// points for the home side; zero on the Classic balance
+function travelEdge(h, a, neutral) { if (typeof balOn !== 'function' || !balOn()) return 0; try { return travelInfo(h, a, neutral).pts; } catch (e) { return 0; } }
+{ const _g = gameDiff; gameDiff = function (h, a, neutral) { return _g.apply(this, arguments) + travelEdge(h, a, neutral); }; }
+function travelLine(g) {
+  if (!balOn() || g.neutral) return ''; const t = travelInfo(g.h, g.a, g.neutral); if (!t.pts) return ''; const away = g.a === ME;
+  const why = [t.z ? `${t.z} time zone${t.z > 1 ? 's' : ''} from home` : '', t.alt ? 'thin air at altitude' : ''].filter(Boolean).join(' and ');
+  return `<div class="small muted mt">Travel: ${away ? `your team is ${why}` : `${esc(teamName(g.a))} ${t.z ? 'is ' : 'faces '}${why}`}. A small edge for ${away ? 'the home team' : 'you'}.</div>`;
+}
+{ const _f = forecastLine; forecastLine = function (g) { let x = ''; try { x = travelLine(g); } catch (e) { } return _f.apply(this, arguments) + x; }; }
+
+/* ---------- injuries with a human cost (college athletic director) ---------- */
+const medSeen = () => (X().med || (X().med = {}));
+function medRetire(p, why) {
+  state.roster = state.roster.filter(x => x.id !== p.id); rebuildPMap(); POS_ORDER.forEach(pos => { state.depth[pos] = (state.depth[pos] || []).filter(id => id !== p.id); }); state.captains = (state.captains || []).filter(id => id !== p.id);
+  state.alumni.push({ pid: p.id, n: p.n, pos: p.pos, cs: p.cs || {}, hist: [], awards: p.awards || [], last: state.season, why: 'Medical retirement', where: why });
+}
+EVENT_DEFS.medretire = { w: 6,
+  cond: () => !isPro() && state.roster.some(p => p.injSE && !p.real && p.ovr >= 68 && !medSeen()[p.id]),
+  make: () => { const p = pick(state.roster.filter(x => x.injSE && !x.real && x.ovr >= 68 && !medSeen()[x.id])); medSeen()[p.id] = state.season;
+    return { title: 'The doctors advise him to stop', text: `The medical staff says ${p.n} (${p.pos}, ${p.ovr} OVR) risks lasting damage if he plays again after his ${String(p.injType || 'injury').toLowerCase()}. He wants to come back. His family is asking what the school thinks.`, data: { pid: p.id },
+      opts: [{ label: 'Support a medical retirement', hint: 'He keeps his scholarship and stays with the team as a student coach. Locker room +, fans +. You lose the player.' }, { label: 'Leave it to him and his family', hint: 'He may retire, or come back a step slower and more likely to be hurt again.' }, { label: 'Tell him the team needs him back', hint: 'He returns next season, slower and at real risk. If it gets out, the board and the fans will not like it.' }], def: 1 }; },
+  res: (i, d) => { const p = P(d.pid); if (!p) return 'He had already left the program.';
+    const back = (drop, msg) => { p.medBack = true; p.ovr = Math.max(40, p.ovr - drop); p.pot = Math.max(p.ovr, (p.pot || p.ovr) - drop - 1); return msg; };
+    if (i === 0) { medRetire(p, 'Retired from football on medical advice; stayed on scholarship'); mv('morale', 4); mv('fan', 2); mv('board', 1); return `${p.n} retires from football and joins the staff as a student coach. The locker room notices how the school treated him.`; }
+    if (i === 1) { if (R() < 0.5) { medRetire(p, 'Retired from football on medical advice'); mv('morale', 2); return `${p.n} and his family decide he has played his last game. He thanks the program.`; } return back(3, `${p.n} decides to come back. The doctors clear him with a warning.`); }
+    mv('morale', -3); if (R() < 0.35) { mv('board', -5); mv('fan', -4); addNews(`A report says ${myName()} pushed ${p.n} to play against medical advice. The board wants answers.`, 'bad'); }
+    return back(2, `${p.n} says he will be back. Not everyone in the building is comfortable with it.`); } };
+const bigGame = () => { const g = mGames().find(x => !x.done); if (!g || g.type === 'bye') return null; const o = oppOf(g); return rivalOf(o) || (rankOf(o) && rankOf(o) <= 10) || g.type !== 'reg' ? g : null; };
+const gutPick = () => POS_ORDER.flatMap(pos => (state.depth[pos] || []).slice(0, START[pos]).map(P)).filter(p => p && !p.real && !p.injSE && p.inj >= 1 && p.inj <= 3 && p.ovr >= 72 && !['K', 'P', 'LS'].includes(p.pos));
+EVENT_DEFS.gutitout = { w: 6,
+  cond: () => !isPro() && !X().gut && !!bigGame() && gutPick().length > 0,
+  make: () => { const p = pick(gutPick()); const g = bigGame(); const o = oppOf(g);
+    return { title: 'He wants to play hurt', text: `${p.n} (${p.pos}, ${p.ovr} OVR) is supposed to miss ${p.inj} more week${p.inj > 1 ? 's' : ''} with his ${String(p.injType || 'injury').toLowerCase()}. With ${teamName(o)} next, he is telling everyone he can go.`, data: { pid: p.id, opp: o },
+      opts: [{ label: 'Let him play', hint: 'He is in the lineup this week. About two times in five he makes it worse and misses much longer.' }, { label: 'Hold him out', hint: 'He heals on schedule. He will not be happy about it.' }, { label: 'Leave it to the doctors', hint: 'They hold him out. No hard feelings.' }], def: 2 }; },
+  res: (i, d) => { const p = P(d.pid); if (!p) return 'He was no longer on the roster.';
+    if (i === 0) { X().gut = { pid: p.id, wk: state.week, s: state.season, inj: p.inj, type: p.injType, opp: d.opp }; p.inj = 0; return `${p.n} will play against ${teamName(d.opp)}.`; }
+    if (i === 1) { mv('morale', -1); return `${p.n} sits. He says he understands, and does not look like he means it.`; }
+    return `The doctors keep ${p.n} out. He takes it from them.`; } };
+// the week after: did playing hurt cost him?
+{ const _r = rehabWeek; rehabWeek = function (played) {
+  try { const G = state.x && state.x.gut; if (G && played && !isPro()) { const p = P(G.pid); delete state.x.gut;
+    if (p && !(p.inj > 0)) { if (R() < 0.4) { p.inj = Math.min(10, G.inj * 2 + 2); p.injType = G.type || p.injType; p.injFresh = true; p.ovr = Math.max(40, p.ovr - 1); mv('morale', -2); addNews(`${p.n} played hurt against ${teamName(G.opp)} and made it worse. He is out about ${p.inj} weeks, and he is not the same player.`, 'bad'); } else { mv('morale', 2); addNews(`${p.n} played through it against ${teamName(G.opp)} and came out fine. The locker room loved it.`, 'good'); } } } } catch (e) { console.error(e); }
+  return _r.apply(this, arguments);
+}; }
+
+/* ---------- the alumni network (college) ---------- */
+const alumBook = () => (X().alum || (X().alum = { gifts: 0, last: null, hires: 0, refs: 0 }));
+const alumDrafted = a => /^Drafted by/.test(a.where || ''); const alumRound = a => +(((a.where || '').match(/round (\d)/) || [])[1] || 0);
+const alumNotable = a => (alumDrafted(a) && alumRound(a) <= 2) || (a.awards || []).length > 0;
+// once each offseason: gifts from players who made it in the NFL
+function alumniOffseason() {
+  if (isPro() || !state.alumni || !state.alumni.length) return; const B = alumBook(); if (B.last === state.season) return; B.last = state.season;
+  const pros = state.alumni.filter(a => alumDrafted(a) && state.season - a.last <= 10); if (!pros.length || isCoach()) return;
+  const mood = clamp((state.meters.boost + state.meters.fan) / 130, 0.5, 1.3);
+  // a first-round pick gives the most; the total is capped so gifts help without replacing the budget
+  const gift = r1(Math.min(3, pros.reduce((s, a) => s + (alumRound(a) === 1 ? 0.15 : alumRound(a) <= 3 ? 0.05 : 0.02), 0)) * mood * Math.max(0.3, econ()));
+  if (gift >= 0.1) { state.fin.balance += gift; B.gifts = r1((B.gifts || 0) + gift); const top = pros.slice().sort((x, y) => (alumRound(x) || 9) - (alumRound(y) || 9))[0]; addNews(`Former players in the NFL gave $${gift}M back to the program this year, led by ${top.n}.`, 'good'); }
+}
+{ const _s = startOffseason; startOffseason = function () { const r = _s.apply(this, arguments); try { alumniOffseason(); } catch (e) { console.error(e); } return r; }; }
+// recruits listen to the stars who played their position here
+{ const _g = genRecruitClass; genRecruitClass = function () { const r = _g.apply(this, arguments);
+  try { if (!isPro() && state.rec && state.alumni) { const stars = state.alumni.filter(a => ((alumDrafted(a) && alumRound(a) === 1) || (a.awards || []).length > 0) && state.season - a.last <= 6); let n = 0, who = null;
+    // the best of your board at a star's position, eight recruits a class at most
+    state.rec.list.forEach(x => { if (n >= 8 || x.star < 3) return; const a = stars.find(s => s.pos === x.pos); if (!a) return; const d = alumDrafted(a) && alumRound(a) === 1 ? 7 : 4; x.interest = clamp(Math.round(x.interest + d), 0, 100); x.alum = a.n; n++; who = who || a.n; });
+    if (n) { alumBook().refs = (alumBook().refs || 0) + n; addNews(`${n} recruit${n > 1 ? 's' : ''} on your board grew up watching your former players. ${who} and others have been making calls.`, 'good'); } } } catch (e) { console.error(e); }
+  return r; }; }
+// a former player, a few years out, applies for a job on the staff
+{ const _o = offCoaching; offCoaching = function () { const r = _o.apply(this, arguments);
+  try { if (!isPro() && state.alumni && state.cands) { const pool = state.alumni.filter(a => state.season - a.last >= 4 && state.season - a.last <= 15 && !a.real && !a.coach && a.why !== 'Medical retirement' && !/^Transferred/.test(a.where || ''));
+    if (pool.length && R() < 0.5) { const a = pick(pool); const role = ['QB', 'RB', 'WR', 'TE', 'OL'].includes(a.pos) ? 'OC' : ['K', 'P', 'LS'].includes(a.pos) ? 'ST' : 'DC'; const base = genCandidates(role, 1)[0];
+      if (base && state.cands[role]) { base.name = a.n; base.bg = `Played ${a.pos} here through ${a.last}`; base.alum = true; base.rec = clamp((base.rec || 70) + 8, 50, 97); base.salary = r1(Math.max(0.25, base.salary * 0.85)); base.age = clamp(22 + (state.season - a.last) + 4, 27, 45); state.cands[role].push(base); a.coach = true; addNews(`${a.n}, who played ${a.pos} here, wants to come home as a coach. He is on the ${ROLE_TITLE[role] || role} list.`); } } } } catch (e) { console.error(e); }
+  return r; }; }
+function alumniCardHTML() {
+  if (isPro() || isComm() || !state.alumni) return ''; const A = state.alumni; const B = state.x && state.x.alum ? state.x.alum : { gifts: 0, refs: 0 };
+  const pros = A.filter(alumDrafted); const staff = Object.values(state.staff || {}).filter(c => c && c.alum).map(c => c.name);
+  const top = A.filter(alumNotable).slice(-8).reverse();
+  return `<section class="card" id="alumnicard"><div class="head"><div><div class="eyebrow">Alumni network</div><h2 class="h2">${A.length} former player${A.length === 1 ? '' : 's'}</h2></div><p class="hint">Players who leave stay part of the program. The ones who make it give back, recruits listen to the stars who played their position here, and now and then one comes home to coach.</p></div>
+   <div class="tiles"><div class="tile"><div class="k">In the NFL Draft</div><div class="v">${pros.length}</div></div><div class="tile"><div class="k">Given back</div><div class="v">$${r1(B.gifts || 0)}M</div></div><div class="tile"><div class="k">Recruits reached</div><div class="v">${B.refs || 0}</div></div><div class="tile"><div class="k">On your staff</div><div class="v">${staff.length}</div></div></div>
+   ${top.length ? `<div class="eyebrow mt">Names recruits know</div><ul class="plainlist small">${top.map(a => `<li><b>${esc(a.n)}</b>, ${a.pos} · ${esc(a.where || '')}${(a.awards || []).length ? ' · ' + esc(typeof a.awards[0] === 'string' ? a.awards[0] : String(a.awards[0].t || a.awards[0].name || a.awards[0].k || 'Award')) : ''}</li>`).join('')}</ul>` : '<p class="muted small mt">No stars yet. Send players to the NFL Draft and this fills in.</p>'}${staff.length ? `<p class="small mt">Coaching here now: ${staff.map(esc).join(', ')}.</p>` : ''}</section>`;
+}
+{ const _v = vHistory; vHistory = function () { let x = ''; try { x = alumniCardHTML(); } catch (e) { console.error(e); } return _v.apply(this, arguments) + x; }; }
+/* ===================== v9.57: your nemesis, and scandals you can cause =====================
+ * NEMESIS (athletic director and NFL general manager). The game already has three or four rival front offices
+ * (rxStore). One of them is now a person who lasts your whole career: the same name and style wherever you go,
+ * a memory of what happened between you, and moves aimed at you. If you change jobs he turns up at a rival of
+ * the new one. He lives in state.nem and takes over the first seat of the rivals list.
+ * SCANDALS (college athletic director, fictional players only). Three temptations with a real short-term gain.
+ * Each one raises the NCAA risk meter the game already has, and is remembered in X().dirt. If the end-of-season
+ * investigation finds something while a secret is live, you choose how to answer. Old saves need none of this. */
+
+/* ---------- the nemesis ---------- */
+const nemOn = () => !!(state && appMode !== 'career' && !isComm() && !isCoach() && !(typeof isOwner === 'function' && isOwner()) && state.teams && T(ME));
+const NEM_MEM = 40;
+function nemNote(N, t, tone) { N.mem.unshift({ s: state.season, wk: state.phase === 'offseason' ? 0 : state.week, t, tone: tone || '' }); if (N.mem.length > NEM_MEM) N.mem.length = NEM_MEM; }
+function nemSync() {
+  if (!nemOn()) return null; const R_ = rxStore(); if (!R_.list.length) return null; const lvl = isPro() ? 'nfl' : 'col'; let N = state.nem;
+  if (!N) { const e = R_.list[0]; N = state.nem = { name: e.name, style: e.style, id: e.id, lvl, me: ME, since: state.season, w: 0, l: 0, res: [], poached: 0, kept: 0, flipped: 0, held: 0, mem: [], pend: null }; nemNote(N, `${N.name} runs ${teamName(e.id)}. You are going to hear that name a lot.`); }
+  let e = R_.list.find(r => r.id === N.id);
+  if (!e || N.me !== ME || N.lvl !== lvl) { // you moved, or the rivals list was rebuilt: he takes the first seat
+    e = R_.list[0]; const moved = N.me !== ME || N.lvl !== lvl; const from = N.id; N.id = e.id; N.me = ME; N.lvl = lvl; N.pend = null;
+    if (moved && from !== e.id) { nemNote(N, `He left for ${teamName(e.id)} after you took the ${myName()} job.`); addNews(`${N.name} is the new ${lvl === 'nfl' ? 'general manager' : 'athletic director'} at ${teamName(e.id)}. He says the move has nothing to do with you.`); }
+  }
+  if (e.name !== N.name) { e.name = N.name; e.style = N.style; }
+  return N;
+}
+const nemSeat = N => rxStore().list.find(r => r.id === N.id);
+const nemHeat = N => { const e = nemSeat(N); return e ? e.heat : 0; };
+const nemMood = N => { const h = nemHeat(N); return h < 0 ? 'Grudging respect' : h < 30 ? 'Rivals' : h < 60 ? 'Bad blood' : 'Open war'; };
+const nemStreak = N => { let n = 0; for (const r of N.res) { if (r === N.res[0]) n++; else break; } return { n, win: N.res[0] === 'W' }; };
+// what he says after you play each other: it depends on what has happened between you
+function nemQuote(N, won, score) {
+  const st = nemStreak(N); const T_ = teamName(N.id); const you = myName();
+  if (won) return st.n >= 3 ? `"${st.n} in a row. I know the number. Everyone here knows the number," ${N.name} says after ${you} beats ${T_} again, ${score}.`
+    : N.poached ? `"They coach well over there. They should. Half that staff was almost mine," ${N.name} says after losing to ${you}, ${score}.`
+    : N.style === 'showman' ? `"Enjoy it. I will be saying something different next year," ${N.name} tells reporters after ${you} wins, ${score}.` : `${N.name} leaves without taking questions after ${you} beats ${T_}, ${score}.`;
+  return st.n >= 3 ? `"${st.n} straight. At some point it stops being a rivalry," ${N.name} says after ${T_} beats ${you}, ${score}.`
+    : N.flipped ? `"We recruit better and it shows on Saturdays," ${N.name} says. He has flipped ${N.flipped} of your recruits and just beat you ${score}.`
+    : N.style === 'shark' ? `"I do not gloat. I just keep the receipts," ${N.name} says after ${T_} wins, ${score}.` : `"That is the program we are building, and that is the one they are," ${N.name} says after ${T_} beats ${you}, ${score}.`;
+}
+function nemWeek(wk, mg) {
+  const N = nemSync(); if (!N) return; const e = nemSeat(N); const k = state.season + ':' + wk;
+  // an unanswered offer to your coordinator is accepted when the season starts; an unanswered move on your recruit lands after two weeks
+  if (N.pend && N.pend.k === 'poach' && state.phase === 'regular') nemResolve('poach', 'pass', true);
+  if (N.pend && N.pend.k === 'flip' && (N.pend.s !== state.season || state.week - N.pend.wk >= 2)) nemResolve('flip', 'pass', true);
+  if (mg && mg.done && (mg.h === N.id || mg.a === N.id)) {
+    const mine = mg.h === ME ? mg.hs : mg.as, his = mg.h === ME ? mg.as : mg.hs; const won = mine > his; const score = Math.max(mine, his) + '-' + Math.min(mine, his);
+    if (won) N.w++; else N.l++; N.res.unshift(won ? 'W' : 'L'); if (N.res.length > 12) N.res.length = 12;
+    const q = nemQuote(N, won, score); nemNote(N, `${won ? 'You beat' : 'You lost to'} ${teamName(N.id)}, ${score}.`, won ? 'good' : 'bad'); addNews(q, won ? 'good' : 'bad'); try { feedBiz(q, !won); } catch (x) { }
+    return;
+  }
+  // college, mid-season: he goes after the best recruit who is leaning your way
+  if (!isPro() && !N.pend && state.phase === 'regular' && wk >= 5 && wk <= 10 && N.flipS !== state.season && state.rec && state.rec.list && xh('nemflip' + k) < 0.12 + Math.max(0, nemHeat(N)) / 400) {
+    const r = state.rec.list.filter(x => x.offered && x.status === 'open' && x.star >= 4 && x.interest >= 55).sort((a, b) => b.star - a.star || b.interest - a.interest)[0];
+    if (r) { N.flipS = state.season; N.pend = { k: 'flip', rid: r.id, n: r.n, pos: r.pos, star: r.star, s: state.season, wk: state.week, cost: r2(0.2 + r.star * 0.06) }; addNews(`${N.name} was at ${r.n}'s game on Friday night. ${teamName(N.id)} wants your ${r.star}-star ${r.pos}. Answer it from the Office.`, 'bad'); }
+  }
+}
+{ const _w = rxWeek; rxWeek = function (wk, mg) { const r = _w.apply(this, arguments); try { nemWeek(wk, mg); } catch (e) { console.error(e); } return r; }; }
+// once an offseason: the season's verdict, and sometimes a run at your coordinator
+function nemOffseason() {
+  const N = nemSync(); if (!N) return; if (N.offS === state.season) return; N.offS = state.season; const me = T(ME), him = T(N.id); if (!me || !him) return;
+  const d = me.w - him.w; nemNote(N, d > 0 ? `You finished ${me.w}-${me.l}. He finished ${him.w}-${him.l}.` : d < 0 ? `He finished ${him.w}-${him.l}. You finished ${me.w}-${me.l}.` : `You both finished ${me.w}-${me.l}.`, d > 0 ? 'good' : d < 0 ? 'bad' : '');
+  if (N.pend) return; const cand = ['OC', 'DC'].map(r => [r, state.staff && state.staff[r]]).filter(([, c]) => c && !c.me && !c.interim && (c.ovr || 0) >= 70).sort((a, b) => b[1].ovr - a[1].ovr)[0];
+  if (cand && xh('nempoach' + state.season) < 0.2 + Math.max(0, nemHeat(N)) / 400 + (N.style === 'poacher' ? 0.12 : 0)) {
+    const [role, c] = cand; N.pend = { k: 'poach', role, name: c.name, ovr: c.ovr, s: state.season, raise: r1(Math.max(0.2, (c.salary || 1) * 0.35)) };
+    addNews(`${N.name} has offered your ${ROLE_TITLE[role] || role}, ${c.name}, a job at ${teamName(N.id)}. Answer it from the Office.`, 'bad');
+  }
+}
+{ const _s = startOffseason; startOffseason = function () { const r = _s.apply(this, arguments); try { if (!isPro()) nemOffseason(); } catch (e) { console.error(e); } return r; }; }
+{ const _p = proStartOffseason; proStartOffseason = function (fresh) { const r = _p.apply(this, arguments); try { if (!fresh) nemOffseason(); } catch (e) { console.error(e); } return r; }; }
+// A coordinator who leaves is replaced from inside the building at once, so no job is ever empty mid-season.
+function nemReplace(role) { const old = state.staff[role]; const c = genCandidates(role, 1)[0]; c.ovr = clamp((old.ovr || 72) - 7, 55, 90); c.bg = 'Promoted from within'; c.salary = r1(Math.max(0.25, (old.salary || 1) * 0.6)); c.years = 2; state.staff[role] = c; return c; }
+function nemResolve(kind, how, quiet) {
+  const N = state.nem; const P_ = N && N.pend; if (!P_ || P_.k !== kind) return ''; const e = nemSeat(N); const heat = d => { if (e) e.heat = clamp(e.heat + d, -50, 100); }; let msg = ''; N.pend = null;
+  if (kind === 'poach') {
+    const c = state.staff[P_.role]; if (!c || c.name !== P_.name) return 'He had already moved on.';
+    const leave = why => { const nw = nemReplace(P_.role); N.poached++; mv('morale', -2); nemNote(N, `He hired ${P_.name} away from you.`, 'bad'); return `${P_.name} takes the job at ${teamName(N.id)}${why}. ${nw.name} is promoted to replace him.`; };
+    if (how === 'match') { c.salary = r1((c.salary || 1) + P_.raise); c.years = Math.max(c.years || 1, 3); N.kept++; heat(5); nemNote(N, `He came for ${P_.name}. You paid to keep him.`, 'good'); msg = `${P_.name} stays, with a raise to $${c.salary}M a year.`; }
+    else if (how === 'raid') { state.fin && state.fin.balance != null && (state.fin.balance -= 0.5); heat(15);
+      if (R() < 0.5) { c.ovr = Math.min(95, (c.ovr || 72) + 2); N.kept++; nemNote(N, `He came for ${P_.name}. You kept him and hired one of his assistants instead.`, 'good'); msg = `${P_.name} stays, and one of ${N.name}'s best assistants joins his staff. ${N.name} is furious.`; }
+      else msg = 'You went after his staff and came up empty. ' + leave(' anyway'); }
+    else msg = leave('');
+  } else if (kind === 'flip') {
+    const r = state.rec && state.rec.list.find(x => x.id === P_.rid); if (!r || r.status !== 'open') return 'The recruit had already made up his mind.';
+    const lose = () => { r.interest = clamp(r.interest - 15, 1, 99); r.lead = [N.id].concat((r.lead || []).filter(x => x !== N.id)).slice(0, 3); N.flipped++; nemNote(N, `He turned ${r.n}, your ${r.star}-star ${r.pos}, toward ${teamName(N.id)}.`, 'bad'); return `${r.n} now has ${teamName(N.id)} out in front.`; };
+    if (how === 'nil') { state.fin.balance -= P_.cost; state.fin.ytd.eventx = (state.fin.ytd.eventx || 0) + P_.cost; r.interest = clamp(r.interest + 6, 1, 99); r.nemHeld = N.name; N.held++; heat(5); nemNote(N, `He came for ${r.n}. You answered with money and held on.`, 'good'); msg = `${r.n} hears your offer and stays with you. It cost $${P_.cost}M.`; }
+    else if (how === 'visit' && state.rec.visits > 0) { state.rec.visits--; if (R() < 0.7) { r.interest = clamp(r.interest + 4, 1, 99); r.nemHeld = N.name; N.held++; heat(3); nemNote(N, `He came for ${r.n}. Your head coach went to the house and held on.`, 'good'); msg = `Your head coach spends the evening with ${r.n}'s family. He is still yours to lose.`; } else msg = 'The head coach made the trip. It was not enough. ' + lose(); }
+    else msg = lose();
+  }
+  if (!quiet && msg) { try { jrAdd('nemesis', msg); } catch (x) { } } if (quiet && msg) addNews(msg, 'bad');
+  return msg;
+}
+function nemPendHTML() {
+  if (!nemOn()) return ''; const N = state.nem; const P_ = N && N.pend; if (!P_) return '';
+  if (P_.k === 'poach') return `<section class="card decision" id="nempend" data-block="1"><div class="eyebrow">Decision needed · your nemesis</div><h2 class="h2">${esc(N.name)} wants your ${esc(ROLE_TITLE[P_.role] || P_.role)}</h2><p>${esc(teamName(N.id))} has offered ${esc(P_.name)} (${P_.ovr} overall) more money and a bigger title. He has not said no.</p>
+    <div class="evopts"><button class="evopt" data-act="nemdo" data-k="poach" data-v="match"><b>Match it</b><span>A raise of $${P_.raise}M a year and a longer deal. He stays.</span></button><button class="evopt" data-act="nemdo" data-k="poach" data-v="raid"><b>Go after his staff instead</b><span>$0.5M. Even odds: you keep your man and take one of his, or you lose yours anyway.</span></button><button class="evopt" data-act="nemdo" data-k="poach" data-v="pass"><b>Let him go</b><span>You promote from within. The replacement is not as good.</span></button></div></section>`;
+  return `<section class="card decision" id="nempend" data-block="1"><div class="eyebrow">Decision needed · your nemesis</div><h2 class="h2">${esc(N.name)} is after ${esc(P_.n)}</h2><p>${esc(teamName(N.id))} is making a hard push for your ${P_.star}-star ${P_.pos}. If you do nothing for two weeks, he will lean their way.</p>
+    <div class="evopts"><button class="evopt" data-act="nemdo" data-k="flip" data-v="nil"><b>Answer with money</b><span>$${P_.cost}M from the reserve. He stays with you.</span></button><button class="evopt" data-act="nemdo" data-k="flip" data-v="visit"${state.rec && state.rec.visits > 0 ? '' : ' disabled'}><b>Send the head coach</b><span>Uses one official visit (${state.rec ? state.rec.visits : 0} left). Works about seven times in ten.</span></button><button class="evopt" data-act="nemdo" data-k="flip" data-v="pass"><b>Let it go</b><span>He cools on you and ${esc(teamName(N.id))} moves in front.</span></button></div></section>`;
+}
+function nemCardHTML() {
+  const N = nemSync(); if (!N) return ''; const st = nemStreak(N); const him = T(N.id);
+  const tone = t => (t === 'good' ? 'res-w' : t === 'bad' ? 'res-l' : 'muted');
+  return `<section class="card" id="nemcard"><div class="head"><div><div class="eyebrow">Your nemesis · ${esc(nemMood(N))}</div><h2 class="h2">${esc(N.name)}</h2><p class="muted">${esc(isPro() ? 'General manager' : 'Athletic director')}, ${esc(teamName(N.id))} · ${esc(RX_STYLE[N.style].l)}${him ? ` · ${him.w}-${him.l} this season` : ''}</p></div><p class="hint">The same person for your whole career. If you change jobs, expect him to turn up across the field again. He remembers everything.</p></div>
+   <div class="tiles"><div><span class="k">Head to head</span><span class="v">${N.w}-${N.l}</span>${st.n >= 2 ? `<span class="small muted">${st.win ? 'You have' : 'He has'} won ${st.n} straight</span>` : ''}</div><div><span class="k">Your staff</span><span class="v">${N.kept} kept · ${N.poached} lost</span></div>${isPro() ? '' : `<div><span class="k">Your recruits</span><span class="v">${N.held} held · ${N.flipped} lost</span></div>`}<div><span class="k">Since</span><span class="v">${N.since}</span></div></div>
+   <div class="eyebrow mt">What has happened between you</div><ul class="plainlist small">${N.mem.slice(0, 12).map(m => `<li><span class="muted">${m.s}${m.wk ? ', week ' + m.wk : ''}</span> · <span class="${tone(m.tone)}">${esc(m.t)}</span></li>`).join('')}</ul></section>`;
+}
+{ const _v = vXRivals; vXRivals = function () { let x = ''; try { x = nemCardHTML(); } catch (e) { console.error(e); } return x + _v.apply(this, arguments); }; }
+{ const w = f => function () { let x = ''; try { x = nemPendHTML() + dirtPendHTML(); } catch (e) { console.error(e); } return x + f.apply(this, arguments); }; vOffice = w(vOffice); vProOffice = w(vProOffice); }
+{ const _a = rxAction; rxAction = function (id, k) { const ok = _a.apply(this, arguments); try { const N = state.nem; if (ok && N && N.id === id) nemNote(N, k === 'talk' ? 'You went after him in the press.' : 'You called him to clear the air.'); } catch (e) { } return ok; }; }
+
+/* ---------- scandals you can cause ---------- */
+const dirtBook = () => (X().dirt || (X().dirt = { acts: [], pend: null, hist: [] }));
+function dirtAdd(k, t, risk) { const D = dirtBook(); D.acts.push({ s: state.season, wk: state.week, k, t }); state.meters.risk = clamp(state.meters.risk + risk, 0, 100); try { jrAdd('scandal', t); } catch (e) { } }
+const dirtStar = () => POS_ORDER.flatMap(pos => (state.depth[pos] || []).slice(0, START[pos]).map(P)).filter(p => p && !p.real && !p.inj && !p.susp && p.ovr >= 80 && !['K', 'P', 'LS'].includes(p.pos));
+const dirtRecruit = () => (state.rec && state.rec.list ? state.rec.list.filter(r => r.offered && r.status === 'open' && r.star >= 4 && r.interest < 75 && !r.bag) : []);
+const dirtOk = () => !isPro() && !isCoach() && !isComm();
+EVENT_DEFS.bagman = { w: 5, cond: () => dirtOk() && dirtRecruit().length > 0,
+  make: () => { const r = pick(dirtRecruit()); r.bag = true; return { title: 'A man with an envelope', text: `A man who says he speaks for ${r.n}, your ${r.star}-star ${r.pos} target, tells a booster that $300,000 in cash would settle where he signs. Nothing would be written down.`, data: { rid: r.id },
+    opts: [{ label: 'Let the booster handle it', hint: 'He becomes very hard to lose. $0.3M off the books and a large jump in NCAA risk. It stays a secret unless someone looks.' }, { label: 'Walk away', hint: 'He cools on you a little.' }, { label: 'Report the approach', hint: 'Board +, NCAA risk down. You are out of the running for him.' }], def: 1 }; },
+  res: (i, d) => { const r = state.rec && state.rec.list.find(x => x.id === d.rid); if (!r) return 'The recruit is no longer on your board.';
+    if (i === 0) { state.fin.balance -= 0.3; r.interest = clamp(r.interest + 30, 1, 99); dirtAdd('bagman', `A booster paid $300,000 in cash to land ${r.n}.`, 18); return `It is handled. ${r.n} is suddenly very interested in ${myName()}.`; }
+    if (i === 1) { r.interest = clamp(r.interest - 4, 1, 99); return 'You tell the booster to hang up.'; }
+    r.interest = clamp(r.interest - 25, 1, 99); mv('board', 2); state.meters.risk = clamp(state.meters.risk - 5, 0, 100); return `You report it to compliance. ${r.n} will sign somewhere else.`; } };
+EVENT_DEFS.buriedtest = { w: 4, cond: () => dirtOk() && !!bigGame() && dirtStar().length > 0,
+  make: () => { const p = pick(dirtStar()); const o = oppOf(bigGame()); return { title: 'A failed test, four days out', text: `${p.n} (${p.pos}, ${p.ovr} OVR) failed a team drug test. ${teamName(o)} is on Saturday. Right now only you, the head coach and the trainer know.`, data: { pid: p.id, opp: o },
+    opts: [{ label: 'Suspend him for the game', hint: 'He sits. Board +, locker room −.' }, { label: 'Lose the paperwork', hint: 'He plays. A large jump in NCAA risk, and it stays a secret unless someone looks.' }, { label: 'Suspend him two games and say why', hint: 'Board ++, fans +, NCAA risk down.' }], def: 0 }; },
+  res: (i, d) => { const p = P(d.pid); if (!p) return 'He was no longer on the roster.';
+    if (i === 0) { p.susp = 1; mv('board', 2); mv('morale', -1); return `${p.n} is suspended for the ${teamName(d.opp)} game.`; }
+    if (i === 1) { dirtAdd('buriedtest', `${p.n} played against ${teamName(d.opp)} after a failed drug test that was never reported.`, 20); return `The result goes in a drawer. ${p.n} will play.`; }
+    p.susp = 2; mv('board', 4); mv('fan', 1); state.meters.risk = clamp(state.meters.risk - 4, 0, 100); return `${p.n} is suspended two games, and you tell the press why.`; } };
+EVENT_DEFS.hiddeninjury = { w: 4, cond: () => dirtOk() && !X().gut && !!bigGame() && gutPick().length > 0,
+  make: () => { const p = pick(gutPick()); const o = oppOf(bigGame()); return { title: 'Keep it off the injury report', text: `The conference requires an injury report. ${p.n} (${p.pos}, ${p.ovr} OVR) should be on it and should not play against ${teamName(o)}. The trainer says an injection would get him through, if nobody writes it down.`, data: { pid: p.id, opp: o },
+    opts: [{ label: 'Do it quietly', hint: 'He plays. A jump in NCAA risk, and about two times in five he makes the injury worse.' }, { label: 'File the report and sit him', hint: 'He heals on schedule.' }], def: 1 }; },
+  res: (i, d) => { const p = P(d.pid); if (!p) return 'He was no longer on the roster.'; if (i !== 0) return `${p.n} is listed as out.`;
+    X().gut = { pid: p.id, wk: state.week, s: state.season, inj: p.inj, type: p.injType, opp: d.opp }; p.inj = 0; dirtAdd('hiddeninjury', `${p.n} was given an unreported injection to play against ${teamName(d.opp)}.`, 12); return `${p.n} is not on the report. He will play.`; } };
+// The end-of-season investigation the game already runs. Secrets older than three seasons go cold; if the NCAA
+// finds something while a secret is live, the story names it and you choose how to answer.
+{ const _i = investigate; investigate = function () {
+  const out = _i.apply(this, arguments);
+  try { if (dirtOk()) { const D = dirtBook(); D.acts = D.acts.filter(a => state.season - a.s < 3);
+    if (out && D.acts.length) { const a = D.acts[D.acts.length - 1]; D.pend = { s: state.season, out, t: a.t, n: D.acts.length }; D.hist.push({ s: state.season, t: a.t, out }); D.acts = []; mv('fan', -3); addNews(`What the investigators found: ${a.t}`, 'bad'); } } } catch (e) { console.error(e); }
+  return out;
+}; }
+function dirtResolve(how) {
+  const D = dirtBook(); const P_ = D.pend; if (!P_) return ''; D.pend = null; let msg = '';
+  if (how === 'own') { mv('board', 3); mv('fan', 2); msg = 'You take responsibility in public and accept the penalty. It is not forgotten, but it is over.'; }
+  else if (how === 'blame') { const role = ['OC', 'DC'].find(r => state.staff[r] && !state.staff[r].me); if (!role) { mv('board', -2); msg = 'There was nobody left to blame.'; } else { const old = state.staff[role].name; const nw = nemReplace(role); mv('board', 5); mv('morale', -6); if (R() < 0.3) { mv('board', -12); mv('fan', -5); addNews(`${old} tells a reporter he was fired to protect the people who gave the orders at ${myName()}.`, 'bad'); } msg = `${old} is fired for cause. ${nw.name} is promoted to replace him. The locker room knows what happened.`; } }
+  else { if (R() < 0.4) { state.fin.balance += 1; mv('fan', 5); msg = 'You fight it in public, and it works: an appeal trims the fine and the fans rally behind the program.'; } else { mv('board', -7); mv('fan', -3); msg = 'You fight it in public and lose. The board is embarrassed.'; } }
+  try { jrAdd('scandal', msg); } catch (e) { } addNews('The investigation: ' + msg); return msg;
+}
+function dirtPendHTML() {
+  if (!state || !dirtOk() || !state.x || !state.x.dirt || !state.x.dirt.pend) return ''; const P_ = state.x.dirt.pend;
+  return `<section class="card decision" id="dirtpend" data-block="1"><div class="eyebrow">Decision needed · the investigation</div><h2 class="h2">It came out</h2><p>${esc(P_.t)} The NCAA's ruling: ${esc(P_.out)}</p>
+   <div class="evopts"><button class="evopt" data-act="dirtdo" data-v="own"><b>Take responsibility</b><span>Board +, fans +. It ends here.</span></button><button class="evopt" data-act="dirtdo" data-v="blame"><b>Fire a coordinator and blame him</b><span>Board ++, locker room −−. He may talk, and that would be worse.</span></button><button class="evopt" data-act="dirtdo" data-v="fight"><b>Fight it in public</b><span>Two times in five the fans rally and the fine is trimmed. Otherwise the board is embarrassed.</span></button></div></section>`;
+}
+function dirtCardHTML() {
+  if (!state || !dirtOk() || !state.x || !state.x.dirt) return ''; const D = state.x.dirt; if (!D.acts.length && !D.hist.length) return '';
+  return `<section class="card" id="dirtcard"><div class="eyebrow">What only you know</div>${D.acts.length ? `<ul class="plainlist small">${D.acts.map(a => `<li><span class="muted">${a.s}</span> · ${esc(a.t)}</li>`).join('')}</ul><p class="small muted">A secret goes cold after three seasons. Until then, every NCAA review is a risk.</p>` : '<p class="small muted">Nothing is hanging over the program right now.</p>'}${D.hist.length ? `<div class="eyebrow mt">What came out</div><ul class="plainlist small">${D.hist.map(a => `<li><span class="muted">${a.s}</span> · ${esc(a.t)} <span class="muted">${esc(a.out)}</span></li>`).join('')}</ul>` : ''}</section>`;
+}
+{ const _v = vHistory; vHistory = function () { let x = ''; try { x = dirtCardHTML(); } catch (e) { console.error(e); } return _v.apply(this, arguments) + x; }; }
+Object.assign(actions, {
+  nemdo(d) { const m = nemResolve(d.k, d.v); after(m); },
+  dirtdo(d) { const m = dirtResolve(d.v); after(m); },
+});
+// Both decisions are in the Inbox and the "Needs your attention" list, so they move to the top of the Office.
+{ const _a = attnItems; attnItems = function () { const out = _a.apply(this, arguments);
+  try { if (appMode === 'ad' && state) { const N = nemOn() ? state.nem : null; if (N && N.pend) out.unshift({ txt: `Decision: ${N.name} is after your ${N.pend.k === 'poach' ? (ROLE_TITLE[N.pend.role] || 'coordinator').toLowerCase() : 'recruit ' + N.pend.n}.`, tab: 'office', sel: '#nempend' }); if (dirtOk() && state.x && state.x.dirt && state.x.dirt.pend) out.unshift({ txt: 'Decision: the investigation found something.', tab: 'office', sel: '#dirtpend' }); } } catch (e) { }
+  return out; }; }
+/* ===================== v9.58: player stories, and conferences that move =====================
+ * STORIES. Every player, former player and NFL player has a story: where he came from, each season, the awards,
+ * the injuries, how he left and what became of him. It is built from what the save already holds, plus a note
+ * made on signing day (p.sig). Players an athletic director sends to the NFL Draft are also written to the
+ * shared register on this device (fe-world, "alumni"), so a general manager career with Shared world on finds
+ * them in the draft class of the same year, and their page there tells the college half of the story.
+ * REALIGNMENT. The game already moved a school now and then and let you apply to another conference. Now the
+ * power conferences raid each other, the raided league refills, and a conference may invite your school, with
+ * the money, the travel and the level of play laid out. The invitation lives in X().inv. */
+
+/* ---------- stories ---------- */
+const storyYear = t => +((String(t).match(/^(\d{4})\b/) || [])[1] || 0);
+function storyCollege(o, alum) { // o: a roster player or an alumni record
+  const ch = []; const hist = o.hist || []; const y0 = hist.length ? hist[0].s : (alum ? o.last : state.season);
+  const sig = o.sig || null;
+  if (o.transfer) ch.push({ y: y0, t: `Transferred in from ${o.from || 'another school'}.` });
+  else if (o.recruit || sig) ch.push({ y: sig ? sig.s : y0, t: `Signed as a ${o.star || (sig && sig.star) || 3}-star recruit${o.home ? ' from ' + o.home : ''}.${sig && sig.beat ? ` ${teamName(sig.beat)} wanted him too.` : ''}${sig && sig.alum ? ` ${sig.alum}, who played his position here, helped bring him in.` : ''}${sig && sig.held ? ` ${sig.held} came after him and you held on.` : ''}` });
+  else if (o.walkon) ch.push({ y: y0, t: 'Joined the team as a walk-on.' });
+  else if (o.home) ch.push({ y: y0, t: `Came to ${myName()} from ${o.home}.` });
+  hist.forEach(h => { const line = h.line || (h.st && h.pos ? statLineRaw(h.pos, h.st) : ''); ch.push({ y: h.s, t: `${h.cls || ''} season: ${h.ovr} overall, ${h.gp || 0} game${h.gp === 1 ? '' : 's'}${line && h.gp ? ', ' + line : ''}.` }); });
+  (o.awards || []).forEach(a => { const s = typeof a === 'string' ? a : String(a.t || a.a || ''); if (s) ch.push({ y: storyYear(s), t: s.replace(/^\d{4}\s*/, '') + '.', star: true }); });
+  (o.persLog || []).forEach(x => ch.push({ y: x.s, t: `Changed as a person: ${PERS[x.from] ? PERS[x.from].label.toLowerCase() : x.from} to ${PERS[x.to] ? PERS[x.to].label.toLowerCase() : x.to}.` }));
+  if (o.medRS) ch.push({ y: 0, t: 'Received a medical redshirt.' }); if (o.medBack) ch.push({ y: 0, t: 'Came back to football against medical advice.' });
+  if (alum) { ch.push({ y: o.last + 0.5, t: (o.where || o.why || 'Left the program') + '.' }); if (o.coach) ch.push({ y: o.last + 4, t: `Came home to ${myName()} to coach.` }); }
+  else if ((state.captains || []).includes(o.id)) ch.push({ y: state.season + 0.4, t: 'Team captain this season.' });
+  return ch.filter(c => c.t).sort((a, b) => (a.y || 9999) - (b.y || 9999));
+}
+const worldAlumni = () => { try { return worldGet().alumni || []; } catch (e) { return []; } };
+function storyPro(p) {
+  const ch = []; const w = worldAlumni().find(a => a.n === p.n && a.pos === p.pos);
+  if (w) { ch.push({ y: w.yr - (w.seasons || 3), t: `You signed him at ${w.col} as athletic director${w.stars ? ', a ' + w.stars + '-star recruit' : ''}.` }); (w.aw || []).forEach(a => ch.push({ y: storyYear(a), t: a.replace(/^\d{4}\s*/, '') + ' at ' + w.col + '.', star: true })); ch.push({ y: w.yr, t: `Left ${w.col} after ${w.seasons || 'several'} season${w.seasons === 1 ? '' : 's'}. In that career he went in round ${w.rd} of the ${w.yr} draft.` }); }
+  else if (p.col) ch.push({ y: 0, t: `Played college football at ${p.col}.` });
+  if (p.exp != null) ch.push({ y: state.season - p.exp, t: p.exp ? `Entered the NFL ${p.exp} season${p.exp === 1 ? '' : 's'} ago.` : 'A rookie this season.' });
+  if (p.yw) ch.push({ y: state.season - p.yw, t: `With the ${myName()} for ${p.yw} season${p.yw === 1 ? '' : 's'}.` });
+  (p.awards || []).forEach(a => { const s = typeof a === 'string' ? a : String(a.t || a.a || ''); if (s) ch.push({ y: storyYear(s), t: s.replace(/^\d{4}\s*/, '') + '.', star: true }); });
+  return ch.sort((a, b) => (a.y || 9999) - (b.y || 9999));
+}
+function storyHTML(ch, title) {
+  if (!ch.length) return ''; return `<div class="eyebrow mt">${esc(title || 'His story')}</div><ul class="plainlist small story">${ch.map(c => `<li>${c.y >= 1900 ? `<span class="muted">${Math.floor(c.y)}</span> · ` : ''}${c.star ? '<b>' + esc(c.t) + '</b>' : esc(c.t)}</li>`).join('')}</ul>`;
+}
+{ const _p = playerModal; playerModal = function (id) { const html = _p.apply(this, arguments); try { const p = P(id); if (p) return html + storyHTML(isPro() ? storyPro(p) : storyCollege(p, false)); } catch (e) { console.error(e); } return html; }; }
+// signing day: remember how each recruit was won, for his story
+{ const _s = signingDay; signingDay = function () { const before = new Set(state.roster.map(p => p.id)); const r = _s.apply(this, arguments);
+  try { const list = state.rec && state.rec.list ? state.rec.list : []; state.roster.forEach(p => { if (before.has(p.id) || !p.recruit || p.sig) return; const x = list.find(q => q.n === p.n && q.pos === p.pos); p.sig = { s: state.season + 1, star: p.star }; if (x) { if (x.alum) p.sig.alum = x.alum; if (x.nemHeld) p.sig.held = x.nemHeld; const b = (x.lead || []).find(id => id !== ME && T(id)); if (b && x.star >= 4) p.sig.beat = b; } }); } catch (e) { console.error(e); }
+  return r; }; }
+// the draft: your players go into the device's shared register, for a general manager career to find
+{ const _d = runADDraft; runADDraft = function () { const n0 = state.draft.length; const r = _d.apply(this, arguments);
+  try { if (!isPro() && !isCoach() && !isComm() && typeof worldGet === 'function') { const got = state.draft.slice(n0); if (got.length) { const w = worldGet(); w.alumni = w.alumni || [];
+    got.forEach(d => { const a = state.alumni.find(x => x.n === d.n && x.pos === d.pos); if (!a || a.real) return; const last = (a.hist || []).slice(-1)[0] || {}; const ovr = last.ovr || 70;
+      w.alumni.push({ k: 'al:' + state.seed + ':' + (a.pid || d.n), n: d.n, pos: d.pos, ovr, pot: clamp(ovr + 6, ovr, 99), col: myName(), yr: d.s, rd: d.rd, no: d.no, seasons: (a.hist || []).length, aw: (a.awards || []).map(x => String(typeof x === 'string' ? x : x.t || '')).filter(Boolean).slice(0, 4), t: Date.now() }); });
+    w.alumni = w.alumni.sort((x, y) => (y.t || 0) - (x.t || 0) || x.no - y.no).slice(0, 40); worldPut(w); } } } catch (e) { console.error(e); }
+  return r; }; }
+{ const _g = genDraftClass; genDraftClass = function (yr) { const D = _g.apply(this, arguments);
+  try { if (worldOn() && D && D.list) { let n = 0; worldAlumni().forEach(a => { if (a.yr !== yr || n >= 6 || D.list.some(x => x.world === a.k || (x.n === a.n && x.pos === a.pos))) return; n++;
+      D.list.push({ id: 'da' + yr + '_' + Math.floor(hmix(a.k) * 1e6), n: a.n, pos: a.pos, age: 22, ovr: clamp(Math.round(a.ovr * 0.9), 50, 82), pot: clamp(a.pot, 60, 99), col: a.col, sc: 0, bias: 0, pbias: 0, hype: 1, world: a.k }); });
+    if (n) { const cv = p => p.ovr * 0.55 + p.pot * 0.45 + p.hype + (PRO_POS_W[p.pos] - 1) * 8; D.list.sort((a, b) => cv(b) - cv(a)); D.list.forEach((p, i) => { p.cr = i + 1; }); } } } catch (e) { console.error(e); }
+  return D; }; }
+Object.assign(actions, {
+  alumstory(d) { const a = (state.alumni || []).find(x => x.n === d.n && String(x.last) === String(d.s)); if (!a) return; openModal(`<div class="eyebrow">${esc(POS_NAME[a.pos] || a.pos)} · ${esc(myName())} · last season ${a.last}</div><h2 class="h2">${esc(a.n)}</h2><p class="muted">${esc(a.where || a.why || '')}</p>${a.cs && Object.keys(a.cs).length ? `<p class="small">Career here: ${esc(statLine({ pos: a.pos }, a.cs))}</p>` : ''}${storyHTML(storyCollege(a, true))}`, a.n); },
+});
+// the people recruits and fans still talk about, on the History page
+function storyPeopleHTML() {
+  if (isPro() || isComm() || !state.alumni || !state.alumni.length) return ''; const score = a => (a.awards || []).length * 3 + (/^Drafted/.test(a.where || '') ? 6 - Math.min(5, +(((a.where || '').match(/round (\d)/) || [])[1] || 7)) : 0) + (a.coach ? 4 : 0) + (a.why === 'Medical retirement' ? 2 : 0);
+  const top = state.alumni.filter(a => score(a) > 0).sort((a, b) => score(b) - score(a) || b.last - a.last).slice(0, 10); if (!top.length) return '';
+  return `<section class="card" id="storycard"><div class="head"><div><div class="eyebrow">Player stories</div><h2 class="h3">The ones people still talk about</h2></div><p class="hint">Open any name for his whole story. Current players have theirs on their player page.</p></div><ul class="plainlist">${top.map(a => `<li><button class="lnk" data-act="alumstory" data-n="${esc(a.n)}" data-s="${a.last}"><b>${esc(a.n)}</b></button>, ${a.pos} <span class="small muted">· ${esc(a.where || a.why || '')}</span></li>`).join('')}</ul></section>`;
+}
+
+/* ---------- realignment ---------- */
+const confMembers = c => Object.values(state.teams).filter(t => t.conf === c);
+const confLevel = c => { const m = confMembers(c).map(t => t.rating).sort((a, b) => b - a).slice(0, 10); return m.length ? m.reduce((a, b) => a + b, 0) / m.length : 0; };
+const confTravel = (c, id) => { const m = confMembers(c).filter(t => t.id !== id); return m.length ? m.reduce((a, t) => a + Math.abs(tzOf(t.id) - tzOf(id)), 0) / m.length : 0; };
+const confTV = c => r1(clamp((confLevel(c) - 66) * 0.7, -4, 12)); // what a league's TV partners add on top of the base deal
+const CONF_MAX = 18, CONF_MIN = 8;
+function confRecordMove(id, from, to) { T(id).conf = to; state.confMoves = (state.confMoves || []).concat([{ s: state.season + 1, id, from, to }]); }
+// once an offseason at most: the strongest league with room takes the best school it can get, and the league it
+// raided fills the hole from below
+function confRaid() {
+  if (isPro() || xh('raid' + state.season) > 0.14) return null; const P4 = Object.keys(CONFS).filter(c => CONFS[c].p4 && confMembers(c).length);
+  const rich = P4.filter(c => confMembers(c).length < CONF_MAX).sort((a, b) => confLevel(b) - confLevel(a))[0]; if (!rich) return null;
+  const tgt = Object.values(state.teams).filter(t => t.id !== ME && t.id !== 'ND' && t.conf !== rich && t.conf !== 'IND' && CONFS[t.conf] && CONFS[t.conf].p4 && confLevel(t.conf) < confLevel(rich) - 2 && confMembers(t.conf).length > CONF_MIN && !(state.myMove && state.myMove.to === t.conf)).sort((a, b) => b.rating - a.rating)[0]; if (!tgt) return null;
+  const from = tgt.conf; confRecordMove(tgt.id, from, rich); const out = [`${tgt.name} leaves the ${CONFS[from].name} for the ${CONFS[rich].name}.`];
+  const fill = Object.values(state.teams).filter(t => t.id !== ME && t.id !== 'ND' && CONFS[t.conf] && !CONFS[t.conf].p4 && t.conf !== 'IND' && t.rating >= 60 && confMembers(t.conf).length > CONF_MIN).sort((a, b) => b.rating - a.rating)[0];
+  if (fill) { const ff = fill.conf; confRecordMove(fill.id, ff, from); out.push(`The ${CONFS[from].name} answers by adding ${fill.name} from the ${CONFS[ff].name}.`); }
+  rebuildConfs(); addNews('Realignment: ' + out.join(' '), 'big'); X().raidS = state.season; X().raided = from; return out;
+}
+{ const _r = realign; realign = function () {
+  const mm = state.myMove && state.myMove.s === state.season && state.myMove.done !== true ? state.myMove : null; const r = _r.apply(this, arguments);
+  try { if (mm && mm.done === true && mm.tv) { state.mediaBonus = r1((state.mediaBonus || 0) + mm.tv); addNews(`${myName()}'s first TV check from the ${CONFS[mm.to].name} is ${mm.tv > 0 ? 'bigger' : 'smaller'} by $${Math.abs(mm.tv)}M a year.`, mm.tv > 0 ? 'good' : 'bad'); } confRaid(); } catch (e) { console.error(e); }
+  return r; }; }
+// an invitation for your school
+const invOn = () => !isPro() && !isCoach() && !isComm() && state.phase === 'offseason';
+const invNow = () => { const v = state.x && state.x.inv; return v && invOn() && v.s === state.season && CONFS[v.to] && T(ME).conf !== v.to && !(state.myMove && state.myMove.s === state.season) ? v : null; };
+function invMake() {
+  if (!invOn() || (state.myMove && state.myMove.s === state.season)) return null; const x = X(); if (x.invS === state.season) return null; x.invS = state.season; x.inv = null;
+  const me = T(ME); const mine = me.conf; const no = x.invNo || {};
+  const cands = Object.keys(CONFS).filter(c => c !== mine && c !== 'IND' && confMembers(c).length && confMembers(c).length < CONF_MAX && !(no[c] && state.season - no[c] < 3) && me.rating >= confLevel(c) - 6 && (confLevel(c) > confLevel(mine) + 1 || (CONFS[c].p4 && !CONFS[mine].p4))).sort((a, b) => confLevel(b) - confLevel(a));
+  if (!cands.length) return null; const p = 0.16 + (rankOf(ME) ? 0.12 : 0) + (x.raided === mine && x.raidS === state.season - 1 ? 0.2 : 0) + (state.champ === ME ? 0.2 : 0); if (xh('inv' + state.season) > p) return null;
+  const to = cands[Math.min(cands.length - 1, Math.floor(xh('invc' + state.season) * Math.min(2, cands.length)))];
+  x.inv = { s: state.season, to, tv: r1(confTV(to) - confTV(mine)), fee: r1(moveFee(to) * 0.5), asked: false };
+  addNews(`The ${CONFS[to].name} has invited ${myName()} to join. The offer is on your desk.`, 'big'); return x.inv;
+}
+{ const _s = startOffseason; startOffseason = function () { const r = _s.apply(this, arguments); try { invMake(); } catch (e) { console.error(e); } return r; }; }
+function invFacts(v) {
+  const mine = T(ME).conf; const eNow = econ(); const eThen = state.econ != null ? state.econ : (CONFS[v.to].p4 ? 0.85 : 0.3);
+  const riv = typeof archRival === 'function' ? archRival() : null;
+  return { mine, tvNow: r1(72 * eNow + (state.mediaBonus || 0) + mediaAmt()), tvThen: r1(72 * eThen + (state.mediaBonus || 0) + mediaAmt() + v.tv), lvNow: Math.round(confLevel(mine)), lvThen: Math.round(confLevel(v.to)), tzNow: confTravel(mine, ME), tzThen: confTravel(v.to, ME), rival: riv && T(riv) && T(riv).conf === mine ? riv : null, rank: confMembers(v.to).filter(t => t.rating > T(ME).rating).length + 1, size: confMembers(v.to).length + 1 };
+}
+function invResolve(how) {
+  const v = invNow(); if (!v) return ''; const x = X(); const C = CONFS[v.to];
+  if (how === 'ask') { if (v.asked) return ''; v.asked = true; if (R() < 0.5) { v.fee = 0; return `The ${C.name} agrees to cover your exit fee. The offer stands.`; } x.inv = null; (x.invNo || (x.invNo = {}))[v.to] = state.season; return `The ${C.name} does not like being asked for more. The invitation is withdrawn.`; }
+  if (how === 'yes') { state.myMove = { s: state.season, to: v.to, fee: v.fee, tv: v.tv }; state.fin.balance -= v.fee; if (state.fin.ytd) state.fin.ytd.eventx = (state.fin.ytd.eventx || 0) + v.fee; x.inv = null; mv('fan', invFacts(v).rival ? -2 : 2); const m = `${myName()} will join the ${C.name} next season.${v.fee ? ` Exit fee: $${v.fee}M.` : ''}`; addNews(m, 'big'); try { jrAdd('realign', m); } catch (e) { } return m; }
+  x.inv = null; (x.invNo || (x.invNo = {}))[v.to] = state.season; mv('fan', 2); const m = `${myName()} turns down the ${C.name} and stays in the ${CONFS[T(ME).conf].name}.`; addNews(m); try { jrAdd('realign', m); } catch (e) { } return m;
+}
+function invHTML() {
+  const v = invNow(); if (!v) return ''; const f = invFacts(v); const C = CONFS[v.to]; const tz = n => (n < 0.15 ? 'almost none' : n.toFixed(1) + ' time zones a trip');
+  return `<section class="card decision" id="invcard" data-block="1"><div class="eyebrow">Decision needed · realignment</div><h2 class="h2">The ${esc(C.name)} wants ${esc(myName())}</h2><p>The invitation is good until the new season starts. You would leave the ${esc(CONFS[f.mine].name)} after this offseason.</p>
+   <div class="tw"><table class="tbl"><thead><tr><th></th><th>${esc(CONFS[f.mine].name)} (now)</th><th>${esc(C.name)}</th></tr></thead><tbody>
+    <tr><td>TV money a year</td><td class="num">$${f.tvNow}M</td><td class="num"><b class="${f.tvThen >= f.tvNow ? 'res-w' : 'res-l'}">$${f.tvThen}M</b></td></tr>
+    <tr><td>Level of play (top teams)</td><td class="num">${f.lvNow}</td><td class="num">${f.lvThen}</td></tr>
+    <tr><td>Where you would rank</td><td class="num">${confMembers(f.mine).filter(t => t.rating > T(ME).rating).length + 1} of ${confMembers(f.mine).length}</td><td class="num">${f.rank} of ${f.size}</td></tr>
+    <tr><td>Travel to league games</td><td class="num">${tz(f.tzNow)}</td><td class="num">${tz(f.tzThen)}</td></tr>
+    <tr><td>Exit fee</td><td class="num">—</td><td class="num">${v.fee ? '$' + v.fee + 'M, once' : 'Covered'}</td></tr></tbody></table></div>
+   ${f.rival ? `<p class="small">${esc(teamName(f.rival))} stays behind. You would no longer meet as conference opponents, and some fans will not forgive it.</p>` : ''}${f.tzThen > f.tzNow + 0.4 ? '<p class="small">The longer trips cost you a little in every road game.</p>' : ''}
+   <div class="evopts"><button class="evopt" data-act="invdo" data-v="yes"><b>Accept</b><span>${v.fee ? `Pay $${v.fee}M and move` : 'Move'} next season.</span></button>${v.fee && !v.asked ? '<button class="evopt" data-act="invdo" data-v="ask"><b>Ask them to cover the exit fee</b><span>Even odds: they agree, or they withdraw the invitation.</span></button>' : ''}<button class="evopt" data-act="invdo" data-v="no"><b>Decline</b><span>You stay. They will not ask again for three seasons.</span></button></div></section>`;
+}
+function confCardHTML() {
+  if (isPro() || !state.teams) return ''; const rows = Object.keys(CONFS).filter(c => c !== 'IND' && confMembers(c).length).sort((a, b) => confLevel(b) - confLevel(a));
+  const mv_ = (state.confMoves || []).slice(-10).reverse();
+  return `<section class="card" id="confcard"><div class="head"><div><div class="eyebrow">Realignment</div><h2 class="h3">The conferences, strongest first</h2></div><p class="hint">Strong leagues take schools from weaker ones, and the weaker ones refill from below. A league that rates your program may invite you.</p></div>
+   <div class="tw"><table class="tbl"><thead><tr><th>Conference</th><th class="num">Schools</th><th class="num">Level</th><th class="num">TV extra</th></tr></thead><tbody>${rows.map(c => `<tr class="${T(ME) && T(ME).conf === c ? 'me' : ''}"><td>${esc(CONFS[c].name)}</td><td class="num">${confMembers(c).length}</td><td class="num">${Math.round(confLevel(c))}</td><td class="num">${confTV(c) >= 0 ? '+' : '−'}$${Math.abs(confTV(c))}M</td></tr>`).join('')}</tbody></table></div>
+   ${mv_.length ? `<div class="eyebrow mt">Who moved</div><ul class="plainlist small">${mv_.map(m => `<li><span class="muted">${m.s}</span> · ${esc(teamName(m.id))}: ${esc(CONFS[m.from] ? CONFS[m.from].name : m.from)} to ${esc(CONFS[m.to] ? CONFS[m.to].name : m.to)}</li>`).join('')}</ul>` : '<p class="small muted mt">Nobody has moved yet.</p>'}</section>`;
+}
+{ const _v = vStandings; vStandings = function () { let x = ''; try { x = confCardHTML(); } catch (e) { console.error(e); } return _v.apply(this, arguments) + x; }; }
+{ const _v = vOffice; vOffice = function () { let x = ''; try { x = invHTML(); } catch (e) { console.error(e); } return x + _v.apply(this, arguments); }; }
+{ const _v = vHistory; vHistory = function () { let x = ''; try { x = storyPeopleHTML(); } catch (e) { console.error(e); } return _v.apply(this, arguments) + x; }; }
+{ const _a = attnItems; attnItems = function () { const out = _a.apply(this, arguments); try { if (appMode === 'ad' && state && invNow()) out.unshift({ txt: `Decision: the ${CONFS[invNow().to].name} has invited ${myName()}.`, tab: 'office', sel: '#invcard' }); } catch (e) { } return out; }; }
+Object.assign(actions, { invdo(d) { const m = invResolve(d.v); after(m); } });
+/* ===================== v9.59: recruiting class and draft class files =====================
+ * The Save file page can write the current recruiting class (college) or draft class (NFL) to a spreadsheet
+ * file and read one back, so players can make and trade their own classes. A file is plain text, one player
+ * a line: name, position, then the columns below. Imported players are fictional unless the file says otherwise;
+ * the game ships no real names in these. Nothing new is stored in a save. */
+const classKind = () => (isComm() || (typeof isOwner === 'function' && isOwner() && typeof ownHands === 'function' && ownHands()) ? null : isPro() ? (PS().dc && PS().dc.list ? 'draft' : null) : (state.rec && state.rec.list ? 'recruit' : null));
+const CLASS_HEAD = { recruit: 'Name,Pos,Stars,Rating,Potential,Hometown', draft: 'Name,Pos,Age,Rating,Potential,College' };
+const csvCell = v => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function classExport() {
+  const k = classKind(); if (!k) return ''; const rows = k === 'recruit' ? state.rec.list.map(r => [r.n, r.pos, r.star, r.ovr, r.pot, r.home]) : PS().dc.list.map(p => [p.n, p.pos, p.age, p.ovr, p.pot, p.col]);
+  return CLASS_HEAD[k] + '\n' + rows.map(r => r.map(csvCell).join(',')).join('\n') + '\n';
+}
+const classPos = s => String(s || '').toUpperCase().replace('OT', 'OL').replace('OG', 'OL').replace(/^C$/, 'OL').replace('FS', 'S').replace('SS', 'S').replace('ILB', 'LB').replace('OLB', 'LB').replace('EDGE', 'DE').replace('NT', 'DT').replace('HB', 'RB');
+function classParse(text, kind) {
+  const rows = [], bad = []; const lines = String(text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  lines.forEach((l, i) => {
+    const c = csvCells(l, '\t,;'); if (i === 0 && /name/i.test(c[0]) && /pos/i.test(c[1] || '')) return;
+    const n = plainName(c[0]); const pos = classPos(c[1]); if (!n || !POS_ORDER.includes(pos)) { bad.push(i + 1); return; }
+    if (kind === 'recruit') { const star = Math.round(+c[2]), ovr = Math.round(+c[3]); if (!(star >= 1 && star <= 5) || !(ovr >= 35 && ovr <= 85)) { bad.push(i + 1); return; } rows.push({ n, pos, star: clamp(star, 2, 5), ovr, pot: clamp(Math.round(+c[4]) || ovr + 12, ovr, 99), home: plainName(c[5], 40) }); }
+    else { const age = Math.round(+c[2]), ovr = Math.round(+c[3]); if (!(age >= 19 && age <= 27) || !(ovr >= 40 && ovr <= 90)) { bad.push(i + 1); return; } rows.push({ n, pos, age, ovr, pot: clamp(Math.round(+c[4]) || ovr + 6, ovr, 99), col: plainName(c[5], 40) || 'Imported' }); }
+  });
+  return { rows: rows.slice(0, kind === 'recruit' ? 150 : 400), bad };
+}
+function classImport(text, mode) {
+  const kind = classKind(); if (!kind) return { added: 0, bad: [], err: 'There is no class to change right now.' }; if (typeof liveRosterLock === 'function' && liveRosterLock()) return { added: 0, bad: [], err: LIVE_ROSTER_MSG };
+  const { rows, bad } = classParse(text, kind); if (!rows.length) return { added: 0, bad, err: `No players found. Each line needs: ${CLASS_HEAD[kind].replace(/,/g, ', ')}.` };
+  const tag = Date.now().toString(36);
+  if (kind === 'recruit') {
+    const p4 = Object.values(state.teams).filter(t => (CONFS[t.conf].p4 || t.id === 'ND') && t.id !== ME);
+    const fresh = rows.map((x, i) => { const town = x.home ? [x.home, ''] : recruitTown(TEAM_STATE[ME]); const b = genBody(x.pos); const lead = shuffle(p4.filter(t => t.rating >= (x.star === 5 ? 82 : x.star === 4 ? 74 : 62)).slice()).slice(0, 3).map(t => t.id);
+      const r = { id: 'ri' + tag + i, n: x.n, pos: x.pos, star: x.star, ovr: x.ovr, pot: x.pot, home: town[0], inState: town[1] === TEAM_STATE[ME], ht: b.ht, wt: b.wt, status: 'open', offered: false, visit: null, nil: 0, ask: r2(x.star === 5 ? rnd(0.8, 1.6) : x.star === 4 ? rnd(0.2, 0.6) : 0), lead, trend: 0, to: null, imported: true }; r.interest = baseInterest(r); return r; });
+    // recruits you have already landed stay yours when the board is replaced
+    const keep = mode === 'replace' ? state.rec.list.filter(r => r.status !== 'open') : state.rec.list; state.rec.list = keep.concat(fresh).sort((a, b) => b.star - a.star || b.pot - a.pot);
+  } else {
+    const D = PS().dc; const fresh = rows.map((x, i) => ({ id: 'di' + D.yr + '_' + tag + i, n: x.n, pos: x.pos, age: x.age, ovr: x.ovr, pot: x.pot, col: x.col, sc: 0, bias: 0, pbias: 0, hype: 0, imported: true }));
+    D.list = (mode === 'replace' ? [] : D.list).concat(fresh); const cv = p => p.ovr * 0.55 + p.pot * 0.45 + (p.hype || 0) + (PRO_POS_W[p.pos] - 1) * 8; D.list.sort((a, b) => cv(b) - cv(a)); D.list.forEach((p, i) => { p.cr = i + 1; });
+    const L = PS(); if (L.cin && L.cin.draft) L.cin.draft = L.cin.draft.filter(id => D.list.some(p => p.id === id));
+  }
+  addNews(`${rows.length} ${kind === 'recruit' ? 'recruit' : 'draft prospect'}${rows.length === 1 ? '' : 's'} imported${mode === 'replace' ? ' (the old class was replaced)' : ''}.`);
+  return { added: rows.length, bad };
+}
+function classCardHTML() {
+  const k = classKind(); if (!k) return ''; const n = k === 'recruit' ? state.rec.list.length : PS().dc.list.length; const what = k === 'recruit' ? `the ${state.rec.cls} recruiting class` : `the ${PS().dc.yr} draft class`;
+  const prev = ui.clsPrev; const posLine = prev ? POS_ORDER.filter(p => prev.byPos[p]).map(p => `${p} ${prev.byPos[p]}`).join(' · ') : '';
+  return `<section class="card" id="classcard"><div class="head"><div><div class="eyebrow">Class files</div><h2 class="h3">${k === 'recruit' ? 'Recruiting class' : 'Draft class'}: ${n} players</h2></div><p class="hint">Save ${what} as a spreadsheet file, edit it or swap it with a friend, and load it back. One player a line: ${CLASS_HEAD[k].replace(/,/g, ', ')}.</p></div>
+   <div class="row gap"><button class="btn sm" data-act="clsdl">Download this class</button><label class="btn ghost sm" for="clsfile">Choose a file…</label><input id="clsfile" type="file" accept=".csv,.txt,text/csv,text/plain" class="sr-only" data-chg="clsfile"></div>
+   <textarea id="clstext" class="inp mt" rows="5" style="width:100%" aria-label="Class file text" placeholder="${CLASS_HEAD[k].replace(/,/g, ', ')}">${esc(ui.clsText || '')}</textarea>
+   ${prev ? `<div class="decision mt"><b>${prev.mode === 'replace' ? 'Replace the class' : 'Add to the class'}: ${prev.n} player${prev.n === 1 ? '' : 's'} found</b><p class="small">By position: ${esc(posLine || 'none')}.${prev.bad.length ? ` Skipped line${prev.bad.length > 1 ? 's' : ''} ${prev.bad.slice(0, 10).join(', ')}${prev.bad.length > 10 ? ' and more' : ''}.` : ''}${prev.mode === 'replace' && k === 'recruit' ? ' Recruits who have already committed or signed stay.' : ''}</p><div class="row gap">${prev.n ? `<button class="btn ${prev.mode === 'replace' ? 'danger' : 'primary'}" data-act="clsimport" data-v="${prev.mode}">${prev.mode === 'replace' ? 'Confirm: replace the class' : 'Add them'}</button>` : ''}<button class="btn ghost" data-act="clsno">Back</button></div></div>`
+    : '<div class="row gap mt"><button class="btn sm" data-act="clsprev" data-v="add">Add these players…</button><button class="btn ghost sm" data-act="clsprev" data-v="replace">Replace the class…</button></div>'}
+   ${ui.clsMsg ? `<p class="small" role="status">${esc(ui.clsMsg)}</p>` : ''}</section>`;
+}
+const clsRead = () => { const t = document.getElementById('clstext'); if (t) ui.clsText = t.value; return ui.clsText || ''; };
+Object.assign(actions, {
+  clsdl() { const k = classKind(); if (!k) return; clsRead(); const name = `football-empire-${k === 'recruit' ? 'recruits-' + state.rec.cls : 'draft-' + PS().dc.yr}.csv`;
+    try { const url = URL.createObjectURL(new Blob([classExport()], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); ui.clsMsg = 'Saved ' + name + '.'; } catch (e) { ui.clsText = classExport(); ui.clsMsg = 'Downloads are blocked here, so the class is in the box below. Copy it from there.'; } render(); },
+  clsprev(d) { const k = classKind(); if (!k) return; const txt = clsRead(); const { rows, bad } = classParse(txt, k); const byPos = {}; rows.forEach(r => { byPos[r.pos] = (byPos[r.pos] || 0) + 1; }); ui.clsPrev = { n: rows.length, bad, byPos, mode: d.v === 'replace' ? 'replace' : 'add' }; ui.clsMsg = ''; render(); },
+  clsno() { clsRead(); ui.clsPrev = null; render(); },
+  clsimport(d) { const r = classImport(clsRead(), d.v === 'replace' ? 'replace' : 'add'); ui.clsPrev = null; ui.clsMsg = r.err ? r.err : `${r.added} player${r.added === 1 ? '' : 's'} imported.${r.bad.length ? ` Skipped ${r.bad.length} line${r.bad.length > 1 ? 's' : ''}.` : ''}`; if (!r.err) ui.clsText = ''; after(); },
+});
+document.addEventListener('change', e => { const t = e.target; if (!t || t.id !== 'clsfile' || !t.files || !t.files[0]) return; const f = t.files[0]; if (f.size > 400000) { ui.clsMsg = 'That file is too large to be a class.'; return render(); } const rd = new FileReader(); rd.onload = () => { ui.clsText = String(rd.result || ''); ui.clsPrev = null; ui.clsMsg = `Loaded ${f.name}. Choose Add or Replace.`; render(); }; rd.onerror = () => { ui.clsMsg = 'That file could not be read.'; render(); }; rd.readAsText(f); });
+{ const _v = vFile; vFile = function () { let x = ''; try { x = classCardHTML(); } catch (e) { console.error(e); } return _v.apply(this, arguments) + x; }; }
+/* ===================== v9.60: the shell for the newer, self-contained modes =====================
+ * Agent mode and High school coach do not run on the big college and NFL engine. Each is a small game of its
+ * own, and they share this shell: appMode is 'mini', the game in memory is `mm`, and mm.kind says which one.
+ * A mode registers itself in MINI with its tabs, its pages and a few hooks. The shell gives it a header, tabs,
+ * the phone tab bar, three save slots, a Home screen card and settings.
+ *   MINI.<kind> = { name, eyebrow, blurb, icon, tabs: [[key, label, icon]], create(form) -> game,
+ *                   formHTML(), header(g) -> { title, sub, cells: [[k, v, s]], primary: [label, act] | null },
+ *                   view(tab, g) -> html, summary(g) -> { name, line }, check(g) -> g | null }
+ * Saves: 'fe<kind>-slot-<n>' (compressed like every other save) and 'fe<kind>-meta'. */
+const MINI = {};
+// The Home screen is first drawn before this file has run, so anything it calls has to cope with that.
+function miniCount() { try { return Object.keys(MINI).length; } catch (e) { return 0; } }
+let mm = null, mslot = 1; const mui = { tab: 'office', flash: '', confirm: null, form: null, seq: 0 };
+const MINI_SLOTS = [1, 2, 3];
+const miniKey = (kind, i) => 'fe' + kind + '-slot-' + i, miniMetaKey = kind => 'fe' + kind + '-meta';
+function miniMeta(kind) { try { return JSON.parse(lsGet(miniMetaKey(kind)) || '{}') || {}; } catch (e) { return {}; } }
+function miniSummary() { const M = MINI[mm.kind]; const s = M.summary(mm); return Object.assign({ saved: Date.now() }, s); }
+// Saves are small. Each one is compressed and written in order; a newer save always wins.
+function miniSave() {
+  if (!mm) return Promise.resolve(true); const kind = mm.kind, i = mslot, json = JSON.stringify(mm), sum = miniSummary(), seq = ++mui.seq; mui.pending = { kind, i, json, sum };
+  return gz(json).then(data => { if (seq !== mui.seq) return true; const ok = lsSet(miniKey(kind, i), data); if (ok) { const m = miniMeta(kind); m[i] = sum; lsSet(miniMetaKey(kind), JSON.stringify(m)); mui.pending = null; } mui.saveBad = !ok; return ok; }).catch(() => { mui.saveBad = true; return false; });
+}
+function miniFlushSync() { const p = mui.pending; if (!p) return; if (lsSet(miniKey(p.kind, p.i), 'RAW:' + p.json)) { const m = miniMeta(p.kind); m[p.i] = p.sum; lsSet(miniMetaKey(p.kind), JSON.stringify(m)); mui.pending = null; } }
+window.addEventListener('pagehide', miniFlushSync); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') miniFlushSync(); });
+async function miniLoad(kind, i) {
+  const raw = lsGet(miniKey(kind, i)); if (!raw) return { ok: false, err: 'That slot is empty.' };
+  try { let g = JSON.parse(await gunz(raw)); if (!g || g.kind !== kind) throw new Error('wrong kind'); g = MINI[kind].check ? MINI[kind].check(g) : g; if (!g) throw new Error('bad save'); mm = g; mslot = i; lsSet('fe' + kind + '-active', String(i)); return { ok: true }; }
+  catch (e) { console.error(e); return { ok: false, err: 'That save is damaged and could not be opened.' }; }
+}
+const miniSlotsUsed = kind => MINI_SLOTS.filter(i => lsGet(miniKey(kind, i)));
+const miniFree = kind => MINI_SLOTS.find(i => !lsGet(miniKey(kind, i))) || null;
+const miniLast = kind => { const a = +lsGet('fe' + kind + '-active'); const used = miniSlotsUsed(kind); return used.includes(a) ? a : used[0] || null; };
+function miniAfter(msg) { if (msg) mui.flash = msg; miniSave(); render(); }
+
+/* ---------- drawing ---------- */
+function miniRender() {
+  document.documentElement.dataset.app = 'career'; document.documentElement.dataset.comm = ''; const el = document.getElementById('customTheme'); if (el) el.textContent = '';
+  const M = mm ? MINI[mm.kind] : MINI[mui.kind]; const tabs = M.tabs.concat([['saves', 'Saves', 'grid'], ['settings', 'Settings', 'gear']]);
+  if (!mm) mui.tab = 'saves'; if (!tabs.some(t => t[0] === mui.tab)) mui.tab = tabs[0][0];
+  const H = mm ? M.header(mm) : { title: M.name, sub: 'Start a career to begin', cells: [], primary: null }; const dark = resolvedMode() === 'dark';
+  const tools = `<div class="tools"><button class="tbtn" data-act="gohome" aria-label="Home screen">${IC.home}<span>Home</span></button><button class="tbtn" data-act="togglemode" aria-label="Switch to ${dark ? 'light' : 'dark'} mode">${dark ? IC.sun || IC.moon : IC.moon}<span>${dark ? 'Light' : 'Dark'}</span></button><button class="tbtn${mui.tab === 'settings' ? ' on' : ''}" data-act="mtab" data-tab="settings">${IC.gear}<span>Settings</span></button></div>`;
+  $('#hdr').innerHTML = `<div class="brand"><div class="wm${H.title.length > 15 ? ' long' : ''}" data-badge="${esc(M.badge || 'FE')}"><span class="wmu">${esc(H.title.toUpperCase())}</span><span class="wmn">${esc(H.title)}</span><span class="wmt">${esc(H.title)}</span></div><div class="sub">${esc(H.sub)}${mm ? ' · Slot ' + mslot : ''}${mui.saveBad ? ' · <b>not saved</b>' : ''}</div></div>
+   ${H.cells.length ? `<div class="board">${H.cells.map(([k, v, s]) => `<div class="cell"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>${s ? `<span class="s">${esc(s)}</span>` : ''}</div>`).join('')}</div>` : ''}
+   <div class="acts">${tools}${H.primary ? `<div class="next"><button class="btn primary" data-act="${H.primary[1]}">${esc(H.primary[0])}</button></div>` : ''}</div>`;
+  const btn = ([k, l]) => `<button class="tab${mui.tab === k ? ' on' : ''}" data-act="mtab" data-tab="${k}"${mui.tab === k ? ' aria-current="page"' : ''}>${esc(l)}</button>`;
+  const t = $('#tabs'); t.innerHTML = (prefs.nav === 'side' ? `<div class="sbhead"><span class="sbw">${esc(M.name)}</span><button class="tbtn" data-act="toggleside" aria-label="Hide the sidebar">${IC.collapse}</button></div>` : '') + tabs.map(btn).join(''); t.setAttribute('aria-label', 'Sections');
+  const m = $('#mnav'); if (m) m.innerHTML = tabs.slice(0, 5).map(([k, l, ic]) => `<button class="${mui.tab === k ? 'on' : ''}" data-act="mtab" data-tab="${k}"${mui.tab === k ? ' aria-current="page"' : ''}>${IC[ic] || IC.grid}<span>${esc(l)}</span></button>`).join('');
+  const tk = $('#ticker'); if (tk) tk.innerHTML = '';
+  let body; try { body = mui.tab === 'saves' ? miniSavesHTML(M) : mui.tab === 'settings' ? displaySettingsHTML('home') + (typeof feedbackHTML === 'function' ? '' : '') : M.view(mui.tab, mm); } catch (e) { console.error(e); body = '<section class="card"><p class="flash bad">This page could not be shown. Your career is safe.</p></section>'; }
+  $('#view').innerHTML = (mui.flash ? `<div class="flash toast" role="status">${esc(mui.flash)}</div>` : '') + body; mui.flash = '';
+  document.title = (mm ? H.title + ' · ' : '') + M.name + ' · Football Empire'; setInert(!$('#modal').hidden);
+  try { if (typeof siteTrack === 'function' && mm) siteTrack('play-' + mm.kind); } catch (e) { }
+}
+function miniSavesHTML(M) {
+  const kind = mm ? mm.kind : mui.kind; const meta = miniMeta(kind);
+  const rows = MINI_SLOTS.map(i => { const has = !!lsGet(miniKey(kind, i)); const s = meta[i]; const on = mm && mslot === i; const ck = mui.confirm === 'mdel-' + i;
+    return `<tr class="${on ? 'me' : ''}"><td>Slot ${i}</td><td>${has ? `<b>${esc(s ? s.name : 'Career')}</b><div class="small muted">${esc(s ? s.line : '')}</div>` : '<span class="muted">Empty</span>'}</td><td class="nowrap">${has ? (on ? '<span class="pill maize">Playing now</span> ' : `<button class="btn sm" data-act="mload" data-i="${i}">Load</button> `) + (ck ? `<button class="btn danger sm" data-act="mdel" data-i="${i}">Confirm: delete</button>` : `<button class="btn ghost sm" data-act="mask" data-k="mdel-${i}">Delete</button>`) : `<button class="btn sm" data-act="mnew" data-i="${i}">New career here</button>`}</td></tr>`; }).join('');
+  return `${mui.form ? `<section class="card newcareer"><div class="head"><div><div class="eyebrow">${esc(M.name)} · new career · slot ${mui.form.slot}</div><h1 class="h2">${esc(M.formTitle || 'Start a career')}</h1></div><p class="hint">${esc(M.blurb)}</p></div>${M.formHTML(mui.form)}<div class="row gap mt"><button class="btn primary" data-act="mcreate">Start</button><button class="btn ghost" data-act="mformno">Back</button></div></section>` : ''}
+  <section class="card"><div class="head"><div><div class="eyebrow">${esc(M.name)}</div><h2 class="h2">Three careers at once</h2></div><p class="hint">The game saves by itself after everything you do. Saves live in this browser, so clearing site data erases them.</p></div><div class="tw"><table class="tbl"><tbody>${rows}</tbody></table></div>${typeof storageNoteHTML === 'function' ? storageNoteHTML() : ''}</section>`;
+}
+// render(): the shell draws its own modes and leaves everything else to the game
+{ const _r = render; render = function () { if (appMode === 'mini') { try { return miniRender(); } catch (e) { console.error(e); } return; } return _r.apply(this, arguments); }; }
+{ const _l = leaveMode; leaveMode = async function () { if (appMode === 'mini') { if (mm && !(await miniSave())) { mui.flash = 'Could not save. Browser storage is full or blocked.'; render(); return false; } return true; } return _l.apply(this, arguments); }; }
+async function miniEnter(kind, how) {
+  if (appMode !== 'home' && appMode !== 'mini' && !(await leaveMode())) return; if (appMode === 'mini' && mm) await miniSave();
+  hideModal(); mui.kind = kind; mui.confirm = null; mui.form = null; const last = miniLast(kind);
+  if (how !== 'new' && last) { if (!(mm && mm.kind === kind && mslot === last)) { mm = null; const r = await miniLoad(kind, last); if (!r.ok) mui.flash = r.err; } mui.tab = mm ? MINI[kind].tabs[0][0] : 'saves'; }
+  else { mm = null; const free = miniFree(kind); mui.tab = 'saves'; if (free) mui.form = { slot: free }; else mui.flash = 'All three slots are in use. Delete one to start a new career.'; }
+  appMode = 'mini'; rngOwner = null; render(); window.scrollTo(0, 0);
+}
+function miniHomeCards() {
+  return Object.entries(MINI).map(([kind, M]) => { const last = miniLast(kind); const s = last ? miniMeta(kind)[last] : null; const n = miniSlotsUsed(kind).length;
+    return `<article class="mode"><div class="mglyph" aria-hidden="true">${IC[M.icon] || IC.star}</div><div class="eyebrow">${esc(M.eyebrow)}</div><h2 class="h2">${esc(M.name)}</h2><p>${esc(M.blurb)}</p>
+    <div class="msave">${s ? `<b>${esc(s.name)}</b> · ${esc(s.line)} <span class="muted">· slot ${last}</span>` : `<span class="muted">No ${esc(M.name.toLowerCase())} career yet.</span>`}<div class="small muted">${n} of 3 save slots used</div></div>
+    <div class="row gap">${last ? `<button class="btn primary" data-act="mgo" data-k="${kind}">Continue</button><button class="btn ghost" data-act="mgo" data-k="${kind}" data-v="new">New career</button>` : `<button class="btn primary" data-act="mgo" data-k="${kind}" data-v="new">${esc(M.startLabel || 'Start')}</button>`}</div></article>`; }).join('');
+}
+{ const _o = ownHomeCardHTML; ownHomeCardHTML = function () { let x = ''; try { x = miniHomeCards(); } catch (e) { console.error(e); } return _o.apply(this, arguments) + x; }; }
+{ const _f = feedbackMode; feedbackMode = function () { return appMode === 'mini' ? 'Other' : _f.apply(this, arguments); }; }
+Object.assign(actions, {
+  mgo(d) { if (MINI[d.k]) miniEnter(d.k, d.v); },
+  mtab(d) { mui.tab = d.tab; mui.confirm = null; render(); window.scrollTo(0, 0); },
+  mask(d) { mui.confirm = mui.confirm === d.k ? null : d.k; render(); },
+  mnew(d) { const i = +d.i; if (!MINI_SLOTS.includes(i) || lsGet(miniKey(mui.kind || (mm && mm.kind), i))) return; if (mm) miniSave(); mui.kind = mm ? mm.kind : mui.kind; mui.form = { slot: i }; render(); window.scrollTo(0, 0); },
+  mformno() { mui.form = null; render(); },
+  async mcreate() { const kind = mm ? mm.kind : mui.kind; const M = MINI[kind]; const f = mui.form; if (!f || lsGet(miniKey(kind, f.slot))) return; if (mm) await miniSave(); const g = M.create(M.readForm ? M.readForm() : {}); g.kind = kind; mm = g; mslot = f.slot; mui.form = null; mui.tab = M.tabs[0][0]; lsSet('fe' + kind + '-active', String(mslot)); miniAfter(M.welcome || ''); window.scrollTo(0, 0); },
+  async mload(d) { const kind = mm ? mm.kind : mui.kind; if (mm) await miniSave(); const r = await miniLoad(kind, +d.i); mui.tab = r.ok ? MINI[kind].tabs[0][0] : 'saves'; mui.flash = r.ok ? '' : r.err; render(); },
+  mdel(d) { const kind = mm ? mm.kind : mui.kind; const i = +d.i; mui.confirm = null; mui.seq++; mui.pending = null; lsDel(miniKey(kind, i)); const m = miniMeta(kind); delete m[i]; lsSet(miniMetaKey(kind), JSON.stringify(m)); if (mm && mslot === i) { mm = null; mui.tab = 'saves'; } mui.flash = 'Slot ' + i + ' deleted.'; render(); },
+});
+/* ===================== v9.60: Agent mode =====================
+ * You run a sports agency. Each year has six steps: sign draft prospects away from rival agencies, get them
+ * ready for the draft, the draft itself, free agency (where you negotiate against the clubs), the season
+ * (with decisions about your clients), and the year in review. You earn 3% of every contract.
+ * It is a game of its own (see 530-mini-shell.js): the league here is a light model, not the full NFL engine.
+ * The whole career is one object: { kind: 'agent', you, year, step, rep, cash, staff, clients, pros, teams,
+ * fa, events, log, hist, ach }. Money is in millions of dollars. */
+const AG_STEPS = [['sign', 'Signing season'], ['prep', 'Draft preparation'], ['draft', 'The draft'], ['fa', 'Free agency'], ['season', 'The season'], ['review', 'Year in review']];
+const AG_TOP = { QB: 55, DE: 30, WR: 30, DT: 25, OL: 24, CB: 24, LB: 20, S: 18, TE: 16, RB: 14, K: 6, P: 4, LS: 1.5 }; // the best contract at each position, a year
+const AG_POSW = [['QB', 6], ['RB', 7], ['WR', 13], ['TE', 6], ['OL', 16], ['DE', 10], ['DT', 8], ['LB', 10], ['CB', 11], ['S', 7], ['K', 1], ['P', 1]];
+const AG_WANT = { money: ['The biggest contract', 'money'], winner: ['A club that wins', 'a winner'], role: ['A starting job', 'a starting job'], home: ['To play near home', 'home'] };
+const AG_PITCH = { money: ['Show him the money', 'Your record getting clients paid.'], winner: ['Talk about winning', 'How you place clients with contenders.'], role: ['Promise him a role', 'A plan to land him where he starts.'], home: ['Meet the family', 'Time with his parents, at their table.'] };
+const AG_RIVALS = [['Apex Sports Group', 82], ['Kessler & Vane', 68], ['Gridiron Partners', 54]];
+const AG_STAFF = { scout: ['Scouting', 'Two more pitch meetings a year for each level, and better reads on prospects.', 0.25], negot: ['Negotiation', 'Clubs give a little more each time you push, and walk away less often.', 0.3], brand: ['Marketing', 'Endorsement money for your stars, and prospects notice.', 0.25] };
+const AG_MIN = 0.9;
+const agValue = (pos, ovr, age) => { const q = Math.max(0, (ovr - 60) / 38); let v = (AG_TOP[pos] || 10) * Math.pow(q, 1.6); if (age >= 30) v *= clamp(1 - 0.09 * (age - 29), 0.35, 1); return r2(Math.max(AG_MIN, v)); };
+const agRookieApy = pick => r2(Math.max(AG_MIN, 0.9 + 9.6 * Math.exp(-pick / 24)));
+const agRound = pick => Math.min(7, Math.ceil(pick / 32));
+const agTeamName = id => (NFL_BY[id] ? NFL_BY[id].name : id);
+const agLog = (g, t, tone) => { g.log.unshift({ y: g.year, t, tone: tone || '' }); if (g.log.length > 60) g.log.length = 60; };
+const agMaxClients = g => 6 + (g.staff.scout + g.staff.negot + g.staff.brand) * 2;
+const agPitches = g => 6 + g.staff.scout * 2;
+const agStepKey = g => AG_STEPS[g.step][0];
+const agFee = k => r2(0.03 * k.apy);
+let agSeq = 0; const agId = g => 'a' + (g.nid = (g.nid || 0) + 1);
+function agTeams(g) { // a fresh picture of the league each year: how good each club is, its cap room, where it needs help
+  const T_ = {}; NFL.forEach(t => { const old = g.teams && g.teams[t.id]; const r = clamp(Math.round((old ? old.r : t.p) + gauss() * 3), 62, 92); const need = {}; shuffle(AG_POSW.map(x => x[0])).slice(0, 4).forEach(p => { need[p] = 1; }); T_[t.id] = { r, cap: r1(rnd(4, 60)), need }; }); return T_;
+}
+function agProspects(g) {
+  const out = []; const picks = shuffle(Array.from({ length: 256 }, (_, i) => i + 1)).slice(0, 34).sort((a, b) => a - b);
+  picks.forEach(pk => { const pos = wpick(AG_POSW.map(x => [x[0], x[1]])); const ovr = clamp(Math.round(79 - pk * 0.085 + gauss() * 2.5), 52, 82); const want = pick(Object.keys(AG_WANT));
+    const heat = clamp(Math.round(AG_RIVALS[0][1] * 0.45 + (260 - pk) / 260 * 42 + gauss() * 9), 15, 96); // how hard the big agencies are chasing him
+    out.push({ id: agId(g), n: genName(), pos, age: ri(21, 23), ovr, pot: clamp(ovr + ri(4, 14), ovr, 97), col: pick(Object.values(CTEAMS0_AD)).name, stock: pk, want, heat, int: clamp(Math.round(g.rep * 0.55 + gauss() * 8 + g.staff.brand * 4), 2, 90), pitched: {}, home: pick(NFL).id }); });
+  return out;
+}
+function agNew(f) {
+  const g = { kind: 'agent', v: 1, you: { name: plainName(f.name, 28) || 'Jordan Reese', agency: plainName(f.agency, 32) || 'Reese Sports' }, year: 2026, step: 0, rep: 18, cash: 0.35, staff: { scout: 0, negot: 0, brand: 0 }, clients: [], pros: [], teams: null, fa: [], events: [], log: [], hist: [], ach: {}, nid: 0, stats: { fees: 0, deals: 0, best: 0, firsts: 0 } };
+  g.teams = agTeams(g);
+  // two veterans who took a chance on a new agent; both are out of contract after this season
+  for (let i = 0; i < 2; i++) { const pos = pick(['WR', 'LB', 'CB', 'OL', 'S', 'RB']); const age = ri(26, 29), ovr = ri(71, 77); const tm = pick(NFL).id; g.clients.push({ id: agId(g), n: genName(), pos, age, ovr, pot: ovr + 1, tm, k: { apy: r2(agValue(pos, ovr, age) * 0.8), yrs: 2, left: 1 }, trust: 62, want: pick(Object.keys(AG_WANT)), home: pick(NFL).id, lvl: 'nfl', since: 2026, earned: 0 }); }
+  g.pros = agProspects(g); g.pitches = agPitches(g); agLog(g, `${g.you.agency} opens its doors with two clients and a phone.`); return g;
+}
+function agCheck(g) { if (!g || !g.you || !Array.isArray(g.clients) || !(g.step >= 0 && g.step < AG_STEPS.length)) return null; g.pros = g.pros || []; g.fa = g.fa || []; g.events = g.events || []; g.log = g.log || []; g.hist = g.hist || []; g.ach = g.ach || {}; g.staff = Object.assign({ scout: 0, negot: 0, brand: 0 }, g.staff); g.stats = Object.assign({ fees: 0, deals: 0, best: 0, firsts: 0 }, g.stats); if (!g.teams) g.teams = agTeams(g); return g; }
+const agAch = (g, k, t) => { if (!g.ach[k]) { g.ach[k] = g.year; agLog(g, 'Milestone: ' + t, 'good'); } };
+
+/* ---------- step 1: signing season ---------- */
+function agPitch(g, pid, topic) {
+  const p = g.pros.find(x => x.id === pid); if (!p || agStepKey(g) !== 'sign' || g.pitches <= 0 || p.pitched[topic] || p.signed) return 'no';
+  g.pitches--; p.pitched[topic] = 1; const hit = topic === p.want; p.int = clamp(p.int + (hit ? 26 : 7) + g.staff.brand * 2, 0, 99); if (hit) p.known = true; return hit ? 'hit' : 'miss';
+}
+function agAdvance(g, pid) { const p = g.pros.find(x => x.id === pid); if (!p || agStepKey(g) !== 'sign' || p.adv || g.cash < 0.05) return false; g.cash = r2(g.cash - 0.05); p.adv = true; p.int = clamp(p.int + 14, 0, 99); return true; }
+function agSigningEnd(g) {
+  let n = 0; const room = agMaxClients(g) - g.clients.length; const mine = g.pros.filter(p => p.int > p.heat).sort((a, b) => a.stock - b.stock).slice(0, Math.max(0, room));
+  mine.forEach(p => { p.signed = true; n++; g.clients.push({ id: p.id, n: p.n, pos: p.pos, age: p.age, ovr: p.ovr, pot: p.pot, tm: null, k: null, trust: clamp(55 + (p.known ? 12 : 0), 0, 100), want: p.want, home: p.home, lvl: 'draft', stock: p.stock, col: p.col, since: g.year, earned: 0, prep: null }); });
+  const lost = g.pros.filter(p => !p.signed && Object.keys(p.pitched).length); agLog(g, n ? `${n} prospect${n > 1 ? 's' : ''} signed with ${g.you.agency}: ${mine.map(p => p.n).join(', ')}.` : 'No prospect signed with you this year.', n ? 'good' : 'bad');
+  if (lost.length) agLog(g, `${lost.slice(0, 3).map(p => p.n).join(', ')} went with ${AG_RIVALS[0][0]} and the other big agencies.`); g.pros = [];
+}
+/* ---------- step 2 and 3: preparation and the draft ---------- */
+const AG_PREP = { elite: ['Elite training', 'Six weeks with a private coach. Costs $80,000. His stock rises.', 0.08], std: ['Standard preparation', 'The usual. No cost.', 0], skip: ['Skip the workouts', 'Stand on his game film. It can go either way, and scouts talk.', 0] };
+function agPrep(g, cid, k) { const c = g.clients.find(x => x.id === cid); if (!c || c.lvl !== 'draft' || !AG_PREP[k] || agStepKey(g) !== 'prep') return false; const was = c.prep ? AG_PREP[c.prep][2] : 0; const cost = AG_PREP[k][2]; if (g.cash + was < cost) return false; g.cash = r2(g.cash + was - cost); c.prep = k; return true; }
+function agDraft(g) {
+  const res = []; g.clients.filter(c => c.lvl === 'draft').forEach(c => {
+    const mv_ = c.prep === 'elite' ? -(6 + c.stock * 0.12) : c.prep === 'skip' ? gauss() * (10 + c.stock * 0.18) : 0; const pk = Math.round(clamp(c.stock + mv_ + gauss() * (4 + c.stock * 0.1), 1, 300));
+    if (pk > 256) { c.lvl = 'nfl'; c.tm = pick(NFL).id; c.k = { apy: AG_MIN, yrs: 1, left: 1 }; c.trust = clamp(c.trust - 10, 0, 100); res.push(`${c.n} (${c.pos}) was not drafted. He signs with the ${agTeamName(c.tm)} as a free agent.`); return; }
+    const fits = NFL.filter(t => g.teams[t.id].need[c.pos]); c.tm = pick(fits.length ? fits : NFL).id; c.lvl = 'nfl'; c.pick = pk; c.k = { apy: agRookieApy(pk), yrs: 4, left: 4, rk: true };
+    const rose = pk < c.stock - 8; c.trust = clamp(c.trust + (rose ? 10 : pk > c.stock + 12 ? -8 : 2), 0, 100); if (agRound(pk) === 1) { g.stats.firsts++; g.rep = clamp(g.rep + 4, 0, 100); agAch(g, 'first', 'your first first-round pick.'); } if (pk <= 10) agAch(g, 'top10', 'a client taken in the top ten.');
+    res.push(`${c.n} (${c.pos}): round ${agRound(pk)}, pick ${pk}, to the ${agTeamName(c.tm)}. ${fmM(c.k.apy)} a year for four years${rose ? ', higher than projected' : pk > c.stock + 12 ? ', lower than projected' : ''}.`);
+  });
+  res.forEach(t => agLog(g, t)); return res;
+}
+/* ---------- step 4: free agency ---------- */
+// Each club has a number in mind that it will not say out loud. Pushing moves its offer toward that number, or ends the talk.
+function agOffers(g, c) {
+  const val = agValue(c.pos, c.ovr, c.age); const n = clamp(Math.round(1.5 + (c.ovr - 66) / 6 + R() * 1.5), 1, 5);
+  const pool = shuffle(NFL.slice()).sort((a, b) => (g.teams[b.id].need[c.pos] || 0) - (g.teams[a.id].need[c.pos] || 0)).slice(0, n);
+  return pool.map(t => { const tm = g.teams[t.id]; const need = tm.need[c.pos] ? 1.12 : 0.92; const max = r2(Math.max(AG_MIN, Math.min(tm.cap, val * need * rnd(0.9, 1.15)))); const open = r2(Math.max(AG_MIN, max * rnd(0.72, 0.86)));
+    return { tm: t.id, apy: open, max, yrs: c.age >= 31 ? ri(1, 2) : ri(2, 4), start: !!tm.need[c.pos] || c.ovr >= 80, pushes: 0, gone: false }; });
+}
+function agFaStart(g) {
+  g.fa = []; g.clients.filter(c => c.lvl === 'nfl' && c.k && c.k.left <= 0).forEach(c => { const offers = agOffers(g, c); g.fa.push({ cid: c.id, offers, val: agValue(c.pos, c.ovr, c.age), done: false }); });
+  if (!g.fa.length) agLog(g, 'None of your clients is out of contract this year.');
+}
+const agLeverage = (g, f) => clamp(0.34 + (f.offers.filter(o => !o.gone).length - 1) * 0.11 + g.staff.negot * 0.08 + (g.rep - 40) / 300, 0.15, 0.9);
+function agPush(g, cid, tm) {
+  const f = g.fa.find(x => x.cid === cid && !x.done); const o = f && f.offers.find(x => x.tm === tm && !x.gone); if (!o) return 'no';
+  o.pushes++; if (o.apy >= o.max - 0.01) { if (R() < 0.5 - g.staff.negot * 0.1) { o.gone = true; return 'walk'; } return 'firm'; }
+  if (R() < agLeverage(g, f) - (o.pushes - 1) * 0.12) { o.apy = r2(Math.min(o.max, o.apy + (o.max - o.apy) * rnd(0.45, 0.8) + 0.01)); return 'up'; }
+  if (R() < 0.3 - g.staff.negot * 0.06 + (o.pushes - 1) * 0.1) { o.gone = true; return 'walk'; } return 'hold';
+}
+function agFit(g, c, o) { // how well an offer matches what he wants, 0 to 1
+  if (c.want === 'money') return clamp(o.apy / Math.max(AG_MIN, agValue(c.pos, c.ovr, c.age)), 0, 1.2) / 1.2;
+  if (c.want === 'winner') return clamp((g.teams[o.tm].r - 66) / 22, 0, 1); if (c.want === 'role') return o.start ? 1 : 0.25; return o.tm === c.home ? 1 : NFL_BY[o.tm].div === NFL_BY[c.home].div ? 0.6 : 0.2;
+}
+function agAccept(g, cid, tm) {
+  const f = g.fa.find(x => x.cid === cid && !x.done); const c = g.clients.find(x => x.id === cid); const o = f && f.offers.find(x => x.tm === tm && !x.gone); if (!o || !c) return '';
+  f.done = true; c.tm = o.tm; c.k = { apy: o.apy, yrs: o.yrs, left: o.yrs }; const fit = agFit(g, c, o); const pay = o.apy / f.val; const d = Math.round((fit - 0.5) * 26 + (pay - 0.9) * 20); c.trust = clamp(c.trust + d, 0, 100);
+  g.stats.deals++; g.stats.best = Math.max(g.stats.best, r1(o.apy * o.yrs)); if (pay >= 1.05) g.rep = clamp(g.rep + 3, 0, 100); else if (pay < 0.8) g.rep = clamp(g.rep - 2, 0, 100); if (o.apy * o.yrs >= 100) agAch(g, 'hundred', 'a contract worth $100 million.');
+  const m = `${c.n} signs with the ${agTeamName(o.tm)}: ${fmM(o.apy)} a year for ${o.yrs} year${o.yrs > 1 ? 's' : ''}. ${d >= 8 ? 'He is thrilled.' : d >= 0 ? 'He is content.' : 'It is not what he asked you for.'}`; agLog(g, m, d >= 0 ? 'good' : 'bad'); return m;
+}
+function agFaEnd(g) { g.fa.filter(f => !f.done).forEach(f => { const c = g.clients.find(x => x.id === f.cid); if (!c) return; const best = f.offers.filter(o => !o.gone).sort((a, b) => b.apy - a.apy)[0]; if (best) { agAccept(g, c.id, best.tm); c.trust = clamp(c.trust - 6, 0, 100); } else { c.tm = null; c.k = null; c.lvl = 'out'; c.trust = clamp(c.trust - 25, 0, 100); agLog(g, `${c.n} has no club. Every team walked away.`, 'bad'); } }); g.fa = []; }
+/* ---------- step 5: the season ---------- */
+const AG_EVENTS = [
+  { k: 'holdout', ok: c => c.k && c.k.left >= 2 && c.ovr >= 80 && c.k.apy < agValue(c.pos, c.ovr, c.age) * 0.75, t: c => `${c.n} is badly underpaid and wants to hold out for a new deal.`,
+    o: [['Back the holdout', 'Even odds the club gives in. If it does not, he loses money and blames you a little.', (g, c) => { if (R() < 0.5 + g.staff.negot * 0.08) { c.k = { apy: r2(agValue(c.pos, c.ovr, c.age) * 0.97), yrs: 4, left: 4 }; c.trust = clamp(c.trust + 14, 0, 100); g.rep = clamp(g.rep + 3, 0, 100); g.stats.deals++; return `The ${agTeamName(c.tm)} blink. ${c.n} gets ${fmM(c.k.apy)} a year.`; } c.trust = clamp(c.trust - 8, 0, 100); return `The ${agTeamName(c.tm)} do not move. ${c.n} reports late and is fined.`; }], ['Talk him out of it', 'He plays. He is not happy with you.', (g, c) => { c.trust = clamp(c.trust - 6, 0, 100); return `${c.n} reports on time.`; }]] },
+  { k: 'trouble', ok: c => c.lvl === 'nfl', t: c => `${c.n} is in the news for the wrong reasons after a night out. Reporters are calling you.`,
+    o: [['Get in front of it', 'You fly out and handle the press yourself. Costs $30,000.', (g, c) => { g.cash = r2(g.cash - 0.03); c.trust = clamp(c.trust + 10, 0, 100); g.rep = clamp(g.rep + 1, 0, 100); return `It is a one-day story. ${c.n} thanks you.`; }], ['Say nothing', 'It may blow over.', (g, c) => { if (R() < 0.5) { g.rep = clamp(g.rep - 3, 0, 100); c.trust = clamp(c.trust - 6, 0, 100); return 'It does not blow over. Your name is in every story.'; } return 'It blows over.'; }]] },
+  { k: 'poach', ok: (c, g) => c.ovr >= 78 && c.trust < 75, t: c => `${AG_RIVALS[0][0]} has been taking ${c.n} to dinner.`,
+    o: [['Fly out and see him', 'Costs $20,000. He usually stays.', (g, c) => { g.cash = r2(g.cash - 0.02); if (R() < 0.3 + c.trust / 110) { c.trust = clamp(c.trust + 8, 0, 100); return `${c.n} says he is not going anywhere.`; } g.clients = g.clients.filter(x => x !== c); g.rep = clamp(g.rep - 4, 0, 100); return `${c.n} fires you and signs with ${AG_RIVALS[0][0]}.`; }], ['Trust the relationship', 'It costs nothing.', (g, c) => { if (R() < c.trust / 100) return `${c.n} stays.`; g.clients = g.clients.filter(x => x !== c); g.rep = clamp(g.rep - 4, 0, 100); return `${c.n} fires you and signs with ${AG_RIVALS[0][0]}.`; }]] },
+  { k: 'endorse', ok: c => c.ovr >= 82, t: c => `A national brand wants ${c.n} for a campaign.`,
+    o: [['Take the deal', 'You earn 15% of it.', (g, c) => { const amt = r2((c.ovr - 76) * 0.35 * (1 + g.staff.brand * 0.35)); g.cash = r2(g.cash + amt * 0.15); g.stats.fees = r2(g.stats.fees + amt * 0.15); c.trust = clamp(c.trust + 5, 0, 100); return `${c.n} signs for ${fmM(amt)}. Your cut is ${fmM(r2(amt * 0.15))}.`; }], ['Hold out for a better one', 'One time in three something bigger comes.', (g, c) => { if (R() < 0.34 + g.staff.brand * 0.12) { const amt = r2((c.ovr - 72) * 0.6 * (1 + g.staff.brand * 0.35)); g.cash = r2(g.cash + amt * 0.15); g.stats.fees = r2(g.stats.fees + amt * 0.15); c.trust = clamp(c.trust + 9, 0, 100); return `A bigger brand calls. ${c.n} signs for ${fmM(amt)}.`; } c.trust = clamp(c.trust - 3, 0, 100); return 'Nothing else comes.'; }]] },
+  { k: 'trade', ok: (c, g) => c.k && c.k.left >= 1 && g.teams[c.tm] && g.teams[c.tm].r < 72 && c.want === 'winner', t: c => `${c.n} is tired of losing with the ${agTeamName(c.tm)} and wants out.`,
+    o: [['Ask for a trade', 'It may work. It will not make you friends in that front office.', (g, c) => { if (R() < 0.45 + g.rep / 300) { const to = NFL.filter(t => g.teams[t.id].r >= 80)[0] || pick(NFL); c.tm = to.id; c.trust = clamp(c.trust + 14, 0, 100); return `${c.n} is traded to the ${agTeamName(c.tm)}.`; } c.trust = clamp(c.trust - 4, 0, 100); g.rep = clamp(g.rep - 1, 0, 100); return 'The club says no, and does not appreciate the call.'; }], ['Tell him to be patient', 'He stays.', (g, c) => { c.trust = clamp(c.trust - 5, 0, 100); return `${c.n} stays put, unhappily.`; }]] },
+];
+function agSeasonStart(g) {
+  g.events = []; const pool = shuffle(g.clients.filter(c => c.lvl === 'nfl').slice());
+  for (const c of pool) { if (g.events.length >= 3) break; const ev = shuffle(AG_EVENTS.slice()).find(e => e.ok(c, g) && !g.events.some(x => x.k === e.k)); if (ev && R() < 0.75) g.events.push({ k: ev.k, cid: c.id, t: ev.t(c), done: false }); }
+}
+function agEvent(g, i, opt) { const e = g.events[i]; if (!e || e.done) return ''; const def = AG_EVENTS.find(x => x.k === e.k); const c = g.clients.find(x => x.id === e.cid); e.done = true; if (!def || !c) return ''; const m = def.o[opt][2](g, c); e.res = m; agLog(g, m); return m; }
+function agSeasonPlay(g) {
+  g.events.filter(e => !e.done).forEach((e, i) => agEvent(g, g.events.indexOf(e), 1)); const notes = [];
+  g.clients.filter(c => c.lvl === 'nfl').forEach(c => {
+    const grow = c.age <= 25 ? (c.pot - c.ovr) * rnd(0.2, 0.5) : c.age <= 29 ? gauss() * 1.2 : -rnd(0.5, 2.6) - (c.age - 30) * 0.4; c.ovr = clamp(Math.round(c.ovr + grow), 50, 99);
+    if (R() < 0.08) { c.ovr = clamp(c.ovr - ri(1, 4), 50, 99); notes.push(`${c.n} missed most of the season with an injury.`); }
+    else if (c.ovr >= 86 && R() < 0.6) { c.probowl = (c.probowl || 0) + 1; g.rep = clamp(g.rep + 2, 0, 100); notes.push(`${c.n} made the Pro Bowl.`); agAch(g, 'probowl', 'a client in the Pro Bowl.'); }
+    if (g.teams[c.tm] && g.teams[c.tm].r >= 86 && R() < 0.12) { c.rings = (c.rings || 0) + 1; notes.push(`${c.n} won the Super Bowl with the ${agTeamName(c.tm)}.`); c.trust = clamp(c.trust + 4, 0, 100); }
+  });
+  notes.forEach(t => agLog(g, t, 'good')); return notes;
+}
+/* ---------- step 6: the year in review, then a new year ---------- */
+function agReview(g) {
+  const fees = r2(g.clients.reduce((s, c) => s + (c.k && c.lvl === 'nfl' ? agFee(c.k) : 0), 0)); const cost = r2(0.12 + (g.staff.scout + g.staff.negot + g.staff.brand) * 0.07);
+  g.clients.forEach(c => { if (c.k && c.lvl === 'nfl') c.earned = r2((c.earned || 0) + agFee(c.k)); });
+  g.cash = r2(g.cash + fees - cost); g.stats.fees = r2(g.stats.fees + fees); const fired = g.clients.filter(c => c.trust < 25 && c.lvl === 'nfl');
+  fired.forEach(c => { agLog(g, `${c.n} fires you. He says he never felt like a priority.`, 'bad'); g.rep = clamp(g.rep - 3, 0, 100); }); g.clients = g.clients.filter(c => !fired.includes(c) && c.lvl !== 'out');
+  const rep0 = g.hist.length ? g.hist[g.hist.length - 1].rep : 18; g.rep = clamp(g.rep + (g.clients.length >= 8 ? 1 : 0), 0, 100);
+  g.hist.push({ y: g.year, fees, cost, cash: g.cash, rep: g.rep, clients: g.clients.length, d: g.rep - rep0 });
+  if (g.clients.length >= 10) agAch(g, 'ten', 'ten clients.'); if (g.rep >= 90) agAch(g, 'super', 'the most respected agency in football.'); if (g.cash >= 10) agAch(g, 'rich', '$10 million in the bank.');
+  if (g.cash < -0.5) { g.over = { y: g.year, why: 'The agency ran out of money.' }; agLog(g, `${g.you.agency} closes. The money ran out.`, 'bad'); }
+  return { fees, cost, fired: fired.length };
+}
+function agNewYear(g) {
+  g.year++; g.step = 0; g.clients.forEach(c => { c.age++; if (c.k) c.k.left--; });
+  const ret = g.clients.filter(c => c.lvl === 'nfl' && (c.age >= 36 || (c.age >= 32 && c.ovr < 68) || (c.age >= 33 && R() < 0.3))); ret.forEach(c => agLog(g, `${c.n} retires after ${c.age - 22} seasons. You earned ${fmM(c.earned || 0)} representing him.`)); g.clients = g.clients.filter(c => !ret.includes(c));
+  g.teams = agTeams(g); g.pros = agProspects(g); g.pitches = agPitches(g); g.fa = []; g.events = [];
+}
+// the one button that moves the year along
+function agNext(g) {
+  if (g.over) return 'over'; const k = agStepKey(g);
+  if (k === 'sign') { agSigningEnd(g); g.step = 1; if (!g.clients.some(c => c.lvl === 'draft')) { g.step = 3; agFaStart(g); } }
+  else if (k === 'prep') { g.clients.forEach(c => { if (c.lvl === 'draft' && !c.prep) c.prep = 'std'; }); g.step = 2; g.draftRes = agDraft(g); }
+  else if (k === 'draft') { g.step = 3; agFaStart(g); }
+  else if (k === 'fa') { agFaEnd(g); g.step = 4; agSeasonStart(g); }
+  else if (k === 'season') { g.seasonNotes = agSeasonPlay(g); g.step = 5; g.rev = agReview(g); }
+  else if (!g.over) agNewYear(g);
+  return agStepKey(g);
+}
+const agLegacy = g => Math.round(g.rep * 2 + g.stats.fees * 6 + g.stats.firsts * 8 + Object.keys(g.ach).length * 10 + g.clients.reduce((s, c) => s + (c.probowl || 0) * 3 + (c.rings || 0) * 5, 0));
+const agUpgradeCost = (g, k) => r2(AG_STAFF[k][2] * (g.staff[k] + 1));
+function agUpgrade(g, k) { if (!AG_STAFF[k] || g.staff[k] >= 3) return false; const cost = agUpgradeCost(g, k); if (g.cash < cost) return false; g.cash = r2(g.cash - cost); g.staff[k]++; if (k === 'scout' && agStepKey(g) === 'sign') g.pitches += 2; agLog(g, `${AG_STAFF[k][0]} is now level ${g.staff[k]}.`); return true; }
+
+/* ---------- the pages ---------- */
+const agTrust = t => `<span class="pill ${t >= 70 ? 'good' : t >= 40 ? 'ghost' : 'bad'}">${t >= 70 ? 'Trusts you' : t >= 40 ? 'Watching' : 'Unhappy'}</span>`;
+const agNextLabel = g => (g.over ? null : ({ sign: 'Close the signing season', prep: 'Go to the draft', draft: 'On to free agency', fa: 'Close free agency', season: 'Play the season', review: `Start ${g.year + 1}` })[agStepKey(g)]);
+function agHeader(g) { return { title: g.you.agency, sub: `${g.you.name}, agent · ${g.year} · ${AG_STEPS[g.step][1]}`, cells: [['Reputation', String(g.rep), g.rep >= 80 ? 'Elite' : g.rep >= 55 ? 'Respected' : g.rep >= 30 ? 'Known' : 'Unknown'], ['Bank', fmM(g.cash) === '$0' && g.cash < 0 ? '−' + fmM(-g.cash) : (g.cash < 0 ? '−' + fmM(-g.cash) : fmM(g.cash))], ['Clients', g.clients.length + ' of ' + agMaxClients(g)], ['Fees a year', fmM(r2(g.clients.reduce((s, c) => s + (c.k && c.lvl === 'nfl' ? agFee(c.k) : 0), 0)))]], primary: agNextLabel(g) ? [agNextLabel(g), 'agnext'] : null }; }
+const agStepsBar = g => `<ol class="agsteps">${AG_STEPS.map(([k, l], i) => `<li class="${i === g.step ? 'on' : i < g.step ? 'done' : ''}">${esc(l)}</li>`).join('')}</ol>`;
+function agOfficeHTML(g) {
+  const k = agStepKey(g); let main = '';
+  if (g.over) main = `<section class="card decision"><div class="eyebrow">The end</div><h2 class="h2">${esc(g.you.agency)} has closed</h2><p>${esc(g.over.why)} You lasted ${g.hist.length} year${g.hist.length === 1 ? '' : 's'} and finished with a legacy of ${agLegacy(g)}. Start a new career from the Saves page.</p></section>`;
+  else if (k === 'sign') main = `<section class="card next"><div class="eyebrow">${g.year} · Signing season</div><h2 class="h2">${g.pitches} pitch meeting${g.pitches === 1 ? '' : 's'} left</h2><p>Draft prospects are choosing agents. Each one wants something different from his career. Find out what, pitch it, and he may choose you over the big agencies. You have room for ${Math.max(0, agMaxClients(g) - g.clients.length)} more client${agMaxClients(g) - g.clients.length === 1 ? '' : 's'}.</p><div class="row gap"><button class="btn primary" data-act="mtab" data-tab="board">Open the prospect board</button></div></section>`;
+  else if (k === 'prep') { const L = g.clients.filter(c => c.lvl === 'draft'); main = `<section class="card next"><div class="eyebrow">${g.year} · Draft preparation</div><h2 class="h2">Get them ready</h2><p>Where a rookie is drafted sets his first contract, and your fee, for four years.</p><div class="tw"><table class="tbl"><thead><tr><th>Client</th><th>Projected</th><th>Plan</th></tr></thead><tbody>${L.map(c => `<tr><td><b>${esc(c.n)}</b> <span class="muted">${c.pos}, ${esc(c.col || '')}</span></td><td>Round ${agRound(c.stock)}, about pick ${c.stock}</td><td>${Object.entries(AG_PREP).map(([pk, d]) => `<button class="btn sm${c.prep === pk || (!c.prep && pk === 'std') ? ' primary' : ' ghost'}" data-act="agprep" data-id="${c.id}" data-v="${pk}" title="${esc(d[1])}">${esc(d[0])}${d[2] ? ' · ' + fmM(d[2]) : ''}</button>`).join(' ')}</td></tr>`).join('')}</tbody></table></div><p class="small muted">Elite training costs $80,000 and lifts his stock. Skipping the workouts can go either way.</p></section>`; }
+  else if (k === 'draft') main = `<section class="card next"><div class="eyebrow">${g.year} · The draft</div><h2 class="h2">Draft night</h2><ul class="plainlist">${(g.draftRes || []).map(t => `<li>${esc(t)}</li>`).join('') || '<li class="muted">You had nobody in this draft.</li>'}</ul></section>`;
+  else if (k === 'fa') main = g.fa.length ? g.fa.map(f => { const c = g.clients.find(x => x.id === f.cid); if (!c) return ''; const live = f.offers.filter(o => !o.gone);
+      return `<section class="card ${f.done ? '' : 'decision'}" data-fa="${c.id}"><div class="eyebrow">Free agency · ${esc(c.pos)} · age ${c.age} · ${c.ovr} overall</div><h2 class="h3">${esc(c.n)} ${agTrust(c.trust)}</h2><p class="small">He wants: <b>${esc(AG_WANT[c.want][0].toLowerCase())}</b>. The market says he is worth about ${fmM(f.val)} a year.${f.done ? ` Signed with the ${esc(agTeamName(c.tm))}.` : ''}</p>
+      ${f.done ? '' : `<div class="tw"><table class="tbl"><thead><tr><th>Club</th><th class="num">A year</th><th class="num">Years</th><th></th></tr></thead><tbody>${f.offers.map(o => `<tr class="${o.gone ? 'muted' : ''}"><td><b>${esc(agTeamName(o.tm))}</b>${o.tm === c.home ? ' <span class="pill ghost">Home</span>' : ''}<div class="small muted">${o.gone ? 'Walked away' : (o.start ? 'Starter' : 'Backup') + ' · ' + (g.teams[o.tm].r >= 82 ? 'contender' : g.teams[o.tm].r >= 74 ? 'middle of the pack' : 'rebuilding')}</div></td><td class="num">${o.gone ? '—' : fmM(o.apy)}</td><td class="num">${o.gone ? '' : o.yrs}</td><td>${o.gone ? '' : `<div class="row gap"><button class="btn sm primary" data-act="agtake" data-id="${c.id}" data-tm="${o.tm}">Accept</button><button class="btn sm ghost" data-act="agpush" data-id="${c.id}" data-tm="${o.tm}">Ask for more</button></div>`}</td></tr>`).join('')}</tbody></table></div><p class="small muted">${live.length > 1 ? `${live.length} clubs are bidding, which gives you leverage.` : live.length ? 'One club left. Push carefully.' : 'Every club has walked away.'} Asking for more can raise an offer or end the talk.</p>`}</section>`; }).join('') : `<section class="card next"><div class="eyebrow">${g.year} · Free agency</div><h2 class="h2">A quiet spring</h2><p>None of your clients is out of contract.</p></section>`;
+  else if (k === 'season') main = (g.events.length ? g.events.map((e, i) => { const def = AG_EVENTS.find(x => x.k === e.k); return `<section class="card ${e.done ? '' : 'decision'}"><div class="eyebrow">${e.done ? 'Handled' : 'Decision needed'} · during the season</div><h2 class="h3">${esc(e.t)}</h2>${e.done ? `<p>${esc(e.res || '')}</p>` : `<div class="evopts">${def.o.map((o, j) => `<button class="evopt" data-act="agev" data-i="${i}" data-v="${j}"><b>${esc(o[0])}</b><span>${esc(o[1])}</span></button>`).join('')}</div>`}</section>`; }).join('') : '') + `<section class="card next"><div class="eyebrow">${g.year} · The season</div><h2 class="h2">Your clients are playing</h2><p>${g.events.some(e => !e.done) ? 'Answer what is on your desk, then play the season. Anything left unanswered is handled the quiet way.' : 'Nothing is waiting on you. Play the season to see how they did.'}</p></section>`;
+  else { const r = g.rev || { fees: 0, cost: 0, fired: 0 }; const h = g.hist[g.hist.length - 1] || {}; main = `<section class="card next"><div class="eyebrow">${g.year} · Year in review</div><h2 class="h2">${r.fees - r.cost >= 0 ? 'A profit of ' + fmM(r2(r.fees - r.cost)) : 'A loss of ' + fmM(r2(r.cost - r.fees))}</h2><div class="tiles"><div><span class="k">Fees earned</span><span class="v">${fmM(r.fees)}</span></div><div><span class="k">Costs</span><span class="v">${fmM(r.cost)}</span></div><div><span class="k">Reputation</span><span class="v">${g.rep}</span><span class="s">${h.d > 0 ? '+' + h.d : h.d || 0} this year</span></div><div><span class="k">Legacy</span><span class="v">${agLegacy(g)}</span></div></div>${(g.seasonNotes || []).length ? `<ul class="plainlist small mt">${g.seasonNotes.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</section>`; }
+  const first = !g.hist.length && g.step === 0 ? `<section class="card"><div class="eyebrow">How it works</div><p class="small">You earn 3% of every contract your clients sign, every year it runs. Sign prospects, get them drafted high, and negotiate hard in free agency without losing the club or the client. Clients who stop trusting you leave. Spend what you earn on staff from the Agency page.</p></section>` : '';
+  return `${agStepsBar(g)}${main}${first}<section class="card"><div class="eyebrow">Latest</div><ul class="plainlist small">${g.log.slice(0, 10).map(x => `<li><span class="muted">${x.y}</span> · <span class="${x.tone === 'good' ? 'res-w' : x.tone === 'bad' ? 'res-l' : ''}">${esc(x.t)}</span></li>`).join('')}</ul></section>`;
+}
+function agClientsHTML(g) {
+  const rows = g.clients.slice().sort((a, b) => b.ovr - a.ovr).map(c => `<tr><td><b>${esc(c.n)}</b>${c.probowl ? ` <span class="pill maize">${c.probowl}× Pro Bowl</span>` : ''}</td><td>${c.pos}</td><td class="num">${c.age}</td><td>${ovrTag(c.ovr)}</td><td>${c.lvl === 'draft' ? `<span class="muted">Draft prospect, round ${agRound(c.stock)}</span>` : esc(c.tm ? agTeamName(c.tm) : 'No club')}</td><td class="num">${c.k ? fmM(c.k.apy) : '—'}</td><td class="num">${c.k ? Math.max(0, c.k.left) : ''}</td><td class="num">${c.k ? fmM(agFee(c.k)) : '—'}</td><td>${esc(AG_WANT[c.want][1])}</td><td>${agTrust(c.trust)}</td></tr>`).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">Clients</div><h2 class="h2">${g.clients.length} of ${agMaxClients(g)}</h2></div><p class="hint">Your fee is 3% of each contract, every year. A client whose trust falls too low will fire you.</p></div>${g.clients.length ? `<div class="tw"><table class="tbl"><thead><tr><th>Client</th><th>Pos</th><th class="num">Age</th><th>Overall</th><th>Club</th><th class="num">A year</th><th class="num">Years left</th><th class="num">Your fee</th><th>Wants</th><th>Trust</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="muted">No clients. Sign some in the signing season.</p>'}</section>`;
+}
+function agBoardHTML(g) {
+  if (agStepKey(g) !== 'sign') return `<section class="card"><div class="eyebrow">Prospects</div><h2 class="h2">The board is closed</h2><p class="muted">Prospects choose their agents in the signing season, at the start of each year.</p></section>`;
+  const rows = g.pros.map(p => { const lead = p.int > p.heat; const read = g.staff.scout >= 2 || p.known;
+    return `<tr><td><b>${esc(p.n)}</b><div class="small muted">${esc(p.col)}</div></td><td>${p.pos}</td><td>${ovrTag(p.ovr)}</td><td>Rd ${agRound(p.stock)}<div class="small muted">about pick ${p.stock}</div></td><td>${read ? esc(AG_WANT[p.want][0]) : '<span class="muted">Not known yet</span>'}</td><td><span class="pill ${lead ? 'good' : p.int > p.heat - 15 ? 'warn' : 'ghost'}">${lead ? 'Leaning your way' : p.int > p.heat - 15 ? 'Close' : 'With the big agencies'}</span></td><td class="nowrap">${Object.entries(AG_PITCH).map(([k, d]) => `<button class="btn sm ghost" data-act="agpitch" data-id="${p.id}" data-v="${k}" title="${esc(d[1])}"${p.pitched[k] || g.pitches <= 0 ? ' disabled' : ''}>${esc(d[0])}</button>`).join(' ')} <button class="btn sm ghost" data-act="agadv" data-id="${p.id}"${p.adv || g.cash < 0.05 ? ' disabled' : ''} title="A $50,000 advance against his first contract">Advance $50K</button></td></tr>`; }).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">Prospect board · ${g.year}</div><h2 class="h2">${g.pitches} pitch meeting${g.pitches === 1 ? '' : 's'} left</h2></div><p class="hint">Each pitch is one meeting. The right pitch for what he wants moves him a lot; the wrong one a little. Top prospects are chased hardest by the big agencies. A prospect signs with you if he is leaning your way when the signing season closes.</p></div><div class="tw"><table class="tbl"><thead><tr><th>Prospect</th><th>Pos</th><th>Overall</th><th>Projected</th><th>Wants</th><th>Where you stand</th><th>Pitch</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+}
+function agLeagueHTML(g) {
+  const rows = NFL.slice().sort((a, b) => g.teams[b.id].r - g.teams[a.id].r).map(t => { const tm = g.teams[t.id]; const mine = g.clients.filter(c => c.tm === t.id); return `<tr><td><b>${esc(t.name)}</b></td><td>${tm.r >= 82 ? 'Contender' : tm.r >= 74 ? 'Middle' : 'Rebuilding'}</td><td class="num">${fmM(tm.cap)}</td><td>${Object.keys(tm.need).join(', ')}</td><td class="small">${mine.map(c => esc(c.n)).join(', ')}</td></tr>`; }).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">The league · ${g.year}</div><h2 class="h2">32 clubs</h2></div><p class="hint">A club pays more for a position it needs, and can never pay more than its cap room.</p></div><div class="tw"><table class="tbl"><thead><tr><th>Club</th><th>Outlook</th><th class="num">Cap room</th><th>Needs</th><th>Your clients</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+}
+const AG_ACH = { first: 'A first-round pick', top10: 'A top-ten pick', hundred: 'A $100 million contract', probowl: 'A Pro Bowl client', ten: 'Ten clients', super: 'Reputation of 90', rich: '$10 million in the bank' };
+function agAgencyHTML(g) {
+  const staff = Object.entries(AG_STAFF).map(([k, d]) => `<div class="setrow"><div class="sl"><b>${esc(d[0])} · level ${g.staff[k]} of 3</b><span class="hint">${esc(d[1])}</span></div><div class="sctl">${g.staff[k] >= 3 ? '<span class="pill maize">Full</span>' : `<button class="btn sm" data-act="agup" data-v="${k}"${g.cash < agUpgradeCost(g, k) ? ' disabled' : ''}>Hire · ${fmM(agUpgradeCost(g, k))}</button>`}</div></div>`).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">The agency</div><h2 class="h2">Legacy ${agLegacy(g)}</h2></div><p class="hint">Staff cost money every year as well as up front: $70,000 a level. Each level also makes room for two more clients.</p></div>
+   <div class="tiles"><div><span class="k">Career fees</span><span class="v">${fmM(g.stats.fees)}</span></div><div><span class="k">Deals done</span><span class="v">${g.stats.deals}</span></div><div><span class="k">Biggest contract</span><span class="v">${fmM(g.stats.best)}</span></div><div><span class="k">First-round picks</span><span class="v">${g.stats.firsts}</span></div></div>${staff}</section>
+   <section class="card"><div class="eyebrow">Milestones</div><ul class="plainlist">${Object.entries(AG_ACH).map(([k, t]) => `<li>${g.ach[k] ? `<b>${esc(t)}</b> <span class="small muted">· ${g.ach[k]}</span>` : `<span class="muted">${esc(t)}</span>`}</li>`).join('')}</ul></section>
+   ${g.hist.length ? `<section class="card"><div class="eyebrow">Year by year</div><div class="tw"><table class="tbl"><thead><tr><th>Year</th><th class="num">Fees</th><th class="num">Costs</th><th class="num">Bank</th><th class="num">Reputation</th><th class="num">Clients</th></tr></thead><tbody>${g.hist.slice().reverse().map(h => `<tr><td>${h.y}</td><td class="num">${fmM(h.fees)}</td><td class="num">${fmM(h.cost)}</td><td class="num">${h.cash < 0 ? '−' + fmM(-h.cash) : fmM(h.cash)}</td><td class="num">${h.rep}</td><td class="num">${h.clients}</td></tr>`).join('')}</tbody></table></div></section>` : ''}`;
+}
+(function () { const el = document.createElement('style'); el.textContent = '.agsteps{list-style:none;display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:0 0 14px}.agsteps li{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}.agsteps li.on{background:var(--maize);color:var(--maize-ink);border-color:var(--maize);font-weight:700}.agsteps li.done{color:var(--text)}'; document.head.appendChild(el); })();
+MINI.agent = {
+  name: 'Agent', badge: 'AG', eyebrow: 'New · NFL', icon: 'users', startLabel: 'Open an agency', formTitle: 'Open your agency', welcome: 'The agency is open. Start with the prospect board.',
+  blurb: 'Represent players. Win prospects away from the big agencies, get them drafted high, and negotiate their contracts against the clubs. You earn 3% of every deal.',
+  tabs: [['office', 'Office', 'home'], ['clients', 'Clients', 'users'], ['board', 'Prospects', 'star'], ['league', 'League', 'grid'], ['agency', 'Agency', 'gavel']],
+  formHTML: () => `<div class="fgrid"><label class="fld"><span>Your name</span><input id="ag-name" maxlength="28" value="Jordan Reese"></label><label class="fld"><span>Agency name</span><input id="ag-agency" maxlength="32" value="Reese Sports"></label></div>`,
+  readForm: () => ({ name: (document.getElementById('ag-name') || {}).value, agency: (document.getElementById('ag-agency') || {}).value }),
+  create: agNew, check: agCheck, header: agHeader,
+  view: (tab, g) => (tab === 'clients' ? agClientsHTML(g) : tab === 'board' ? agBoardHTML(g) : tab === 'league' ? agLeagueHTML(g) : tab === 'agency' ? agAgencyHTML(g) : agOfficeHTML(g)),
+  summary: g => ({ name: g.you.agency, line: `${g.year} · reputation ${g.rep} · ${g.clients.length} client${g.clients.length === 1 ? '' : 's'}${g.over ? ' · closed' : ''}` }),
+};
+const agOn = () => appMode === 'mini' && mm && mm.kind === 'agent';
+Object.assign(actions, {
+  agnext() { if (!agOn()) return; agNext(mm); mui.tab = 'office'; miniAfter(); window.scrollTo(0, 0); },
+  agpitch(d) { if (!agOn()) return; const r = agPitch(mm, d.id, d.v); miniAfter(r === 'hit' ? 'That is what he wanted to hear.' : r === 'miss' ? 'He was polite. It is not what he cares about most.' : ''); },
+  agadv(d) { if (!agOn()) return; miniAfter(agAdvance(mm, d.id) ? 'He takes the advance.' : ''); },
+  agprep(d) { if (!agOn()) return; miniAfter(agPrep(mm, d.id, d.v) ? '' : 'You cannot afford that.'); },
+  agpush(d) { if (!agOn()) return; const r = agPush(mm, d.id, d.tm); miniAfter(r === 'up' ? `The ${agTeamName(d.tm)} raise their offer.` : r === 'walk' ? `The ${agTeamName(d.tm)} walk away.` : r === 'firm' ? `The ${agTeamName(d.tm)} say this is their final number.` : r === 'hold' ? `The ${agTeamName(d.tm)} do not move.` : ''); },
+  agtake(d) { if (!agOn()) return; miniAfter(agAccept(mm, d.id, d.tm)); },
+  agev(d) { if (!agOn()) return; miniAfter(agEvent(mm, +d.i, +d.v)); },
+  agup(d) { if (!agOn()) return; miniAfter(agUpgrade(mm, d.v) ? '' : 'You cannot afford that.'); },
+});
+try { if (appMode === 'home') render(); } catch (e) { } // the Home screen was drawn before this mode existed
+/* ===================== v9.61: High school coach =====================
+ * You coach a high school team: forty kids, four years each, ten games and the playoffs. Develop them, win,
+ * and send the best to college. Seniors who sign with a college are written to the device's shared register
+ * (fe-world, "hs"), so an athletic director career with Shared world on finds them in the recruiting class of
+ * the same year. A good enough coach gets offers: a bigger high school, and in time a college job, which can
+ * start a Coach career with a head start. It runs in the shell in 530-mini-shell.js; it is a game of its own.
+ * The career: { kind: 'hs', coach, school, year, wk, rep, comm, fund, up, roster, sched, rec, plan, style,
+ * events, offers, alumni, hist, log, ach }. wk 0 is preseason, 1-10 the season, 11-14 the playoffs, 15 the offseason. */
+const HS_POS = [['QB', 1, 3], ['RB', 2, 5], ['WR', 3, 7], ['OL', 5, 9], ['DL', 4, 7], ['LB', 3, 6], ['DB', 4, 7], ['K', 1, 1]]; // position, starters, on the roster
+const HS_POSN = { QB: 'Quarterback', RB: 'Running back', WR: 'Receiver', OL: 'Offensive line', DL: 'Defensive line', LB: 'Linebacker', DB: 'Defensive back', K: 'Kicker' };
+const HS_OFF = ['QB', 'RB', 'WR', 'OL'], HS_CLASS = { 9: 'Freshman', 10: 'Sophomore', 11: 'Junior', 12: 'Senior' };
+const HS_TIER = [null, ['Small school', 'A few hundred students. Everybody plays both ways and the whole town comes on Friday.'], ['Mid-size', 'A solid program in a good district.'], ['Big-city power', 'Two thousand students, college scouts at every game, and no patience.']];
+const HS_FOCUS = { fund: ['Fundamentals', 'Players improve faster all year.'], off: ['Offense', 'A sharper offense on Fridays.'], def: ['Defense', 'A sharper defense on Fridays.'], cond: ['Conditioning', 'Fewer injuries, and stronger in the playoffs.'] };
+const HS_STYLE = { run: ['Run the ball', 'Leans on the line and the backs.'], bal: ['Balanced', 'No weakness, no edge.'], spread: ['Spread it out', 'Leans on the quarterback and the receivers.'] };
+const HS_UP = { weight: ['Weight room', 'Players improve faster.', 6], youth: ['Youth program', 'Better freshmen every year.', 8], film: ['Film room', 'An edge every Friday.', 5] }; // cost in thousands, for level one
+const HS_OPP = ['Central', 'North', 'East', 'West', 'South', 'Lincoln', 'Jefferson', 'Roosevelt', 'Washington', 'St. Mary\'s', 'Riverside', 'Lakeview', 'Hillcrest', 'Valley', 'Mountain View', 'Oak Grove', 'Cedar Ridge', 'Pine Bluff', 'Franklin', 'Madison'];
+const hsStars = ovr => (ovr >= 88 ? 5 : ovr >= 80 ? 4 : ovr >= 71 ? 3 : ovr >= 62 ? 2 : 0);
+const hsLog = (g, t, tone) => { g.log.unshift({ y: g.year, wk: g.wk, t, tone: tone || '' }); if (g.log.length > 60) g.log.length = 60; };
+const hsId = g => 'h' + (g.nid = (g.nid || 0) + 1);
+const hsMoney = k => '$' + Math.round(k * 1000).toLocaleString('en-US');
+function hsFrosh(g, pos) { const tier = g.school.tier; const pot = clamp(Math.round(56 + tier * 3 + g.up.youth * 3 + g.rep / 14 + gauss() * 11), 34, 96); return { id: hsId(g), n: genName(), pos, cls: 9, pot, ovr: clamp(Math.round(pot - rnd(20, 32)), 26, 70), work: ri(35, 95), gp: 0 }; }
+function hsClassIn(g) { const add = []; HS_POS.forEach(([pos, st, n]) => { const have = g.roster.filter(p => p.pos === pos).length; for (let i = have; i < n; i++) add.push(hsFrosh(g, pos)); }); for (let i = 0; i < 2; i++) add.push(hsFrosh(g, pick(['WR', 'DB', 'LB', 'OL', 'RB']))); g.roster.push(...add); return add.length; }
+function hsNewSchool(g, tier, town) {
+  g.school = { name: town[0].split(',')[0] + ' High', town: town[0], st: town[1], mascot: pick(HS_MASCOTS), tier }; g.roster = [];
+  HS_POS.forEach(([pos, st, n]) => { for (let i = 0; i < n; i++) { const p = hsFrosh(g, pos); p.cls = 9 + (i % 4); const yrs = p.cls - 9; p.ovr = clamp(Math.round(p.ovr + (p.pot - p.ovr) * (1 - Math.pow(0.72, yrs)) + gauss() * 2), 26, p.pot); g.roster.push(p); } });
+}
+function hsSchedule(g) { const base = 44 + g.school.tier * 6; const names = shuffle(HS_OPP.slice()); g.sched = Array.from({ length: 10 }, (_, i) => ({ wk: i + 1, opp: names[i], r: clamp(Math.round(base + gauss() * 6 + (i >= 7 ? 3 : 0)), 34, 86), home: i % 2 === 0, res: null })); g.rec = { w: 0, l: 0 }; g.po = null; }
+function hsNew(f) {
+  const g = { kind: 'hs', v: 1, coach: { name: plainName(f.name, 28) || 'Sam Whitaker' }, school: null, year: 2026, wk: 0, rep: 20, comm: 55, fund: 4, up: { weight: 0, youth: 0, film: 0 }, roster: [], sched: [], rec: { w: 0, l: 0 }, plan: 'fund', style: 'bal', events: [], offers: [], alumni: [], hist: [], log: [], ach: {}, nid: 0, dev: 3, titles: 0, seed: Math.floor(R() * 1e9) };
+  const town = TOWNS.find(t => t[0] === f.town) || pick(TOWNS); hsNewSchool(g, 1, town); hsSchedule(g); hsLog(g, `${g.coach.name} is the new head coach at ${g.school.name}, home of the ${g.school.mascot}.`); return g;
+}
+function hsCheck(g) { if (!g || !g.coach || !g.school || !Array.isArray(g.roster)) return null; g.sched = g.sched || []; g.events = g.events || []; g.offers = g.offers || []; g.alumni = g.alumni || []; g.hist = g.hist || []; g.log = g.log || []; g.ach = g.ach || {}; g.up = Object.assign({ weight: 0, youth: 0, film: 0 }, g.up); g.rec = g.rec || { w: 0, l: 0 }; return g; }
+const hsAch = (g, k, t) => { if (!g.ach[k]) { g.ach[k] = g.year; hsLog(g, 'Milestone: ' + t, 'good'); } };
+/* ---------- the team on Friday ---------- */
+const hsStarters = (g, pos) => { const n = HS_POS.find(x => x[0] === pos)[1]; return g.roster.filter(p => p.pos === pos && !p.out && !p.sit).sort((a, b) => b.ovr - a.ovr).slice(0, n); };
+function hsRating(g) {
+  let off = 0, def = 0, ow = 0, dw = 0; const w = { run: { QB: 1.4, RB: 1.5, WR: 0.7, OL: 1.4 }, bal: { QB: 1.8, RB: 1, WR: 1, OL: 1.1 }, spread: { QB: 2.4, RB: 0.7, WR: 1.4, OL: 0.9 } }[g.style] || {};
+  HS_POS.forEach(([pos, n]) => { if (pos === 'K') return; const st = hsStarters(g, pos); const sum = st.reduce((s, p) => s + p.ovr, 0) + (n - st.length) * 30; if (HS_OFF.includes(pos)) { off += sum * (w[pos] || 1); ow += n * (w[pos] || 1); } else { def += sum; dw += n; } });
+  off = off / ow + (g.plan === 'off' ? 2.5 : 0); def = def / dw + (g.plan === 'def' ? 2.5 : 0); return { off, def, all: (off + def) / 2 + g.up.film * 0.8 };
+}
+function hsPlay(g, opp, home, playoff) {
+  const R_ = hsRating(g); const edge = R_.all - opp + (home ? 1.5 : -1.5) + (playoff && g.plan === 'cond' ? 1.5 : 0) + (g.boost || 0); g.boost = 0; const p = clamp(1 / (1 + Math.exp(-edge / 6)), 0.03, 0.97);
+  const win = R() < p; const base = 21 + (R_.off - 55) * 0.35 + gauss() * 6; let us = Math.max(0, Math.round(base + (win ? 6 : -4))), them = Math.max(0, Math.round(20 + (opp - R_.def) * 0.4 + gauss() * 6 + (win ? -5 : 5)));
+  if (win && us <= them) us = them + ri(1, 8); if (!win && them <= us) them = us + ri(1, 8);
+  HS_POS.forEach(([pos]) => hsStarters(g, pos).forEach(x => { x.gp = (x.gp || 0) + 1; }));
+  return { win, us, them, p };
+}
+// one week of practice: everybody gets a little better, the ones who work at it more so
+function hsGrow(g, weeks) { g.roster.forEach(p => { const starter = hsStarters(g, p.pos).includes(p); p.ovr = clamp(Math.round((p.ovr + (p.pot - p.ovr) * 0.011 * weeks * (0.55 + p.work / 100) * (1 + g.up.weight * 0.14) * (starter ? 1.15 : 0.9) * (g.plan === 'fund' ? 1.2 : 1) * (p.dev ? 1.8 : 1)) * 10) / 10, 26, 99); }); }
+const hsOvr = p => Math.round(p.ovr);
+/* ---------- decisions during the season ---------- */
+const hsBest = (g, f) => g.roster.filter(p => !p.out && (!f || f(p))).sort((a, b) => b.ovr - a.ovr)[0];
+const HS_EVENTS = [
+  { k: 'grades', pick: g => hsBest(g, p => p.cls >= 10), t: (g, p) => `${p.n}, your best ${HS_POSN[p.pos].toLowerCase()}, is failing algebra. By the rules he sits this Friday.`,
+    o: [['Sit him', 'The rules are the rules. The town grumbles; he learns something.', (g, p) => { p.sit = 1; p.work = clamp(p.work + 8, 0, 99); g.rep = clamp(g.rep + 1, 0, 100); g.comm = clamp(g.comm - 3, 0, 100); return `${p.n} watches from the sideline in street clothes.`; }], ['Ask the teacher for a favor', 'He plays. If it gets around, it costs you.', (g, p) => { if (R() < 0.35) { g.rep = clamp(g.rep - 7, 0, 100); g.comm = clamp(g.comm - 4, 0, 100); return 'The teacher tells the principal. It is all over town by Monday.'; } return 'The grade is changed to an incomplete. He plays.'; }], ['Pay for a tutor', `${hsMoney(1)} from the booster fund. He sits this week and is fine after.`, (g, p) => { if (g.fund < 1) return 'There is no money for a tutor.'; g.fund = r1(g.fund - 1); p.sit = 1; p.work = clamp(p.work + 12, 0, 99); g.comm = clamp(g.comm + 2, 0, 100); return `${p.n} sits one game and gets his grade up.`; }]] },
+  { k: 'parent', pick: g => g.roster.filter(p => p.cls >= 11 && !hsStarters(g, p.pos).includes(p))[0], t: (g, p) => `The father of ${p.n}, a ${HS_CLASS[p.cls].toLowerCase()} who does not start, wants a word about playing time. He is on the booster board.`,
+    o: [['Start the kid this week', 'The boosters are pleased. You are a little weaker on Friday.', (g, p) => { g.comm = clamp(g.comm + 5, 0, 100); g.boost = -2; g.fund = r1(g.fund + 1); return `${p.n} starts. His father writes a check.`; }], ['Hold your ground', 'The best players play.', (g, p) => { g.comm = clamp(g.comm - 4, 0, 100); g.rep = clamp(g.rep + 1, 0, 100); return 'You tell him the depth chart is earned. He is not pleased.'; }], ['Give the kid extra work', 'One of your development sessions goes to him.', (g, p) => { p.dev = 1; p.work = clamp(p.work + 6, 0, 99); g.comm = clamp(g.comm + 1, 0, 100); return `You stay late with ${p.n} twice a week.`; }]] },
+  { k: 'private', pick: g => hsBest(g, p => p.cls === 11 || p.cls === 10), t: (g, p) => `A private school two towns over is telling ${p.n}'s family he would get more attention from colleges there.`,
+    o: [['Sit down with the family', 'A good reputation keeps him.', (g, p) => { if (R() < 0.35 + g.rep / 110) { p.work = clamp(p.work + 4, 0, 99); return `${p.n} is staying.`; } g.roster = g.roster.filter(x => x !== p); g.comm = clamp(g.comm - 3, 0, 100); return `${p.n} transfers. The town takes it hard.`; }], ['Let him decide', 'It costs nothing.', (g, p) => { if (R() < 0.5) return `${p.n} stays with his friends.`; g.roster = g.roster.filter(x => x !== p); return `${p.n} transfers.`; }]] },
+  { k: 'scout', pick: g => hsBest(g, p => p.cls === 12), t: (g, p) => `A college assistant is coming to Friday's game. He has time to watch one senior closely.`,
+    o: [['Point him at your best senior', 'A better chance at a bigger school.', (g, p) => { p.seen = (p.seen || 0) + 1; return `He leaves with ${p.n}'s film and your phone number.`; }], ['Point him at a kid who needs the look', 'A senior who would not otherwise be noticed.', (g, p) => { const q = g.roster.filter(x => x.cls === 12 && x !== p && hsStars(x.ovr) <= 2).sort((a, b) => b.ovr - a.ovr)[0] || p; q.seen = (q.seen || 0) + 2; g.rep = clamp(g.rep + 1, 0, 100); return `He spends the night watching ${q.n}.`; }]] },
+  { k: 'booster', pick: g => g.roster.filter(p => p.cls >= 10 && !hsStarters(g, p.pos).includes(p))[0], t: (g, p) => `A car dealer offers ${hsMoney(6)} for new uniforms. His son is ${p.n}, and he mentions that the boy has not been playing much.`,
+    o: [['Take the money and play the boy', 'The fund grows. People notice why.', (g, p) => { g.fund = r1(g.fund + 6); g.boost = -2; g.rep = clamp(g.rep - 3, 0, 100); return 'The uniforms are sharp. The whispers are not.'; }], ['Take nothing', 'Your depth chart is not for sale.', (g, p) => { g.rep = clamp(g.rep + 2, 0, 100); g.comm = clamp(g.comm - 2, 0, 100); return 'You thank him and say no.'; }]] },
+];
+function hsMaybeEvent(g) { if (g.events.some(e => !e.done) || R() > 0.34) return; const used = new Set(g.events.map(e => e.k)); const def = shuffle(HS_EVENTS.slice()).find(e => !used.has(e.k) && e.pick(g)); if (!def) return; const p = def.pick(g); g.events.push({ k: def.k, pid: p.id, t: def.t(g, p), wk: g.wk, done: false }); }
+function hsEvent(g, i, opt) { const e = g.events[i]; if (!e || e.done) return ''; const def = HS_EVENTS.find(x => x.k === e.k); const p = g.roster.find(x => x.id === e.pid); e.done = true; if (!def || !p) return ''; const m = def.o[opt][2](g, p); e.res = m; hsLog(g, m); return m; }
+/* ---------- the year ---------- */
+function hsDev(g, pid) { const p = g.roster.find(x => x.id === pid); if (!p || g.wk !== 0 || g.dev <= 0 || p.dev) return false; p.dev = 1; g.dev--; return true; }
+function hsWeek(g) {
+  if (g.wk === 0) { g.roster.forEach(p => { p.sit = 0; }); g.wk = 1; return 'start'; }
+  g.events.filter(e => !e.done).forEach(e => hsEvent(g, g.events.indexOf(e), g.events.indexOf(e) >= 0 ? 1 : 1));
+  if (g.wk >= 1 && g.wk <= 10) { const s = g.sched[g.wk - 1]; const r = hsPlay(g, s.r, s.home, false); s.res = r; if (r.win) g.rec.w++; else g.rec.l++; hsLog(g, `Week ${g.wk}: ${r.win ? 'beat' : 'lost to'} ${s.opp}, ${r.us}-${r.them}.`, r.win ? 'good' : 'bad'); g.roster.forEach(p => { p.sit = 0; });
+    if (R() < 0.1 - (g.plan === 'cond' ? 0.05 : 0)) { const p = pick(g.roster.filter(x => !x.out)); if (p) { p.out = 1; hsLog(g, `${p.n} (${p.pos}) is hurt and out for the season.`, 'bad'); } }
+    hsGrow(g, 1); g.wk++; if (g.wk <= 10) hsMaybeEvent(g); else { if (g.rec.w >= 6) { g.po = { rd: 1, alive: true, log: [] }; hsLog(g, `${g.school.name} makes the playoffs at ${g.rec.w}-${g.rec.l}.`, 'good'); } else { g.po = { rd: 0, alive: false, log: [] }; g.wk = 15; hsSeasonEnd(g); } } return 'game'; }
+  if (g.wk >= 11 && g.wk <= 14) { const rd = g.wk - 10; const opp = clamp(Math.round(49 + g.school.tier * 6 + rd * 3 + gauss() * 4), 40, 92); const r = hsPlay(g, opp, rd <= 2 && g.rec.w >= 8, true); const nm = ['', 'first round', 'quarterfinal', 'semifinal', 'state championship'][rd]; g.po.log.push({ rd, r }); hsLog(g, `Playoffs, ${nm}: ${r.win ? 'won' : 'lost'} ${r.us}-${r.them}.`, r.win ? 'good' : 'bad'); hsGrow(g, 1);
+    if (!r.win) { g.po.alive = false; g.po.rd = rd; g.wk = 15; hsSeasonEnd(g); } else if (rd === 4) { g.po.rd = 5; g.titles++; g.wk = 15; hsLog(g, `${g.school.name} wins the state championship.`, 'good'); hsAch(g, 'title', 'a state championship.'); hsSeasonEnd(g); } else { g.po.rd = rd + 1; g.wk++; } return 'playoff'; }
+  if (g.wk === 15) { hsNewYear(g); return 'year'; }
+}
+const hsToCollege = (g, p, stars) => { const band = stars >= 5 ? [84, 99] : stars === 4 ? [74, 90] : stars === 3 ? [62, 80] : [40, 66]; const pool = Object.entries(CTEAMS0_AD).filter(([, t]) => t.base >= band[0] && t.base <= band[1]); const near = pool.filter(([id]) => TEAM_STATE[id] === g.school.st); return (near.length && R() < 0.45 ? pick(near) : pick(pool.length ? pool : Object.entries(CTEAMS0_AD)))[0]; };
+const HS_TO_POS = { QB: ['QB'], RB: ['RB'], WR: ['WR', 'WR', 'TE'], OL: ['OL'], DL: ['DE', 'DT'], LB: ['LB'], DB: ['CB', 'S'], K: ['K'] };
+function hsSeasonEnd(g) {
+  const po = g.po || { rd: 0 }; const w = g.rec.w, l = g.rec.l; const exp = 5 + (hsRating(g).all - (44 + g.school.tier * 6)) * 0.25;
+  const d = Math.round((w - exp) * 1.1 + [0, 0, 1, 3, 5, 9][Math.min(5, po.rd)]); g.rep = clamp(g.rep + d, 0, 100); g.comm = clamp(g.comm + Math.round((w - 5) * 2 + (po.rd >= 3 ? 6 : 0)), 0, 100);
+  // signing day: where the seniors are going
+  const signed = []; const reg = []; g.roster.filter(p => p.cls === 12).forEach(p => { let stars = hsStars(hsOvr(p)); if (p.seen && stars && stars < 5 && R() < 0.35 * p.seen) stars++; if (!stars) { g.alumni.push({ n: p.n, pos: p.pos, y: g.year + 1, stars: 0, to: null }); return; }
+    const tid = hsToCollege(g, p, stars); const a = { n: p.n, pos: p.pos, y: g.year + 1, stars, to: tid, ovr: hsOvr(p) }; g.alumni.push(a); signed.push(a); g.rep = clamp(g.rep + (stars >= 4 ? 1 : 0), 0, 100);
+    const cpos = pick(HS_TO_POS[p.pos]); const covr = stars === 5 ? ri(69, 75) : stars === 4 ? ri(62, 69) : stars === 3 ? ri(54, 63) : ri(45, 55); reg.push({ k: 'hs:' + g.seed + ':' + p.id, n: p.n, pos: cpos, stars, ovr: covr, pot: clamp(covr + ri(12, 24), covr, 99), cls: g.year + 1, hs: g.school.name, town: g.school.town, st: g.school.st, coach: g.coach.name, t: Date.now() }); });
+  if (signed.length) hsLog(g, `Signing day: ${signed.length} senior${signed.length > 1 ? 's' : ''} will play in college. ${signed.slice().sort((a, b) => b.stars - a.stars).slice(0, 3).map(a => `${a.n} (${a.stars}-star) to ${CTEAMS0_AD[a.to].name}`).join('; ')}.`, 'good');
+  if (signed.some(a => a.stars >= 4)) hsAch(g, 'blue', 'a four-star recruit.'); if (signed.some(a => a.stars >= 5)) hsAch(g, 'five', 'a five-star recruit.'); if (g.alumni.filter(a => a.to).length >= 20) hsAch(g, 'twenty', 'twenty players sent to college.');
+  try { if (reg.length && typeof worldGet === 'function') { const W = worldGet(); W.hs = (W.hs || []).concat(reg).sort((a, b) => (b.t || 0) - (a.t || 0) || b.stars - a.stars).slice(0, 40); worldPut(W); } } catch (e) { }
+  const gift = r1(clamp(g.comm / 12 + (po.rd >= 1 ? 2 : 0) + po.rd, 1, 20)); g.fund = r1(g.fund + gift);
+  g.hist.push({ y: g.year, school: g.school.name, w, l, po: po.rd, rep: g.rep, signed: signed.length, best: signed.length ? Math.max(...signed.map(a => a.stars)) : 0 }); g.signed = signed; g.gift = gift;
+  if (w === 10) hsAch(g, 'perfect', 'a perfect regular season.'); if (g.hist.length >= 10) hsAch(g, 'decade', 'ten seasons on the sideline.');
+  // who is calling
+  g.offers = []; if (g.school.tier < 3 && g.rep >= 30 + g.school.tier * 18 && R() < 0.7) { const town = pick(TOWNS); g.offers.push({ k: 'hs', tier: g.school.tier + 1, town, name: town[0].split(',')[0] + ' High' }); }
+  if (g.rep >= 70 && g.hist.length >= 4) { const pool = Object.entries(CTEAMS0_AD).filter(([, t]) => t.base <= 72); const near = pool.filter(([id]) => TEAM_STATE[id] === g.school.st); const [tid] = pick(near.length ? near : pool); g.offers.push({ k: 'col', tid, role: R() < 0.5 ? 'RB' : 'LB' }); hsAch(g, 'call', 'a job offer from a college.'); }
+}
+function hsNewYear(g) {
+  g.roster = g.roster.filter(p => p.cls < 12); g.roster.forEach(p => { p.cls++; p.out = 0; p.sit = 0; p.dev = 0; p.seen = 0; p.ovr = clamp(Math.round((p.ovr + (p.pot - p.ovr) * (0.2 + p.work / 500 + g.up.weight * 0.03)) * 10) / 10, 26, 99); });
+  const n = hsClassIn(g); g.year++; g.wk = 0; g.dev = 3; g.events = []; g.offers = []; g.signed = null; hsSchedule(g); hsLog(g, `${n} freshmen come out for the team.`);
+}
+function hsTakeJob(g, i) {
+  const o = g.offers[i]; if (!o || g.wk !== 15) return '';
+  if (o.k === 'hs') { const from = g.school.name; hsNewYear(g); hsNewSchool(g, o.tier, o.town); hsSchedule(g); g.comm = 55; g.fund = r1(4 + o.tier * 3); g.up = { weight: 0, youth: 0, film: 0 }; const m = `${g.coach.name} leaves ${from} for ${g.school.name}.`; hsLog(g, m); return m; }
+  return '';
+}
+const hsUpCost = (g, k) => HS_UP[k][2] * (g.up[k] + 1);
+function hsUpgrade(g, k) { if (!HS_UP[k] || g.up[k] >= 3 || g.fund < hsUpCost(g, k)) return false; g.fund = r1(g.fund - hsUpCost(g, k)); g.up[k]++; hsLog(g, `${HS_UP[k][0]}: level ${g.up[k]}.`); return true; }
+const hsLegacy = g => Math.round(g.rep + g.titles * 25 + g.alumni.reduce((s, a) => s + (a.stars >= 4 ? 6 : a.stars === 3 ? 2 : a.stars ? 1 : 0), 0) + g.hist.reduce((s, h) => s + h.w, 0) * 0.5);
+
+/* ---------- the pages ---------- */
+const hsNextLabel = g => (g.wk === 0 ? 'Start the season' : g.wk <= 10 ? `Play week ${g.wk}: ${g.sched[g.wk - 1].home ? 'vs.' : 'at'} ${g.sched[g.wk - 1].opp}` : g.wk <= 14 ? 'Play the ' + ['', 'first round', 'quarterfinal', 'semifinal', 'state championship'][g.wk - 10] : `Start ${g.year + 1}`);
+function hsHeader(g) { const R_ = hsRating(g); return { title: g.school.name, sub: `${g.coach.name}, head coach · ${g.school.mascot} · ${g.school.town} · ${g.year}`, cells: [['Record', g.rec.w + '-' + g.rec.l, g.wk === 0 ? 'Preseason' : g.wk <= 10 ? 'Week ' + g.wk : g.wk <= 14 ? 'Playoffs' : 'Offseason'], ['Team', String(Math.round(R_.all)), HS_TIER[g.school.tier][0]], ['Reputation', String(g.rep)], ['Booster fund', hsMoney(g.fund)]], primary: [hsNextLabel(g), 'hsnext'] }; }
+function hsOfficeHTML(g) {
+  const ev = g.events.map((e, i) => { const def = HS_EVENTS.find(x => x.k === e.k); return e.done ? '' : `<section class="card decision"><div class="eyebrow">Decision needed · week ${e.wk}</div><h2 class="h3">${esc(e.t)}</h2><div class="evopts">${def.o.map((o, j) => `<button class="evopt" data-act="hsev" data-i="${i}" data-v="${j}"><b>${esc(o[0])}</b><span>${esc(o[1])}</span></button>`).join('')}</div></section>`; }).join('');
+  let main;
+  if (g.wk === 0) main = `<section class="card next"><div class="eyebrow">${g.year} · Preseason</div><h2 class="h2">Two-a-days</h2><p>Set how you will practice and what you will run, and choose up to three players to work with yourself. Then start the season.</p>
+    <div class="eyebrow mt">Practice</div><div>${seg('hsplan', g.plan, Object.entries(HS_FOCUS).map(([k, d]) => [k, d[0]]))}</div><p class="small muted">${esc(HS_FOCUS[g.plan][1])}</p>
+    <div class="eyebrow mt">Offense</div><div>${seg('hsstyle', g.style, Object.entries(HS_STYLE).map(([k, d]) => [k, d[0]]))}</div><p class="small muted">${esc(HS_STYLE[g.style][1])}</p>
+    <p class="small mt">One-on-one sessions left: <b>${g.dev}</b>. Choose players on the Roster page; they improve almost twice as fast this year.</p></section>`;
+  else if (g.wk <= 14) { const last = g.wk <= 10 ? g.sched[g.wk - 2] : null; const nxt = g.wk <= 10 ? g.sched[g.wk - 1] : null; main = `<section class="card next"><div class="eyebrow">${g.year} · ${g.wk <= 10 ? 'Week ' + g.wk + ' of 10' : 'Playoffs'}</div><h2 class="h2">${g.wk <= 10 ? `${nxt.home ? 'Home against' : 'On the road at'} ${esc(nxt.opp)}` : 'Win or go home'}</h2>${nxt ? `<p>They rate about ${nxt.r}. You rate ${Math.round(hsRating(g).all)}.</p>` : `<p>${esc(g.school.name)} is ${g.rec.w}-${g.rec.l}. Each round is harder than the last.</p>`}${last && last.res ? `<p class="small muted">Last week: ${last.res.win ? 'beat' : 'lost to'} ${esc(last.opp)}, ${last.res.us}-${last.res.them}.</p>` : ''}${g.wk <= 10 ? '<div class="row gap"><button class="btn ghost sm" data-act="hssim">Sim to the end of the regular season</button></div>' : ''}</section>`; }
+  else { const h = g.hist[g.hist.length - 1] || {}; main = `<section class="card next"><div class="eyebrow">${g.year} · Season over</div><h2 class="h2">${h.w}-${h.l}${h.po === 5 ? ' · State champions' : h.po ? ' · ' + ['', 'Lost in the first round', 'Lost in the quarterfinal', 'Lost in the semifinal', 'Lost the state championship'][h.po] : ' · Missed the playoffs'}</h2>
+    <div class="tiles"><div><span class="k">Reputation</span><span class="v">${g.rep}</span></div><div><span class="k">Signed with colleges</span><span class="v">${(g.signed || []).length}</span></div><div><span class="k">Boosters gave</span><span class="v">${hsMoney(g.gift || 0)}</span></div><div><span class="k">Legacy</span><span class="v">${hsLegacy(g)}</span></div></div>
+    ${(g.signed || []).length ? `<div class="eyebrow mt">Signing day</div><ul class="plainlist">${g.signed.slice().sort((a, b) => b.stars - a.stars).map(a => `<li><b>${esc(a.n)}</b>, ${a.pos} · ${'★'.repeat(a.stars)} · ${esc(CTEAMS0_AD[a.to].name)}</li>`).join('')}</ul><p class="small muted">With Shared world on, these players are on the recruiting board of the same year in your athletic director careers on this device.</p>` : '<p class="muted">No senior signed with a college this year.</p>'}</section>
+    ${g.offers.map((o, i) => o.k === 'hs' ? `<section class="card decision"><div class="eyebrow">A job offer</div><h2 class="h3">${esc(o.name)} wants you</h2><p>${esc(HS_TIER[o.tier][0])}: ${esc(HS_TIER[o.tier][1])} Better players, tougher opponents, and you start over with the boosters.</p><div class="row gap">${mui.confirm === 'hsjob' + i ? `<button class="btn danger" data-act="hsjob" data-i="${i}">Confirm: take the job</button>` : `<button class="btn" data-act="mask" data-k="hsjob${i}">Take the job</button>`}</div></section>`
+      : `<section class="card decision"><div class="eyebrow">A college is calling</div><h2 class="h3">${esc(CTEAMS0_AD[o.tid].name)} offers you a job coaching ${esc(ROLE_TITLE[o.role].toLowerCase())}</h2><p>This ends your time as a high school coach and starts a Coach career at ${esc(CTEAMS0_AD[o.tid].name)}, with a reputation head start. It needs a free Coach save slot. Your high school career stays in its slot.</p><div class="row gap">${mui.confirm === 'hscol' + i ? `<button class="btn danger" data-act="hscol" data-i="${i}">Confirm: go to college</button>` : `<button class="btn" data-act="mask" data-k="hscol${i}">Take the job</button>`}</div></section>`).join('')}`; }
+  const first = !g.hist.length && g.wk === 0 ? `<section class="card"><div class="eyebrow">How it works</div><p class="small">You get every player for four years. They improve with practice, faster if they work hard and if you spend time on them. Win on Fridays to build your reputation and the booster fund, and send your seniors to college. A good enough coach gets a call from a bigger school, and one day from a college.</p></section>` : '';
+  return `${ev}${main}${first}<section class="card"><div class="eyebrow">Latest</div><ul class="plainlist small">${g.log.slice(0, 10).map(x => `<li><span class="muted">${x.y}</span> · <span class="${x.tone === 'good' ? 'res-w' : x.tone === 'bad' ? 'res-l' : ''}">${esc(x.t)}</span></li>`).join('')}</ul></section>`;
+}
+function hsRosterHTML(g) {
+  const rows = HS_POS.map(([pos]) => { const st = hsStarters(g, pos); return g.roster.filter(p => p.pos === pos).sort((a, b) => b.ovr - a.ovr).map(p => { const s = hsStars(hsOvr(p));
+    return `<tr><td><b>${esc(p.n)}</b>${st.includes(p) ? ' <span class="pill maize">Starter</span>' : ''}${p.out ? ' <span class="pill bad">Hurt</span>' : ''}${p.sit ? ' <span class="pill warn">Sitting</span>' : ''}</td><td>${p.pos}</td><td>${HS_CLASS[p.cls]}</td><td>${ovrTag(hsOvr(p))}</td><td class="num">${p.pot}</td><td>${p.work >= 75 ? 'Tireless' : p.work >= 50 ? 'Steady' : 'Coasts'}</td><td>${s ? '★'.repeat(s) : '<span class="muted">—</span>'}</td><td>${p.dev ? '<span class="pill good">Working with you</span>' : g.wk === 0 && g.dev > 0 ? `<button class="btn sm ghost" data-act="hsdev" data-id="${p.id}">Work with him</button>` : ''}</td></tr>`; }).join(''); }).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">Roster</div><h2 class="h2">${g.roster.length} players</h2></div><p class="hint">The best at each position start. Stars are what college recruiters would call him today; a senior needs two to sign anywhere. In the preseason you can pick ${g.dev} more player${g.dev === 1 ? '' : 's'} to work with yourself.</p></div><div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Class</th><th>Overall</th><th class="num">Potential</th><th>Work ethic</th><th>Recruit</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+}
+function hsScheduleHTML(g) {
+  return `<section class="card"><div class="eyebrow">${g.year} schedule</div><div class="tw"><table class="tbl"><thead><tr><th>Week</th><th>Opponent</th><th class="num">Rating</th><th>Result</th></tr></thead><tbody>${g.sched.map(s => `<tr><td>${s.wk}</td><td>${s.home ? 'vs.' : 'at'} ${esc(s.opp)}</td><td class="num">${s.r}</td><td>${s.res ? `<b class="${s.res.win ? 'res-w' : 'res-l'}">${s.res.win ? 'W' : 'L'}</b> ${s.res.us}-${s.res.them}` : ''}</td></tr>`).join('')}${g.po && g.po.log ? g.po.log.map(x => `<tr><td>Playoffs</td><td>${['', 'First round', 'Quarterfinal', 'Semifinal', 'State championship'][x.rd]}</td><td></td><td><b class="${x.r.win ? 'res-w' : 'res-l'}">${x.r.win ? 'W' : 'L'}</b> ${x.r.us}-${x.r.them}</td></tr>`).join('') : ''}</tbody></table></div><p class="small muted">Six wins makes the playoffs.</p></section>`;
+}
+function hsAlumniHTML(g) {
+  const A = g.alumni.filter(a => a.to).slice().reverse();
+  return `<section class="card"><div class="head"><div><div class="eyebrow">In college</div><h2 class="h2">${A.length} player${A.length === 1 ? '' : 's'} sent on</h2></div><p class="hint">Every senior who signed with a college. With Shared world on, they appear on the recruiting board of the same year in your athletic director careers on this device.</p></div>${A.length ? `<div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Class of</th><th>Recruit</th><th>College</th></tr></thead><tbody>${A.map(a => `<tr><td><b>${esc(a.n)}</b></td><td>${a.pos}</td><td>${a.y}</td><td>${'★'.repeat(a.stars)}</td><td>${esc(CTEAMS0_AD[a.to] ? CTEAMS0_AD[a.to].name : a.to)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted">Nobody yet. A senior needs to be a two-star recruit or better to sign.</p>'}</section>`;
+}
+const HS_ACH = { title: 'A state championship', perfect: 'A perfect regular season', blue: 'A four-star recruit', five: 'A five-star recruit', twenty: 'Twenty players sent to college', decade: 'Ten seasons', call: 'A college calls' };
+function hsProgramHTML(g) {
+  const ups = Object.entries(HS_UP).map(([k, d]) => `<div class="setrow"><div class="sl"><b>${esc(d[0])} · level ${g.up[k]} of 3</b><span class="hint">${esc(d[1])}</span></div><div class="sctl">${g.up[k] >= 3 ? '<span class="pill maize">Full</span>' : `<button class="btn sm" data-act="hsup" data-v="${k}"${g.fund < hsUpCost(g, k) ? ' disabled' : ''}>Build · ${hsMoney(hsUpCost(g, k))}</button>`}</div></div>`).join('');
+  return `<section class="card"><div class="head"><div><div class="eyebrow">The program · ${esc(HS_TIER[g.school.tier][0])}</div><h2 class="h2">Legacy ${hsLegacy(g)}</h2></div><p class="hint">The boosters give more when the town is behind you and when you win in the playoffs. What you build stays with the school if you leave.</p></div>
+   <div class="tiles"><div><span class="k">Booster fund</span><span class="v">${hsMoney(g.fund)}</span></div><div><span class="k">Town support</span><span class="v">${g.comm}</span></div><div><span class="k">State titles</span><span class="v">${g.titles}</span></div><div><span class="k">Career record</span><span class="v">${g.hist.reduce((s, h) => s + h.w, 0)}-${g.hist.reduce((s, h) => s + h.l, 0)}</span></div></div>${ups}</section>
+   <section class="card"><div class="eyebrow">Milestones</div><ul class="plainlist">${Object.entries(HS_ACH).map(([k, t]) => `<li>${g.ach[k] ? `<b>${esc(t)}</b> <span class="small muted">· ${g.ach[k]}</span>` : `<span class="muted">${esc(t)}</span>`}</li>`).join('')}</ul></section>
+   ${g.hist.length ? `<section class="card"><div class="eyebrow">Season by season</div><div class="tw"><table class="tbl"><thead><tr><th>Year</th><th>School</th><th>Record</th><th>Playoffs</th><th class="num">Signed</th><th class="num">Reputation</th></tr></thead><tbody>${g.hist.slice().reverse().map(h => `<tr><td>${h.y}</td><td>${esc(h.school)}</td><td>${h.w}-${h.l}</td><td>${h.po === 5 ? 'State champions' : h.po ? ['', 'First round', 'Quarterfinal', 'Semifinal', 'Final'][h.po] : '—'}</td><td class="num">${h.signed}</td><td class="num">${h.rep}</td></tr>`).join('')}</tbody></table></div></section>` : ''}`;
+}
+MINI.hs = {
+  name: 'High School Coach', badge: 'HS', eyebrow: 'New · High school', icon: 'star', startLabel: 'Take the job', formTitle: 'Your first head coaching job', welcome: 'Welcome to town. Set up your preseason, then start the season.',
+  blurb: 'Start at a small-town high school. Develop players over four years, win on Friday nights, send your seniors to college, and work your way up until a college calls.',
+  tabs: [['office', 'Office', 'home'], ['roster', 'Roster', 'users'], ['sched', 'Schedule', 'calendar'], ['alumni', 'In college', 'star'], ['program', 'Program', 'gavel']],
+  formHTML: () => `<div class="fgrid"><label class="fld"><span>Your name</span><input id="hs-name" maxlength="28" value="Sam Whitaker"></label><label class="fld"><span>Town</span><select id="hs-town">${TOWNS.map(t => `<option value="${esc(t[0])}">${esc(t[0])}</option>`).join('')}</select></label></div><p class="small muted">Every coach starts at a small school. Bigger schools call when you have earned it.</p>`,
+  readForm: () => ({ name: (document.getElementById('hs-name') || {}).value, town: (document.getElementById('hs-town') || {}).value }),
+  create: hsNew, check: hsCheck, header: hsHeader,
+  view: (tab, g) => (tab === 'roster' ? hsRosterHTML(g) : tab === 'sched' ? hsScheduleHTML(g) : tab === 'alumni' ? hsAlumniHTML(g) : tab === 'program' ? hsProgramHTML(g) : hsOfficeHTML(g)),
+  summary: g => ({ name: g.coach.name, line: `${g.school.name} · ${g.year} · ${g.rec.w}-${g.rec.l} · reputation ${g.rep}` }),
+};
+const hsOn = () => appMode === 'mini' && mm && mm.kind === 'hs';
+Object.assign(actions, {
+  hsnext() { if (!hsOn()) return; hsWeek(mm); mui.tab = 'office'; mui.confirm = null; miniAfter(); },
+  hssim() { if (!hsOn()) return; let g = 0; while (mm.wk >= 1 && mm.wk <= 10 && g++ < 12) hsWeek(mm); miniAfter('The regular season is over.'); window.scrollTo(0, 0); },
+  hsplan(d) { if (!hsOn() || !HS_FOCUS[d.v] || mm.wk !== 0) return; mm.plan = d.v; miniAfter(); },
+  hsstyle(d) { if (!hsOn() || !HS_STYLE[d.v] || mm.wk !== 0) return; mm.style = d.v; miniAfter(); },
+  hsdev(d) { if (!hsOn()) return; miniAfter(hsDev(mm, d.id) ? 'He will be in your office at seven every morning.' : ''); },
+  hsev(d) { if (!hsOn()) return; miniAfter(hsEvent(mm, +d.i, +d.v)); },
+  hsup(d) { if (!hsOn()) return; miniAfter(hsUpgrade(mm, d.v) ? '' : 'The fund cannot cover that.'); },
+  hsjob(d) { if (!hsOn()) return; mui.confirm = null; miniAfter(hsTakeJob(mm, +d.i)); window.scrollTo(0, 0); },
+  // the college job: this career is saved where it is, and a Coach career begins in a free slot
+  async hscol(d) {
+    if (!hsOn()) return; const o = mm.offers[+d.i]; mui.confirm = null; if (!o || o.k !== 'col') return; const name = mm.coach.name; const bonus = clamp(Math.round((mm.rep - 60) / 2), 5, 20);
+    if (![1, 2, 3, 4, 5].some(i => !lsGet('fecoach-slot-' + i))) return miniAfter('All five Coach save slots are in use. Free one from Coach mode, then take the job.');
+    mm.left = { y: mm.year, to: o.tid }; hsLog(mm, `${name} leaves ${mm.school.name} to coach ${ROLE_TITLE[o.role].toLowerCase()} at ${CTEAMS0_AD[o.tid].name}.`, 'good'); mm.offers = []; await miniSave();
+    switchNS('coach'); const target = firstFreeSlot(); newCoachCareer({ name, start: 'any', tid: o.tid, role: o.role, diff: 'normal', gameDay: 'plan', lvl: 'col', repBonus: bonus });
+    setActiveSlot(target); appMode = 'ad'; rngOwner = 'ad'; resetUi(); ui.tab = 'office'; hideModal(); applyTheme(); save(); await flushSave(); ui.flash = `From Friday nights to Saturdays. ${name} starts at ${CTEAMS0_AD[o.tid].name} with the reputation he earned.`; render(); window.scrollTo(0, 0);
+  },
+});
+// athletic director careers: your high school seniors are on the board in their signing year (Shared world on)
+{ const _g = genRecruitClass; genRecruitClass = function () { const r = _g.apply(this, arguments);
+  try { if (worldOn() && state.rec) { (worldGet().hs || []).forEach(p => { if (p.cls !== state.rec.cls || state.rec.list.some(x => x.world === p.k)) return; const b = genBody(p.pos);
+    const rec = { id: 'rh' + Math.floor(hmix(p.k) * 1e6), n: p.n, pos: p.pos, star: clamp(p.stars, 2, 5), ovr: p.ovr, pot: p.pot, home: p.town, inState: p.st === TEAM_STATE[ME], ht: b.ht, wt: b.wt, status: 'open', offered: false, visit: null, nil: 0, ask: 0, lead: [], trend: 0, to: null, world: p.k, hs: p.hs, hsCoach: p.coach }; rec.interest = clamp(baseInterest(rec) + 6, 1, 99); state.rec.list.push(rec); });
+    state.rec.list.sort((a, b) => b.star - a.star || b.pot - a.pot); } } catch (e) { console.error(e); }
+  return r; }; }
+try { if (appMode === 'home') render(); } catch (e) { } // the Home screen was drawn before this mode existed
 </script>

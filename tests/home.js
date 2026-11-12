@@ -1,6 +1,6 @@
 // The Home screen. Run with: node tests/run.js tests/home.js
 const out = { fail: [] }; const need = (ok, msg) => { if (!ok) out.fail.push(msg); }; const wait = ms => new Promise(r => setTimeout(r, ms)); const $v = s => document.querySelector('#view ' + s);
-need(document.querySelectorAll('#view .mode').length === 6, 'the Home screen should have six mode cards'); need(!!$v('.homepick'), 'a new player should see the quick picks'); need(!$v('.homecont'), 'no Continue card without a save');
+need(document.querySelectorAll('#view .mode').length === 6 + miniCount(), 'the Home screen is missing a mode card'); need(!!$v('.homepick'), 'a new player should see the quick picks'); need(!$v('.homecont'), 'no Continue card without a save');
 need(!/claude\.ai/.test(document.getElementById('view').textContent), 'the Home screen mentions another website');
 // a GM career from its own card
 actions.homenew({ v: 'nfl' }); await wait(100); need(/NFL club/.test($v('h1').textContent), 'the GM card did not open the club picker'); await actions.adpickstart(); await wait(400); await flushSave();

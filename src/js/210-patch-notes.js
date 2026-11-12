@@ -1,6 +1,60 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.61', t: 'Friday nights', n: [
+    'New: High School Coach, on the Home screen. Take over a small-town team: about forty kids, four years each, ten games and the playoffs.',
+    'Develop them. Players improve with practice, faster if they work hard, and fastest if you spend your own time on them. Set how the team practices and what offense it runs each preseason.',
+    'Decisions on and off the field: a star who is failing algebra, a booster\'s son who is not playing, a private school after your best junior, and a college scout with time to watch one senior.',
+    'Signing day: your seniors sign with colleges, from two-star to five-star. With Shared world on, they are on the recruiting board of the same year in your athletic director careers on this device.',
+    'Build the program with the booster fund (weight room, youth program, film room), win state titles, and earn seven milestones.',
+    'Move up. Bigger high schools call when you have earned it, and in time a college does. Taking the college job starts a Coach career there with a reputation head start. Three save slots.',
+    'The Home screen is back to four cards across, now that there are eight ways to play.',
+  ] },
+  { v: '9.60', t: 'Agent mode', n: [
+    'New: Agent mode, on the Home screen. Run a sports agency. You earn 3% of every contract your clients sign, every year it runs.',
+    'Signing season: draft prospects are choosing agents. Each wants something different from his career: the biggest contract, a club that wins, a starting job, or to play near home. Find out what, pitch it, and he may choose you over the big agencies.',
+    'The draft: decide how each rookie prepares. Where he is taken sets his first contract, and your fee, for four years.',
+    'Free agency: clubs make offers and you negotiate. Asking for more can raise an offer or end the talk; more bidders give you more leverage. A deal that misses what your client wanted costs you his trust, and a client who stops trusting you fires you.',
+    'The season: holdouts, trade requests, endorsements, bad headlines, and rival agencies taking your stars to dinner.',
+    'Build the agency: hire scouting, negotiation and marketing staff, earn a reputation, and chase seven milestones. Three save slots.',
+    'Agent mode is a game of its own with a lighter league behind it. It does not share players with your other careers yet.',
+  ] },
+  { v: '9.59', t: 'Bring your own class', n: [
+    'New: class files. The Save file page can save the current recruiting class (college) or draft class (NFL) as a spreadsheet file, and load one back. Edit a class, build your own, or swap one with a friend. Add players to the class or replace it; recruits who have already committed stay.',
+    'A class file is one player a line: name, position, then stars, rating, potential and hometown for recruits, or age, rating, potential and college for draft prospects.',
+    'Old saves load as before.',
+  ] },
+  { v: '9.58', t: 'Every player has a story', n: [
+    'New: player stories. Every player page now ends with his story: how he was signed and who else wanted him, each season, his awards, his injuries, and for former players how he left and what became of him. Open a former player from the History page, where a new card lists the ones people still talk about.',
+    'Stories carry between careers on this device. Players an athletic director sends to the NFL Draft can turn up in the same year\'s draft class in a general manager career (Shared world on), and their page there tells the college half: that you signed them, where, and what they won.',
+    'Realignment has teeth. Strong conferences now take schools from weaker power conferences, and the league that was raided fills the hole from below. The Standings page has a table of every conference by strength, with who moved and when.',
+    'A conference may invite your school (athletic director). The offer lays out the TV money, the level of play, where you would rank, the travel and the exit fee. Accept, ask them to cover the fee and risk losing the offer, or decline. If your rival stays behind, some fans will not forgive it.',
+    'Old saves load as before. Players signed before this update have a shorter first chapter.',
+  ] },
+  { v: '9.57', t: 'Someone who remembers', n: [
+    'New: your nemesis (athletic directors and general managers). One of your rival front offices is now a person who lasts your whole career, with the same name and style wherever you go. If you change jobs, even from college to the NFL, he turns up at a rival of the new one.',
+    'He remembers. The Rivals page shows your head-to-head record and everything that has happened between you, and what he says to the press after you play depends on it.',
+    'He makes moves aimed at you. In the offseason he may offer your best coordinator a job: match it, go after his staff instead, or let him go. In college he may go after a recruit who is leaning your way: answer with money, send the head coach, or let it go. A move you do not answer goes his way.',
+    'New: scandals you can cause (college athletic director). Three temptations can come up: a man with an envelope for a top recruit, a star\'s failed test days before a big game, and an injury kept off the report. Each gives you something now and raises your NCAA risk.',
+    'A secret stays live for three seasons. If the NCAA finds a violation while one is live, the story names it and you choose how to answer: take responsibility, fire a coordinator and blame him, or fight it in public. The History page lists what only you know and what came out.',
+    'The newer decisions (injuries and scandals) come up more often than in 9.56, where they were too rare.',
+    'Fixed: an Ironman athletic director who moved to the NFL lost Ironman. It now carries over.',
+    'Scandals only involve fictional players. Old saves load as before, and a nemesis appears in them from the next week you play.',
+  ] },
+  { v: '9.56', t: 'The road, the training room and the ones who left', n: [
+    'Travel matters (Updated balance): a team that crosses time zones to play gives up a little, more for each zone, and so does a visitor playing a mile up at places like Air Force, Wyoming, Colorado, Utah, BYU or Denver. The game preview tells you when it applies. It is a small edge, about half a home-field advantage at most. Classic saves are unchanged.',
+    'Athletic director: two new decisions about injured players. When the doctors advise a player to stop, you can support a medical retirement, leave it to his family, or tell him the team needs him. And before a rivalry or top-10 game, a hurt starter may ask to play: let him, and about two times in five he makes it worse.',
+    'A player who comes back against medical advice is slower and gets hurt more often.',
+    'New: the alumni network, on the History page of college careers. Former players in the NFL give money back each offseason, recruits at a star\'s old position are easier to land, and now and then a former player applies to coach for you, for less than the going rate.',
+    'These decisions only involve fictional players. Old saves load as before.',
+  ] },
+  { v: '9.55', t: 'Look back on it', n: [
+    'NFL seasons now get a recap, like college seasons: a season grade, the best win, the toughest loss, the comeback of the year and your top players. Open it from the History page. Seasons played before this update have no recap.',
+    'Every recap lists the decisions you made that season, and has a button to save or share a picture of that season in your team\'s colors.',
+    'New: the career timeline. One tall picture of your whole career, season by season, to save or post. It is on the History page, and on the Stats page in Player Career.',
+    'New: feedback. The Home screen and Settings have buttons to report a problem or suggest an idea. They open a short form with your game version, mode and device already filled in.',
+    'Old saves load as before.',
+  ] },
   { v: '9.54', t: 'Ironman everywhere', n: [
     'Ironman now works in every mode. Turn it on from Settings in a coach, player, commissioner or owner career (and in careers you already have). It can be turned on, never off: no undo, no admin tools, a locked difficulty, and no rolling back or replacing the save.',
     'Easier to read: the Inbox count and the green and red labels now have stronger contrast in the themes where they were faint. Every theme is checked in light and dark.',

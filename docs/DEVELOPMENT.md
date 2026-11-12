@@ -16,6 +16,7 @@ Needs Node.js 20 or newer. The tests also need Playwright (`npm install`, then `
 | `npm run build` | Builds `index.html` from `src/` and checks that the JavaScript parses. A syntax error is reported with its source file and line. |
 | `npm test` | Everything GitHub checks on each push: the build is fresh, every mode opens, the feature tests and balance guardrails pass, the patch notes file is current, saves load. About 20 seconds. |
 | `npm run notes` | Rewrites `PATCH_NOTES.md` from the patch notes in the game. |
+| `npm run balance` | Plays about 30 college and 24 NFL seasons on autopilot and writes `docs/balance.html`, the balance dashboard. Add `-- --big` for five times as many. |
 
 ## What's in the repository
 
@@ -56,6 +57,14 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `450` | Ironman careers (every mode) |
 | `460` | The website: offline app, storage note, visit counting |
 | `470` | The share-your-season picture |
+| `480` | NFL season recaps, recap pictures, the career timeline picture, feedback links |
+| `490` | Travel and altitude, injury decisions, the alumni network |
+| `500` | The nemesis, and scandals you can cause |
+| `510` | Player stories, and conference raids and invitations |
+| `520` | Recruiting class and draft class files |
+| `530` | The shell for the self-contained modes: saves, header, tabs, Home cards (`appMode === 'mini'`, the game is `mm`) |
+| `540` | Agent mode |
+| `550` | High School Coach |
 
 ## How the game is put together
 
@@ -63,7 +72,9 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 - **Athletic Director and Coach (college):** the game lives in `state`. `state.kind` is `undefined` (AD), `'coach'`, `'comm'` (Commissioner) or `'owner'`.
 - **NFL modes:** `state.lvl === 'nfl'`. The league is `state.pro`, read through `PS()`.
 - **Player Career:** a separate object, `cs`. The page renders with `appMode === 'career'`, and the current tab is `cui.tab`.
+- **Agent mode (and any other self-contained mode):** a separate object, `mm`, with `mm.kind` naming the mode. The page renders with `appMode === 'mini'` and the current tab is `mui.tab`. A mode registers itself in `MINI` (see the top of `530-mini-shell.js`), and the shell gives it saves, a header, tabs and a Home card. These modes do not use the college and NFL engine and must not read `state`.
 - **Extra save data:** `X()` (stored in `state.x`) and `CX()` (stored in `cs.x`). New features keep their data here so old saves stay valid.
+- **College and the NFL are separate worlds.** When a career moves between them, everything in `state` is set aside except the keys in `WORLD_SHARED` (`130-nfl-engine.js`). `state.x` is set aside too. Data that must follow the person, like the nemesis (`state.nem`) and Ironman (`state.iron`), goes in its own key that is added to `WORLD_SHARED`.
 
 **Adding to the game**
 - **A new feature gets a new file** with the next number, for example `src/js/480-my-feature.js`. Start it with a comment that says what it does and where its data lives.
@@ -91,6 +102,13 @@ node tests/run.js tests/smoke.js          # every mode opens and every tab draws
 node tests/run.js tests/home.js           # the Home screen
 node tests/run.js tests/fantasy-draft.js  # the fantasy draft start
 node tests/run.js tests/ironman.js        # Ironman careers
+node tests/run.js tests/recap.js          # season recaps, the career timeline picture, feedback links
+node tests/run.js tests/world.js          # travel, injury decisions, the alumni network
+node tests/run.js tests/rivals.js         # the nemesis and scandals
+node tests/run.js tests/stories.js        # player stories and realignment
+node tests/run.js tests/classfiles.js     # recruiting class and draft class files
+node tests/run.js tests/agent.js          # Agent mode: twelve years played by a simple strategy
+node tests/run.js tests/hscoach.js        # High School Coach: fifteen seasons, the recruiting link and the college job
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark
@@ -112,6 +130,10 @@ node tests/inbox.js                       # the Inbox and "decisions first"
 4. For a version that changes what a save holds, run `node scripts/make-save-fixture.js` and commit the new file in `tests/fixtures/`. From then on every build must load those careers.
 5. Open a pull request. The check runs by itself.
 6. Merge into `main`. GitHub Pages publishes `main` to collegefbsim.com within a minute or two.
+
+## The balance dashboard
+
+`npm run balance` writes `docs/balance.html`: wins by team rating, how often the better team wins by rating gap, scoring, how many games NFL clubs win, and what a draft pick is worth, each with the real-world figure to compare against where there is one. Run it after any change to the game engine, read it, and commit the new page with the change so the history of the file is the history of the game's balance. It is published at collegefbsim.com/docs/balance.html and is not linked from the game.
 
 ## Visit counting
 

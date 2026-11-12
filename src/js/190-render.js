@@ -1261,7 +1261,7 @@ function achGrid() {
 }
 function alumniCard() {
   const a = state.alumni.slice().reverse().slice(0, 40); if (!a.length) return '';
-  return `<section class="card"><div class="eyebrow">Where are they now</div><div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Last season</th><th>Now</th><th>Career with you</th></tr></thead><tbody>${a.map(x => `<tr><td>${esc(x.n)}</td><td>${x.pos}</td><td>${x.last}</td><td class="small">${esc(x.where || x.why)}</td><td class="small muted">${esc(statLine({ pos: x.pos }, x.cs))}</td></tr>`).join('')}</tbody></table></div></section>`;
+  return `<section class="card"><div class="eyebrow">Where are they now</div><div class="tw"><table class="tbl"><thead><tr><th>Player</th><th>Pos</th><th>Last season</th><th>Now</th><th>Career with you</th></tr></thead><tbody>${a.map(x => `<tr><td><button class="lnk" data-act="alumstory" data-n="${esc(x.n)}" data-s="${x.last}">${esc(x.n)}</button></td><td>${x.pos}</td><td>${x.last}</td><td class="small">${esc(x.where || x.why)}</td><td class="small muted">${esc(statLine({ pos: x.pos }, x.cs))}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 function recapView(r, season, h) {
   if (!r) return '<p class="muted">No recap for this season.</p>';
