@@ -27,7 +27,7 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
 ## The build list
 
-Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. When all seven batches are done, the game becomes **version 10.00, "A New Beginning"**. Until then, updates keep the 9.x numbers. Check each against what is already in the game before building; some may partly exist.
+Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. All seven batches are done as of version 9.61. The game becomes **version 10.00, "A New Beginning"** when the owner says so; there may be more to add first, so updates keep the 9.x numbers until then. Check each against what is already in the game before building; some may partly exist.
 
 | Batch | Feature | What it is | Effort | Status |
 |---|---|---|---|---|
@@ -44,7 +44,7 @@ Fourteen features chosen by the owner, grouped into batches so each update stays
 | 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Done in 9.59 |
 | 5 | **Balance dashboard** | A page built by the tests that charts hundreds of simulated seasons: wins by rating, scoring, upsets, draft outcomes. For the developer, not players. | M | Done in 9.59 |
 | 6 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. Built on the shared negotiation system. | L | Done in 9.60 |
-| 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Next |
+| 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Done in 9.61 |
 
 ## Still open from the first review
 

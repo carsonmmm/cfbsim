@@ -1,6 +1,15 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.61', t: 'Friday nights', n: [
+    'New: High School Coach, on the Home screen. Take over a small-town team: about forty kids, four years each, ten games and the playoffs.',
+    'Develop them. Players improve with practice, faster if they work hard, and fastest if you spend your own time on them. Set how the team practices and what offense it runs each preseason.',
+    'Decisions on and off the field: a star who is failing algebra, a booster\'s son who is not playing, a private school after your best junior, and a college scout with time to watch one senior.',
+    'Signing day: your seniors sign with colleges, from two-star to five-star. With Shared world on, they are on the recruiting board of the same year in your athletic director careers on this device.',
+    'Build the program with the booster fund (weight room, youth program, film room), win state titles, and earn seven milestones.',
+    'Move up. Bigger high schools call when you have earned it, and in time a college does. Taking the college job starts a Coach career there with a reputation head start. Three save slots.',
+    'The Home screen is back to four cards across, now that there are eight ways to play.',
+  ] },
   { v: '9.60', t: 'Agent mode', n: [
     'New: Agent mode, on the Home screen. Run a sports agency. You earn 3% of every contract your clients sign, every year it runs.',
     'Signing season: draft prospects are choosing agents. Each wants something different from his career: the biggest contract, a club that wins, a starting job, or to play near home. Find out what, pitch it, and he may choose you over the big agencies.',
