@@ -1,6 +1,15 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.00', t: 'A New Beginning', n: [
+    'Version 10. Since 9.54 the game has gained two new modes (Agent and High School Coach), a nemesis who follows you for a whole career, scandals you can cause, player stories, conferences that raid each other, travel and altitude, the alumni network, season recaps and career pictures, class files, and a rebuilt Coach mode. The notes for 9.55 to 9.62 below have the details.',
+    'New and optional: the real 2026 pack. When you start an athletic director or coach career at a college, switch on "Real 2026 rosters and schedule". It is off unless you turn it on, and it only affects the career you are starting.',
+    'Your school gets its real 2026 roster: names, positions, classes, numbers, sizes and hometowns, for all 138 schools. Each real player takes the rating of a generated player at his position, so your team is exactly as strong as it would have been. Ratings are the game\'s own estimates, not real evaluations.',
+    'The 2026 regular season is the real schedule for every school, including neutral-site games and opponents from outside the top division. A handful of late-August and December games are played in an open week. From 2027 the game builds the schedule as it always has.',
+    'The star players the game names at other schools are real players from those schools.',
+    'Real players never get negative traits or off-field storylines, so decisions about injuries and scandals do not involve them. Michigan keeps the hand-rated real roster it already had.',
+    'The pack is a separate download of about 260 KB, fetched only when you switch it on. Old saves are not changed.',
+  ] },
   { v: '9.62', t: 'A coach\'s career', n: [
     'Coach mode, fixed: as head coach, hiring an assistant could fail with no message. The cause was that candidates asked for big-program money at every school, so at smaller schools nobody fit your assistant pool. Candidates now ask for money on your school\'s scale. This also makes assistants cheaper for athletic directors at smaller schools.',
     'Every offer that does not go through now tells you why: he declined, he is over your pool (and by how much), the job is not open, or it is not yours to fill. Candidates you cannot afford are marked before you ask, and you can still talk them down with Negotiate.',

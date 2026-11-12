@@ -1,3 +1,4 @@
 node_modules/
 .chk.js
 .DS_Store
+data/real/cache/

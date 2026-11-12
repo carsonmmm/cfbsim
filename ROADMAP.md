@@ -8,7 +8,7 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 
 ## Status
 
-**Versions 9.53 and 9.54 shipped the first round.** Done:
+**Version 10.00, "A New Beginning", is live.** Done since the first review:
 
 - The build: plain source files in `src/` joined by `build.js`. The patch-against-v9.47 build is gone.
 - Tests on every push: every mode opens, feature tests, balance guardrails, saves load.
@@ -22,12 +22,14 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 - Visit counting is on, through GoatCounter, on the live site only.
 - A contrast check of all five themes in light and dark, with the faint spots fixed, and a test that loads one saved career of every kind on each build.
 - Search and link-preview tags, an icon, a not-found page, a sitemap, the page language.
+- Coach mode: hiring and firing as head coach, interim promotions and a better job market (9.62).
+- The optional real 2026 pack: real rosters for all 138 schools and the real 2026 schedule (10.00).
 
 **A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
 
 ## The build list
 
-Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. All seven batches are done as of version 9.61. The game becomes **version 10.00, "A New Beginning"** when the owner says so; there may be more to add first, so updates keep the 9.x numbers until then. Check each against what is already in the game before building; some may partly exist.
+Fourteen features chosen by the owner, grouped into batches so each update stays small enough to test well. One batch is one update. All seven batches are done, and the game shipped as **version 10.00, "A New Beginning"**, together with the rebuilt Coach mode (9.62) and the optional real 2026 pack.
 
 | Batch | Feature | What it is | Effort | Status |
 |---|---|---|---|---|

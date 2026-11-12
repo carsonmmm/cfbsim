@@ -1,0 +1,554 @@
+{
+ "AF": {
+  "espn": "2005",
+  "name": "Air Force Falcons"
+ },
+ "AKR": {
+  "espn": "2006",
+  "name": "Akron Zips"
+ },
+ "ALA": {
+  "espn": "333",
+  "name": "Alabama Crimson Tide"
+ },
+ "APP": {
+  "espn": "2026",
+  "name": "App State Mountaineers"
+ },
+ "ARIZ": {
+  "espn": "12",
+  "name": "Arizona Wildcats"
+ },
+ "ARK": {
+  "espn": "8",
+  "name": "Arkansas Razorbacks"
+ },
+ "ARMY": {
+  "espn": "349",
+  "name": "Army Black Knights"
+ },
+ "ARST": {
+  "espn": "2032",
+  "name": "Arkansas State Red Wolves"
+ },
+ "ASU": {
+  "espn": "9",
+  "name": "Arizona State Sun Devils"
+ },
+ "AUB": {
+  "espn": "2",
+  "name": "Auburn Tigers"
+ },
+ "BALL": {
+  "espn": "2050",
+  "name": "Ball State Cardinals"
+ },
+ "BAY": {
+  "espn": "239",
+  "name": "Baylor Bears"
+ },
+ "BC": {
+  "espn": "103",
+  "name": "Boston College Eagles"
+ },
+ "BGSU": {
+  "espn": "189",
+  "name": "Bowling Green Falcons"
+ },
+ "BSU": {
+  "espn": "68",
+  "name": "Boise State Broncos"
+ },
+ "BUFF": {
+  "espn": "2084",
+  "name": "Buffalo Bulls"
+ },
+ "BYU": {
+  "espn": "252",
+  "name": "BYU Cougars"
+ },
+ "CAL": {
+  "espn": "25",
+  "name": "California Golden Bears"
+ },
+ "CCU": {
+  "espn": "324",
+  "name": "Coastal Carolina Chanticleers"
+ },
+ "CIN": {
+  "espn": "2132",
+  "name": "Cincinnati Bearcats"
+ },
+ "CLEM": {
+  "espn": "228",
+  "name": "Clemson Tigers"
+ },
+ "CLT": {
+  "espn": "2429",
+  "name": "Charlotte 49ers"
+ },
+ "CMU": {
+  "espn": "2117",
+  "name": "Central Michigan Chippewas"
+ },
+ "COLO": {
+  "espn": "38",
+  "name": "Colorado Buffaloes"
+ },
+ "CSU": {
+  "espn": "36",
+  "name": "Colorado State Rams"
+ },
+ "DEL": {
+  "espn": "48",
+  "name": "Delaware Blue Hens"
+ },
+ "DUKE": {
+  "espn": "150",
+  "name": "Duke Blue Devils"
+ },
+ "ECU": {
+  "espn": "151",
+  "name": "East Carolina Pirates"
+ },
+ "EMU": {
+  "espn": "2199",
+  "name": "Eastern Michigan Eagles"
+ },
+ "FAU": {
+  "espn": "2226",
+  "name": "Florida Atlantic Owls"
+ },
+ "FIU": {
+  "espn": "2229",
+  "name": "Florida International Panthers"
+ },
+ "FLA": {
+  "espn": "57",
+  "name": "Florida Gators"
+ },
+ "FRES": {
+  "espn": "278",
+  "name": "Fresno State Bulldogs"
+ },
+ "FSU": {
+  "espn": "52",
+  "name": "Florida State Seminoles"
+ },
+ "GASO": {
+  "espn": "290",
+  "name": "Georgia Southern Eagles"
+ },
+ "GAST": {
+  "espn": "2247",
+  "name": "Georgia State Panthers"
+ },
+ "GT": {
+  "espn": "59",
+  "name": "Georgia Tech Yellow Jackets"
+ },
+ "HAW": {
+  "espn": "62",
+  "name": "Hawai'i Rainbow Warriors"
+ },
+ "HOU": {
+  "espn": "248",
+  "name": "Houston Cougars"
+ },
+ "ILL": {
+  "espn": "356",
+  "name": "Illinois Fighting Illini"
+ },
+ "IOWA": {
+  "espn": "2294",
+  "name": "Iowa Hawkeyes"
+ },
+ "ISU": {
+  "espn": "66",
+  "name": "Iowa State Cyclones"
+ },
+ "IU": {
+  "espn": "84",
+  "name": "Indiana Hoosiers"
+ },
+ "JMU": {
+  "espn": "256",
+  "name": "James Madison Dukes"
+ },
+ "JVST": {
+  "espn": "55",
+  "name": "Jacksonville State Gamecocks"
+ },
+ "KENN": {
+  "espn": "338",
+  "name": "Kennesaw State Owls"
+ },
+ "KENT": {
+  "espn": "2309",
+  "name": "Kent State Golden Flashes"
+ },
+ "KSU": {
+  "espn": "2306",
+  "name": "Kansas State Wildcats"
+ },
+ "KU": {
+  "espn": "2305",
+  "name": "Kansas Jayhawks"
+ },
+ "LIB": {
+  "espn": "2335",
+  "name": "Liberty Flames"
+ },
+ "LOU": {
+  "espn": "97",
+  "name": "Louisville Cardinals"
+ },
+ "LSU": {
+  "espn": "99",
+  "name": "LSU Tigers"
+ },
+ "LT": {
+  "espn": "2348",
+  "name": "Louisiana Tech Bulldogs"
+ },
+ "M-OH": {
+  "espn": "193",
+  "name": "Miami (OH) RedHawks"
+ },
+ "MD": {
+  "espn": "120",
+  "name": "Maryland Terrapins"
+ },
+ "MEM": {
+  "espn": "235",
+  "name": "Memphis Tigers"
+ },
+ "MIA": {
+  "espn": "2390",
+  "name": "Miami Hurricanes"
+ },
+ "MICH": {
+  "espn": "130",
+  "name": "Michigan Wolverines"
+ },
+ "MINN": {
+  "espn": "135",
+  "name": "Minnesota Golden Gophers"
+ },
+ "MISS": {
+  "espn": "145",
+  "name": "Ole Miss Rebels"
+ },
+ "MIZ": {
+  "espn": "142",
+  "name": "Missouri Tigers"
+ },
+ "MOST": {
+  "espn": "2623",
+  "name": "Missouri State Bears"
+ },
+ "MRSH": {
+  "espn": "276",
+  "name": "Marshall Thundering Herd"
+ },
+ "MSST": {
+  "espn": "344",
+  "name": "Mississippi State Bulldogs"
+ },
+ "MSU": {
+  "espn": "127",
+  "name": "Michigan State Spartans"
+ },
+ "MTSU": {
+  "espn": "2393",
+  "name": "Middle Tennessee Blue Raiders"
+ },
+ "NAVY": {
+  "espn": "2426",
+  "name": "Navy Midshipmen"
+ },
+ "NCST": {
+  "espn": "152",
+  "name": "NC State Wolfpack"
+ },
+ "ND": {
+  "espn": "87",
+  "name": "Notre Dame Fighting Irish"
+ },
+ "NDSU": {
+  "espn": "2449",
+  "name": "North Dakota State Bison"
+ },
+ "NEB": {
+  "espn": "158",
+  "name": "Nebraska Cornhuskers"
+ },
+ "NEV": {
+  "espn": "2440",
+  "name": "Nevada Wolf Pack"
+ },
+ "NIU": {
+  "espn": "2459",
+  "name": "Northern Illinois Huskies"
+ },
+ "NMSU": {
+  "espn": "166",
+  "name": "New Mexico State Aggies"
+ },
+ "NW": {
+  "espn": "77",
+  "name": "Northwestern Wildcats"
+ },
+ "ODU": {
+  "espn": "295",
+  "name": "Old Dominion Monarchs"
+ },
+ "OHIO": {
+  "espn": "195",
+  "name": "Ohio Bobcats"
+ },
+ "OKST": {
+  "espn": "197",
+  "name": "Oklahoma State Cowboys"
+ },
+ "ORE": {
+  "espn": "2483",
+  "name": "Oregon Ducks"
+ },
+ "ORST": {
+  "espn": "204",
+  "name": "Oregon State Beavers"
+ },
+ "OSU": {
+  "espn": "194",
+  "name": "Ohio State Buckeyes"
+ },
+ "OU": {
+  "espn": "201",
+  "name": "Oklahoma Sooners"
+ },
+ "PITT": {
+  "espn": "221",
+  "name": "Pittsburgh Panthers"
+ },
+ "PSU": {
+  "espn": "213",
+  "name": "Penn State Nittany Lions"
+ },
+ "PUR": {
+  "espn": "2509",
+  "name": "Purdue Boilermakers"
+ },
+ "RICE": {
+  "espn": "242",
+  "name": "Rice Owls"
+ },
+ "RUTG": {
+  "espn": "164",
+  "name": "Rutgers Scarlet Knights"
+ },
+ "SAC": {
+  "espn": "16",
+  "name": "Sacramento State Hornets"
+ },
+ "SC": {
+  "espn": "2579",
+  "name": "South Carolina Gamecocks"
+ },
+ "SDSU": {
+  "espn": "21",
+  "name": "San Diego State Aztecs"
+ },
+ "SHSU": {
+  "espn": "2534",
+  "name": "Sam Houston Bearkats"
+ },
+ "SJSU": {
+  "espn": "23",
+  "name": "San Jos\u00e9 State Spartans"
+ },
+ "SMU": {
+  "espn": "2567",
+  "name": "SMU Mustangs"
+ },
+ "STAN": {
+  "espn": "24",
+  "name": "Stanford Cardinal"
+ },
+ "SYR": {
+  "espn": "183",
+  "name": "Syracuse Orange"
+ },
+ "TAMU": {
+  "espn": "245",
+  "name": "Texas A&M Aggies"
+ },
+ "TCU": {
+  "espn": "2628",
+  "name": "TCU Horned Frogs"
+ },
+ "TEM": {
+  "espn": "218",
+  "name": "Temple Owls"
+ },
+ "TENN": {
+  "espn": "2633",
+  "name": "Tennessee Volunteers"
+ },
+ "TEX": {
+  "espn": "251",
+  "name": "Texas Longhorns"
+ },
+ "TLSA": {
+  "espn": "202",
+  "name": "Tulsa Golden Hurricane"
+ },
+ "TOL": {
+  "espn": "2649",
+  "name": "Toledo Rockets"
+ },
+ "TROY": {
+  "espn": "2653",
+  "name": "Troy Trojans"
+ },
+ "TTU": {
+  "espn": "2641",
+  "name": "Texas Tech Red Raiders"
+ },
+ "TUL": {
+  "espn": "2655",
+  "name": "Tulane Green Wave"
+ },
+ "TXST": {
+  "espn": "326",
+  "name": "Texas State Bobcats"
+ },
+ "UAB": {
+  "espn": "5",
+  "name": "UAB Blazers"
+ },
+ "UCF": {
+  "espn": "2116",
+  "name": "UCF Knights"
+ },
+ "UCLA": {
+  "espn": "26",
+  "name": "UCLA Bruins"
+ },
+ "UCONN": {
+  "espn": "41",
+  "name": "UConn Huskies"
+ },
+ "UGA": {
+  "espn": "61",
+  "name": "Georgia Bulldogs"
+ },
+ "UK": {
+  "espn": "96",
+  "name": "Kentucky Wildcats"
+ },
+ "ULL": {
+  "espn": "309",
+  "name": "Louisiana Ragin' Cajuns"
+ },
+ "ULM": {
+  "espn": "2433",
+  "name": "UL Monroe Warhawks"
+ },
+ "UMASS": {
+  "espn": "113",
+  "name": "Massachusetts Minutemen"
+ },
+ "UNC": {
+  "espn": "153",
+  "name": "North Carolina Tar Heels"
+ },
+ "UNLV": {
+  "espn": "2439",
+  "name": "UNLV Rebels"
+ },
+ "UNM": {
+  "espn": "167",
+  "name": "New Mexico Lobos"
+ },
+ "UNT": {
+  "espn": "249",
+  "name": "North Texas Mean Green"
+ },
+ "USA": {
+  "espn": "6",
+  "name": "South Alabama Jaguars"
+ },
+ "USC": {
+  "espn": "30",
+  "name": "USC Trojans"
+ },
+ "USF": {
+  "espn": "58",
+  "name": "South Florida Bulls"
+ },
+ "USM": {
+  "espn": "2572",
+  "name": "Southern Miss Golden Eagles"
+ },
+ "USU": {
+  "espn": "328",
+  "name": "Utah State Aggies"
+ },
+ "UTAH": {
+  "espn": "254",
+  "name": "Utah Utes"
+ },
+ "UTEP": {
+  "espn": "2638",
+  "name": "UTEP Miners"
+ },
+ "UTSA": {
+  "espn": "2636",
+  "name": "UTSA Roadrunners"
+ },
+ "UVA": {
+  "espn": "258",
+  "name": "Virginia Cavaliers"
+ },
+ "UW": {
+  "espn": "264",
+  "name": "Washington Huskies"
+ },
+ "VAN": {
+  "espn": "238",
+  "name": "Vanderbilt Commodores"
+ },
+ "VT": {
+  "espn": "259",
+  "name": "Virginia Tech Hokies"
+ },
+ "WAKE": {
+  "espn": "154",
+  "name": "Wake Forest Demon Deacons"
+ },
+ "WIS": {
+  "espn": "275",
+  "name": "Wisconsin Badgers"
+ },
+ "WKU": {
+  "espn": "98",
+  "name": "Western Kentucky Hilltoppers"
+ },
+ "WMU": {
+  "espn": "2711",
+  "name": "Western Michigan Broncos"
+ },
+ "WSU": {
+  "espn": "265",
+  "name": "Washington State Cougars"
+ },
+ "WVU": {
+  "espn": "277",
+  "name": "West Virginia Mountaineers"
+ },
+ "WYO": {
+  "espn": "2751",
+  "name": "Wyoming Cowboys"
+ }
+}
