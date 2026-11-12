@@ -62,6 +62,8 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `500` | The nemesis, and scandals you can cause |
 | `510` | Player stories, and conference raids and invitations |
 | `520` | Recruiting class and draft class files |
+| `530` | The shell for the self-contained modes: saves, header, tabs, Home cards (`appMode === 'mini'`, the game is `mm`) |
+| `540` | Agent mode |
 
 ## How the game is put together
 
@@ -69,6 +71,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 - **Athletic Director and Coach (college):** the game lives in `state`. `state.kind` is `undefined` (AD), `'coach'`, `'comm'` (Commissioner) or `'owner'`.
 - **NFL modes:** `state.lvl === 'nfl'`. The league is `state.pro`, read through `PS()`.
 - **Player Career:** a separate object, `cs`. The page renders with `appMode === 'career'`, and the current tab is `cui.tab`.
+- **Agent mode (and any other self-contained mode):** a separate object, `mm`, with `mm.kind` naming the mode. The page renders with `appMode === 'mini'` and the current tab is `mui.tab`. A mode registers itself in `MINI` (see the top of `530-mini-shell.js`), and the shell gives it saves, a header, tabs and a Home card. These modes do not use the college and NFL engine and must not read `state`.
 - **Extra save data:** `X()` (stored in `state.x`) and `CX()` (stored in `cs.x`). New features keep their data here so old saves stay valid.
 - **College and the NFL are separate worlds.** When a career moves between them, everything in `state` is set aside except the keys in `WORLD_SHARED` (`130-nfl-engine.js`). `state.x` is set aside too. Data that must follow the person, like the nemesis (`state.nem`) and Ironman (`state.iron`), goes in its own key that is added to `WORLD_SHARED`.
 
@@ -103,6 +106,7 @@ node tests/run.js tests/world.js          # travel, injury decisions, the alumni
 node tests/run.js tests/rivals.js         # the nemesis and scandals
 node tests/run.js tests/stories.js        # player stories and realignment
 node tests/run.js tests/classfiles.js     # recruiting class and draft class files
+node tests/run.js tests/agent.js          # Agent mode: twelve years played by a simple strategy
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark

@@ -1,5 +1,14 @@
 # Football Empire patch notes
 
+## 9.60 — Agent mode
+- New: Agent mode, on the Home screen. Run a sports agency. You earn 3% of every contract your clients sign, every year it runs.
+- Signing season: draft prospects are choosing agents. Each wants something different from his career: the biggest contract, a club that wins, a starting job, or to play near home. Find out what, pitch it, and he may choose you over the big agencies.
+- The draft: decide how each rookie prepares. Where he is taken sets his first contract, and your fee, for four years.
+- Free agency: clubs make offers and you negotiate. Asking for more can raise an offer or end the talk; more bidders give you more leverage. A deal that misses what your client wanted costs you his trust, and a client who stops trusting you fires you.
+- The season: holdouts, trade requests, endorsements, bad headlines, and rival agencies taking your stars to dinner.
+- Build the agency: hire scouting, negotiation and marketing staff, earn a reputation, and chase seven milestones. Three save slots.
+- Agent mode is a game of its own with a lighter league behind it. It does not share players with your other careers yet.
+
 ## 9.59 — Bring your own class
 - New: class files. The Save file page can save the current recruiting class (college) or draft class (NFL) as a spreadsheet file, and load one back. Edit a class, build your own, or swap one with a friend. Add players to the class or replace it; recruits who have already committed stay.
 - A class file is one player a line: name, position, then stars, rating, potential and hometown for recruits, or age, rating, potential and college for draft prospects.

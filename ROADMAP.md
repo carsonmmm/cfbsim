@@ -43,8 +43,8 @@ Fourteen features chosen by the owner, grouped into batches so each update stays
 | 4 | **Conference realignment** | Conferences raid each other over the years, and your school gets invitations with real money and travel trade-offs. | M | Done in 9.58 |
 | 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Done in 9.59 |
 | 5 | **Balance dashboard** | A page built by the tests that charts hundreds of simulated seasons: wins by rating, scoring, upsets, draft outcomes. For the developer, not players. | M | Done in 9.59 |
-| 6 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. Built on the shared negotiation system. | L | Next |
-| 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Planned |
+| 6 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. Built on the shared negotiation system. | L | Done in 9.60 |
+| 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Next |
 
 ## Still open from the first review
 
