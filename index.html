@@ -14505,7 +14505,8 @@ function pfCrowd(P) {
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
-  { v: '9.63', t: 'The real 2026 season', n: [
+  { v: '10.00', t: 'A New Beginning', n: [
+    'Version 10. Since 9.54 the game has gained two new modes (Agent and High School Coach), a nemesis who follows you for a whole career, scandals you can cause, player stories, conferences that raid each other, travel and altitude, the alumni network, season recaps and career pictures, class files, and a rebuilt Coach mode. The notes for 9.55 to 9.62 below have the details.',
     'New and optional: the real 2026 pack. When you start an athletic director or coach career at a college, switch on "Real 2026 rosters and schedule". It is off unless you turn it on, and it only affects the career you are starting.',
     'Your school gets its real 2026 roster: names, positions, classes, numbers, sizes and hometowns, for all 138 schools. Each real player takes the rating of a generated player at his position, so your team is exactly as strong as it would have been. Ratings are the game\'s own estimates, not real evaluations.',
     'The 2026 regular season is the real schedule for every school, including neutral-site games and opponents from outside the top division. A handful of late-August and December games are played in an open week. From 2027 the game builds the schedule as it always has.',
@@ -23645,7 +23646,7 @@ function coMarketExtrasHTML() {
 { const _i = interviewJob; interviewJob = function () { const r = _i.apply(this, arguments); try { coSafetyNet(); } catch (e) { } return r; }; }
 { const _n = coNegotiate; coNegotiate = function () { const r = _n.apply(this, arguments); try { coSafetyNet(); } catch (e) { } return r; }; }
 Object.assign(actions, { mkwave() { const n = coSecondWave(); ui.mkF = 'all'; after(n ? `${n} more jobs are open, and you have two more interviews.` : ''); } });
-/* ===================== v9.63: the optional real 2026 pack =====================
+/* ===================== v10.00: the optional real 2026 pack =====================
  * packs/real-2026.json holds every FBS school's 2026 roster (names, positions, classes, numbers, sizes,
  * hometowns) and the real 2026 schedule. It is built by scripts/build-real-pack.js from public roster data and
  * is only downloaded when a player turns it on for a new athletic director or coach career.

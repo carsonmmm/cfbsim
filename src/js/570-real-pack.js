@@ -1,4 +1,4 @@
-/* ===================== v9.63: the optional real 2026 pack =====================
+/* ===================== v10.00: the optional real 2026 pack =====================
  * packs/real-2026.json holds every FBS school's 2026 roster (names, positions, classes, numbers, sizes,
  * hometowns) and the real 2026 schedule. It is built by scripts/build-real-pack.js from public roster data and
  * is only downloaded when a player turns it on for a new athletic director or coach career.

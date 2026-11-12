@@ -1,6 +1,7 @@
 # Football Empire patch notes
 
-## 9.63 — The real 2026 season
+## 10.00 — A New Beginning
+- Version 10. Since 9.54 the game has gained two new modes (Agent and High School Coach), a nemesis who follows you for a whole career, scandals you can cause, player stories, conferences that raid each other, travel and altitude, the alumni network, season recaps and career pictures, class files, and a rebuilt Coach mode. The notes for 9.55 to 9.62 below have the details.
 - New and optional: the real 2026 pack. When you start an athletic director or coach career at a college, switch on "Real 2026 rosters and schedule". It is off unless you turn it on, and it only affects the career you are starting.
 - Your school gets its real 2026 roster: names, positions, classes, numbers, sizes and hometowns, for all 138 schools. Each real player takes the rating of a generated player at his position, so your team is exactly as strong as it would have been. Ratings are the game's own estimates, not real evaluations.
 - The 2026 regular season is the real schedule for every school, including neutral-site games and opponents from outside the top division. A handful of late-August and December games are played in an open week. From 2027 the game builds the schedule as it always has.
