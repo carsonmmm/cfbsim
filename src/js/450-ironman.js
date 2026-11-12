@@ -1,7 +1,8 @@
 /* ===================== v9.53: Ironman careers (athletic director and NFL general manager) =====================
  * Chosen when the career starts and never turned off. An Ironman career has no undo, no admin tools, a fixed
  * difficulty, and can't be rolled back to an earlier copy or replaced by a save code. The flag is X().iron. */
-const ironOn = () => !!(state && state.x && state.x.iron);
+// state.iron carries between college and the NFL. Careers from 9.53 to 9.56 kept the flag in x, which did not.
+const ironOn = () => !!(state && (state.iron || (state.x && state.x.iron) || (state.colW && state.colW.x && state.colW.x.iron)));
 const IRON_NO = 'This is an Ironman career: ';
 { const _u = undoSnap; undoSnap = function () { return ironOn() ? null : _u.apply(this, arguments); }; }
 { const _s = slotSummary; slotSummary = function () { const o = _s.apply(this, arguments); if (o && ironOn()) o.iron = true; return o; }; }
@@ -36,7 +37,7 @@ function ironRowHTML() {
     ironask() { if (appMode === 'career') cui.confirm = 'iron'; else ui.confirm = 'iron'; render(); refocus({ act: 'ironon' }); },
     ironon() {
       if (appMode === 'career') { if (!cs) return; cui.confirm = null; CX().iron = true; CX().ironAt = cs.year; cui.flash = 'Ironman is on for this career.'; cSave(); return render(); }
-      if (!state) return; ui.confirm = null; ui.undo = null; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
+      if (!state) return; ui.confirm = null; ui.undo = null; state.iron = true; X().iron = true; X().ironAt = state.season; if (ui.tab === 'admin') ui.tab = 'settings'; after('Ironman is on for this career.');
     },
   });
 }

@@ -58,6 +58,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `470` | The share-your-season picture |
 | `480` | NFL season recaps, recap pictures, the career timeline picture, feedback links |
 | `490` | Travel and altitude, injury decisions, the alumni network |
+| `500` | The nemesis, and scandals you can cause |
 
 ## How the game is put together
 
@@ -66,6 +67,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 - **NFL modes:** `state.lvl === 'nfl'`. The league is `state.pro`, read through `PS()`.
 - **Player Career:** a separate object, `cs`. The page renders with `appMode === 'career'`, and the current tab is `cui.tab`.
 - **Extra save data:** `X()` (stored in `state.x`) and `CX()` (stored in `cs.x`). New features keep their data here so old saves stay valid.
+- **College and the NFL are separate worlds.** When a career moves between them, everything in `state` is set aside except the keys in `WORLD_SHARED` (`130-nfl-engine.js`). `state.x` is set aside too. Data that must follow the person, like the nemesis (`state.nem`) and Ironman (`state.iron`), goes in its own key that is added to `WORLD_SHARED`.
 
 **Adding to the game**
 - **A new feature gets a new file** with the next number, for example `src/js/480-my-feature.js`. Start it with a comment that says what it does and where its data lives.
@@ -95,6 +97,7 @@ node tests/run.js tests/fantasy-draft.js  # the fantasy draft start
 node tests/run.js tests/ironman.js        # Ironman careers
 node tests/run.js tests/recap.js          # season recaps, the career timeline picture, feedback links
 node tests/run.js tests/world.js          # travel, injury decisions, the alumni network
+node tests/run.js tests/rivals.js         # the nemesis and scandals
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark

@@ -33,7 +33,7 @@ function medRetire(p, why) {
   state.roster = state.roster.filter(x => x.id !== p.id); rebuildPMap(); POS_ORDER.forEach(pos => { state.depth[pos] = (state.depth[pos] || []).filter(id => id !== p.id); }); state.captains = (state.captains || []).filter(id => id !== p.id);
   state.alumni.push({ pid: p.id, n: p.n, pos: p.pos, cs: p.cs || {}, hist: [], awards: p.awards || [], last: state.season, why: 'Medical retirement', where: why });
 }
-EVENT_DEFS.medretire = { w: 2,
+EVENT_DEFS.medretire = { w: 6,
   cond: () => !isPro() && state.roster.some(p => p.injSE && !p.real && p.ovr >= 68 && !medSeen()[p.id]),
   make: () => { const p = pick(state.roster.filter(x => x.injSE && !x.real && x.ovr >= 68 && !medSeen()[x.id])); medSeen()[p.id] = state.season;
     return { title: 'The doctors advise him to stop', text: `The medical staff says ${p.n} (${p.pos}, ${p.ovr} OVR) risks lasting damage if he plays again after his ${String(p.injType || 'injury').toLowerCase()}. He wants to come back. His family is asking what the school thinks.`, data: { pid: p.id },
@@ -46,7 +46,7 @@ EVENT_DEFS.medretire = { w: 2,
     return back(2, `${p.n} says he will be back. Not everyone in the building is comfortable with it.`); } };
 const bigGame = () => { const g = mGames().find(x => !x.done); if (!g || g.type === 'bye') return null; const o = oppOf(g); return rivalOf(o) || (rankOf(o) && rankOf(o) <= 10) || g.type !== 'reg' ? g : null; };
 const gutPick = () => POS_ORDER.flatMap(pos => (state.depth[pos] || []).slice(0, START[pos]).map(P)).filter(p => p && !p.real && !p.injSE && p.inj >= 1 && p.inj <= 3 && p.ovr >= 72 && !['K', 'P', 'LS'].includes(p.pos));
-EVENT_DEFS.gutitout = { w: 4,
+EVENT_DEFS.gutitout = { w: 6,
   cond: () => !isPro() && !X().gut && !!bigGame() && gutPick().length > 0,
   make: () => { const p = pick(gutPick()); const g = bigGame(); const o = oppOf(g);
     return { title: 'He wants to play hurt', text: `${p.n} (${p.pos}, ${p.ovr} OVR) is supposed to miss ${p.inj} more week${p.inj > 1 ? 's' : ''} with his ${String(p.injType || 'injury').toLowerCase()}. With ${teamName(o)} next, he is telling everyone he can go.`, data: { pid: p.id, opp: o },

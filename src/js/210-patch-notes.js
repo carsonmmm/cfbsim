@@ -1,6 +1,16 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '9.57', t: 'Someone who remembers', n: [
+    'New: your nemesis (athletic directors and general managers). One of your rival front offices is now a person who lasts your whole career, with the same name and style wherever you go. If you change jobs, even from college to the NFL, he turns up at a rival of the new one.',
+    'He remembers. The Rivals page shows your head-to-head record and everything that has happened between you, and what he says to the press after you play depends on it.',
+    'He makes moves aimed at you. In the offseason he may offer your best coordinator a job: match it, go after his staff instead, or let him go. In college he may go after a recruit who is leaning your way: answer with money, send the head coach, or let it go. A move you do not answer goes his way.',
+    'New: scandals you can cause (college athletic director). Three temptations can come up: a man with an envelope for a top recruit, a star\'s failed test days before a big game, and an injury kept off the report. Each gives you something now and raises your NCAA risk.',
+    'A secret stays live for three seasons. If the NCAA finds a violation while one is live, the story names it and you choose how to answer: take responsibility, fire a coordinator and blame him, or fight it in public. The History page lists what only you know and what came out.',
+    'The newer decisions (injuries and scandals) come up more often than in 9.56, where they were too rare.',
+    'Fixed: an Ironman athletic director who moved to the NFL lost Ironman. It now carries over.',
+    'Scandals only involve fictional players. Old saves load as before, and a nemesis appears in them from the next week you play.',
+  ] },
   { v: '9.56', t: 'The road, the training room and the ones who left', n: [
     'Travel matters (Updated balance): a team that crosses time zones to play gives up a little, more for each zone, and so does a visitor playing a mile up at places like Air Force, Wyoming, Colorado, Utah, BYU or Denver. The game preview tells you when it applies. It is a small edge, about half a home-field advantage at most. Classic saves are unchanged.',
     'Athletic director: two new decisions about injured players. When the doctors advise a player to stop, you can support a medical retirement, leave it to his family, or tell him the team needs him. And before a rivalry or top-10 game, a hurt starter may ask to play: let him, and about two times in five he makes it worse.',

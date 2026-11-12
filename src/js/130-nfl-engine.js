@@ -8,7 +8,7 @@
 const isPro = () => !!(typeof state !== 'undefined' && state && state.lvl === 'nfl');
 const isGM = () => isPro() && !isCoach() && !(typeof ownHands === 'function' && ownHands());
 // keys that belong to the save, not to a world
-const WORLD_SHARED = new Set(['v', 'seed', 'hashV', 'settings', 'created', 'nextId', 'ach', 'kind', 'co', 'lvl', 'pro', 'colW', 'news', 'jobs', 'exec', 'gameOver', 'achToast', 'rng', 'liveWk', 'liveRng', 'pendingArrive', 'tline', 'mile']);
+const WORLD_SHARED = new Set(['v', 'seed', 'hashV', 'settings', 'created', 'nextId', 'ach', 'kind', 'co', 'lvl', 'pro', 'colW', 'news', 'jobs', 'exec', 'gameOver', 'achToast', 'rng', 'liveWk', 'liveRng', 'pendingArrive', 'tline', 'mile', 'nem', 'iron']); /* nem: your nemesis (v9.57); iron: Ironman (v9.57; before that it lived in x and was lost on a move) */
 const PRO_ROSTER = { QB: 3, RB: 4, WR: 6, TE: 3, OL: 9, DE: 5, DT: 4, LB: 6, CB: 6, S: 4, K: 1, P: 1, LS: 1 }; // 53
 const PRO_OFF_MAX = 75;
 // the in-season roster limit comes from the league rules (53 unless you change it)

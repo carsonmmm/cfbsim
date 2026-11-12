@@ -6,6 +6,8 @@ need(ironOn(), 'the career is not Ironman'); need(!TABS.map(t => t[0]).filter(ta
 need(undoSnap(Object.keys(UNDO_ACTS)[0]) === null, 'undo is available');
 const d0 = state.settings.diff; actions.setgame({ k: 'diff', v: d0 === 'easy' ? 'hard' : 'easy' }); need(state.settings.diff === d0, 'the difficulty could be changed');
 await flushSave(); need(slotsMetaOf('ad')[slot].iron === true, 'the slot list does not mark the career'); need(!!document.querySelector('#hdr .ironpill'), 'the header has no Ironman badge');
+// Ironman survives a move to the NFL
+goPro('DET', { role: 'gm' }); need(ironOn(), 'Ironman was lost on the move to the NFL'); need(!PRO_TABS.map(t => t[0]).filter(tabVisible).includes('admin'), 'the admin page came back in the NFL');
 // an ordinary career keeps everything
 newGame('normal', null, 3, 'MICH'); need(!ironOn(), 'a normal career is Ironman'); need(TABS.map(t => t[0]).filter(tabVisible).includes('admin'), 'a normal career lost the admin page'); need(!!undoSnap(Object.keys(UNDO_ACTS)[0]), 'a normal career lost undo');
 // turned on later from Settings, in a coach career
