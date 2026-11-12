@@ -1,5 +1,12 @@
 # Football Empire patch notes
 
+## 9.58 — Every player has a story
+- New: player stories. Every player page now ends with his story: how he was signed and who else wanted him, each season, his awards, his injuries, and for former players how he left and what became of him. Open a former player from the History page, where a new card lists the ones people still talk about.
+- Stories carry between careers on this device. Players an athletic director sends to the NFL Draft can turn up in the same year's draft class in a general manager career (Shared world on), and their page there tells the college half: that you signed them, where, and what they won.
+- Realignment has teeth. Strong conferences now take schools from weaker power conferences, and the league that was raided fills the hole from below. The Standings page has a table of every conference by strength, with who moved and when.
+- A conference may invite your school (athletic director). The offer lays out the TV money, the level of play, where you would rank, the travel and the exit fee. Accept, ask them to cover the fee and risk losing the offer, or decline. If your rival stays behind, some fans will not forgive it.
+- Old saves load as before. Players signed before this update have a shorter first chapter.
+
 ## 9.57 — Someone who remembers
 - New: your nemesis (athletic directors and general managers). One of your rival front offices is now a person who lasts your whole career, with the same name and style wherever you go. If you change jobs, even from college to the NFL, he turns up at a rival of the new one.
 - He remembers. The Rivals page shows your head-to-head record and everything that has happened between you, and what he says to the press after you play depends on it.

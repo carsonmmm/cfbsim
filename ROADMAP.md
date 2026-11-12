@@ -39,10 +39,10 @@ Fourteen features chosen by the owner, grouped into batches so each update stays
 | 2 | **Injuries with a human cost** | A medical-retirement decision, and a player who rushes back for the big game and pays for it later. | S | Done in 9.56 |
 | 3 | **Rival AI** | One rival athletic director or general manager who is the same person for your whole career, with a personality and a memory: poaches your coordinators, flips your recruits, talks about you in the press. | M | Done in 9.57 |
 | 3 | **Scandals** | Ones you can cause: the under-the-table deal, the hidden injury, the suspended star who plays anyway. Bigger short-term gains, with an investigation that may or may not find it. | M | Done in 9.57 |
-| 4 | **Player stories** | One page per person that follows them across modes: the recruit you signed as an AD, drafted as a GM, hired as a coach. | M | Next |
-| 4 | **Conference realignment** | Conferences raid each other over the years, and your school gets invitations with real money and travel trade-offs. | M | Next |
-| 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Planned |
-| 5 | **Balance dashboard** | A page built by the tests that charts hundreds of simulated seasons: wins by rating, scoring, upsets, draft outcomes. For the developer, not players. | M | Planned |
+| 4 | **Player stories** | One page per person that follows them across modes: the recruit you signed as an AD, drafted as a GM, hired as a coach. | M | Done in 9.58 |
+| 4 | **Conference realignment** | Conferences raid each other over the years, and your school gets invitations with real money and travel trade-offs. | M | Done in 9.58 |
+| 5 | **Draft class and recruiting class files** | Import and export classes as files, so players can make and trade their own. | S | Next |
+| 5 | **Balance dashboard** | A page built by the tests that charts hundreds of simulated seasons: wins by rating, scoring, upsets, draft outcomes. For the developer, not players. | M | Next |
 | 6 | **Agent mode** | Represent players. Sign recruits and draft prospects as clients, negotiate their NIL and NFL contracts against the GMs, manage holdouts, build an agency. Built on the shared negotiation system. | L | Planned |
 | 7 | **High school coach** | Start in a small town, develop players who then show up as recruits in the college world, and get noticed by colleges. | L | Planned |
 
