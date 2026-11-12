@@ -16,6 +16,21 @@ function admSet(target, key, el) {
     else if (key.startsWith('tr.')) { const n = num(raw); if (n != null) p.tr[key.slice(3)] = clamp(Math.round(n), 1, 99); }
     else if (['n', 'cls', 'home', 'ht'].includes(key)) p[key] = String(raw).trim() || p[key];
     else { const n = num(raw); if (n == null) return; p[key] = ['pay'].includes(key) ? r2(Math.max(0, n)) : ['ovr', 'pot'].includes(key) ? clamp(Math.round(n), 1, 99) : Math.max(0, Math.round(n)); if (key === 'ovr' && p.pot < p.ovr) p.pot = p.ovr; }
+  } else if (kind === 'c' && state.staff[id] && state.staff[id].me && isCoach()) {
+    // Your own entry on the staff is rebuilt from your career record every time the staff is refreshed, so an edit
+    // made to the entry itself was thrown away. The career record is what changes now.
+    const co = state.co;
+    if (key === 'name') { const s = String(raw).trim().slice(0, 28); if (s) co.name = s; }
+    else if (key === 'title') return;
+    else { const n = num(raw); if (n == null) return;
+      if (key === 'salary') co.contract.sal = r2(Math.max(0, n)); else if (key === 'years') { co.contract.left = clamp(Math.round(n), 0, 10); co.contract.yrs = Math.max(co.contract.yrs || 0, co.contract.left); }
+      else if (['off', 'def', 'rec', 'dev', 'gm'].includes(key)) co.sk[key] = clamp(Math.round(n), 1, 99);
+      else if (key === 'ovr') { const want = clamp(Math.round(n), 1, 99); const side = roleSide(co.role); const main = side === 'off' ? 'off' : side === 'def' ? 'def' : 'gm'; for (let i = 0; i < 120 && coachRoleOvr(co.role, co.sk) !== want; i++) { const d = want > coachRoleOvr(co.role, co.sk) ? 1 : -1; const was = co.sk[main]; co.sk[main] = clamp(was + d, 1, 99); if (co.sk[main] === was) break; } }
+      else return; }
+    syncMe();
+  } else if (kind === 'co') { // the parts of a Coach mode career that are not on the staff card
+    if (!isCoach()) return; const co = state.co; const n = num(raw); if (n == null) return;
+    if (key === 'rep' || key === 'sec') co[key] = clamp(Math.round(n), 0, 100); else if (key === 'age') co.age = clamp(Math.round(n), 22, 80); else if (key === 'pool') co.contract.pool = r1(Math.max(0, n)); else return; syncMe();
   } else if (kind === 'c') {
     const c = state.staff[id]; if (!c) return;
     if (key === 'name' || key === 'title') c[key] = String(raw).trim() || c[key]; else { const n = num(raw); if (n == null) return; c[key] = key === 'salary' ? r1(Math.max(0, n)) : key === 'years' ? Math.max(0, Math.round(n)) : clamp(Math.round(n), 1, 99); }
@@ -28,13 +43,31 @@ function admSet(target, key, el) {
     if (key === 'conf') { t.conf = raw; rebuildConfs(); addNews(`Admin: ${t.name} moves to the ${CONFS[raw].name}.`); save(); render(); return; }
     const n = num(raw); if (n == null) return;
     if (key.startsWith('style.')) t.style[key.slice(6)] = n; else if (key.startsWith('star.')) { const [, i, f] = key.split('.'); if (t.stars[+i]) t.stars[+i][f] = clamp(Math.round(n), 1, 99); }
-    else { t[key] = ['w', 'l', 'cw', 'cl', 'pf', 'pa'].includes(key) ? Math.max(0, Math.round(n)) : key === 'elo' ? Math.round(n) : r1(n); if (key === 'rating') { t.off = r1(n); t.def = r1(n); } }
+    else { t[key] = ['w', 'l', 'cw', 'cl', 'pf', 'pa'].includes(key) ? Math.max(0, Math.round(n)) : key === 'elo' ? Math.round(n) : r1(n); if (key === 'rating') { t.off = r1(n); t.def = r1(n); t.pres = r1(n); } } // pres: the level the program is pulled back to each offseason
   } else if (kind === 'r') {
     const r = state.rec && state.rec.list.find(x => x.id === id); if (!r) return;
     if (key === 'status') { r.status = raw; if (raw === 'mc' || raw === 'signed') r.offered = true; } else { const n = num(raw); if (n != null) r[key] = key === 'star' ? clamp(Math.round(n), 1, 5) : clamp(Math.round(n), 1, 99); }
   } else if (kind === 'set') { if (key === 'seed') { const n = num(raw); if (n == null || n < 0) return; setSeed(Math.floor(n)); state.seed = RNG.s; } else if (key.startsWith('playoff.')) { state.settings.playoff = state.settings.playoff || { size: 12, auto: 'p4g6' }; state.settings.playoff[key.slice(8)] = key === 'playoff.size' ? +raw : raw; } else state.settings[key] = raw; if (key === 'sound' && raw) sfx('whistle'); }
   else if (kind === 'g') { const g = state.games.find(x => x.id === id); if (!g || g.done) return; if (key === 'w') { if (raw === 'none') delete g.force; else g.force = Object.assign(g.force || {}, { w: raw }); } else { const n = num(raw); if (!g.force) g.force = {}; g.force[key] = n == null ? null : Math.max(0, Math.round(n)); const fz = g.force; if (fz.hs != null && fz.as != null && fz.hs !== fz.as) fz.w = fz.hs > fz.as ? 'h' : 'a'; } }
-  save(); ui.flash = 'Saved.'; render();
+  save();
+  // Redrawing the page after every change threw the cursor out of the form: the next field typed into lost its text,
+  // and digits typed with no field focused acted as keyboard shortcuts. Only a change of position, which moves the
+  // player to another list, still redraws. Everything else is refreshed in place.
+  if (kind === 'p' && key === 'pos') { ui.flash = 'Saved.'; render(); return; }
+  admInPlace(vAdmin, 'adm', el);
+}
+// Brings every field on an admin page up to date without replacing the page: values are read from a fresh drawing
+// of the page and copied onto the fields already there. The field being typed in is left alone.
+function admInPlace(view, attr, changed) {
+  const live = document.getElementById('view'); if (!live || typeof view !== 'function') return;
+  try {
+    const tmp = document.createElement('div'); tmp.innerHTML = view(); const key = e => e.id || e.getAttribute('data-' + attr) + '|' + (e.dataset.k || '');
+    const fresh = {}; tmp.querySelectorAll('input, select').forEach(e => { fresh[key(e)] = e; });
+    live.querySelectorAll('input, select').forEach(e => { const f = fresh[key(e)]; if (!f || (e === document.activeElement && e !== changed)) return;
+      if (e.tagName === 'SELECT') { if (e.innerHTML !== f.innerHTML) { e.innerHTML = f.innerHTML; } e.value = f.value; } else if (e.type === 'checkbox') e.checked = f.checked; else if (e.value !== f.value) e.value = f.value; if (e.dataset.was != null) e.dataset.was = e.value; });
+  } catch (err) { console.error(err); }
+  let t = document.getElementById('admsaved'); if (!t) { t = document.createElement('div'); t.id = 'admsaved'; t.className = 'flash toast'; t.setAttribute('role', 'status'); live.prepend(t); }
+  t.textContent = 'Saved.'; t.hidden = false; clearTimeout(admInPlace.t); admInPlace.t = setTimeout(() => { const x = document.getElementById('admsaved'); if (x) x.remove(); }, 1600); if (typeof announce === 'function') announce('Saved.');
 }
 function vAdmin() {
   const tabs = [['players', 'Players'], ['coaches', 'Coaches'], ['money', 'Money & meters'], ['results', 'Force results'], ['teams', 'Other teams'], ['recruits', 'Recruits'], ['game', 'Game settings']];
@@ -55,8 +88,8 @@ function vAdmin() {
     const c = state.staff[ui.admC];
     const sel = `<div class="chips">${STAFF_ROLES.map(r => `<button class="chip${ui.admC === r ? ' on' : ''}" data-act="admc" data-v="${r}">${r}</button>`).join('')}</div>`;
     const tg = 'c:' + ui.admC;
-    const form = c ? `<div class="fgrid">${fld('Name', tg, 'name', c.name, 'text')}${fld('Title', tg, 'title', c.title, 'text')}${ui.admC === 'HC' ? fld('Offense', tg, 'off', c.off) + fld('Defense', tg, 'def', c.def) + fld('Recruiting', tg, 'rec', c.rec) + fld('Development', tg, 'dev', c.dev) + fld('Game management', tg, 'gm', c.gm) : fld('Overall', tg, 'ovr', c.ovr) + fld('Recruiting', tg, 'rec', c.rec) + fld('Development', tg, 'dev', c.dev)}${fld('Salary ($M/yr)', tg, 'salary', c.salary, 'number', { step: 0.1 })}${fld('Years left', tg, 'years', c.years)}</div>` : `<p class="muted">This job is vacant.</p><button class="btn sm" data-act="admfill">Instantly hire the best candidate</button>`;
-    body = `<section class="card"><div class="eyebrow">Edit coaches</div>${sel}${form}<div class="row gap mt"><button class="btn ghost sm" data-act="admcands">Refresh every candidate pool</button>${c ? `<button class="btn ghost sm" data-act="admvacate">Remove without a buyout</button>` : ''}</div></section>`;
+    const mine = !!(c && c.me && isCoach()); const form = c ? `${mine ? '<p class="hint">This is you. Changes here change your career: your name, your skills and your contract.</p>' : ''}<div class="fgrid">${fld('Name', tg, 'name', c.name, 'text')}${mine ? '' : fld('Title', tg, 'title', c.title, 'text')}${ui.admC === 'HC' ? fld('Offense', tg, 'off', c.off) + fld('Defense', tg, 'def', c.def) + fld('Recruiting', tg, 'rec', c.rec) + fld('Development', tg, 'dev', c.dev) + fld('Game management', tg, 'gm', c.gm) : fld('Overall', tg, 'ovr', c.ovr) + fld('Recruiting', tg, 'rec', c.rec) + fld('Development', tg, 'dev', c.dev)}${fld('Salary ($M/yr)', tg, 'salary', c.salary, 'number', { step: 0.1 })}${fld('Years left', tg, 'years', c.years)}${mine ? fld('Reputation', 'co', 'rep', state.co.rep, 'number', { min: 0, max: 100 }) + fld('Job security', 'co', 'sec', state.co.sec, 'number', { min: 0, max: 100 }) + fld('Age', 'co', 'age', state.co.age, 'number', { min: 22, max: 80 }) + (state.co.role === 'HC' ? fld('Assistant pool ($M)', 'co', 'pool', state.co.contract.pool || 0, 'number', { step: 0.1, min: 0 }) : '') : ''}</div>` : `<p class="muted">This job is vacant.</p><button class="btn sm" data-act="admfill">Instantly hire the best candidate</button>`;
+    body = `<section class="card"><div class="eyebrow">Edit coaches</div>${sel}${form}<div class="row gap mt"><button class="btn ghost sm" data-act="admcands">Refresh every candidate pool</button>${c && !(c.me && isCoach()) ? `<button class="btn ghost sm" data-act="admvacate">Remove without a buyout</button>` : ''}</div></section>`;
   } else if (t === 'money') {
     const f = state.fin, m = state.meters;
     body = `<section class="card"><div class="eyebrow">Money</div><div class="fgrid">${fld('Department reserve ($M)', 'fin', 'balance', r1(f.balance), 'number', { step: 1 })}${fld('Ticket price ($)', 'fin', 'ticket', f.ticket)}${fld('Revenue share to football (%)', 'fin', 'revPct', f.revPct, 'number', { min: 0, max: 100 })}${fld('Recruiting budget ($M)', 'fin', 'recruit', f.recruit, 'number', { step: 0.5 })}${fld('Extra collective money this year ($M)', 'fin', 'collective', f.collective || 0, 'number', { step: 0.5 })}${fld('Extra sponsorship per year ($M)', 'fin', 'extraRev', f.extraRev || 0, 'number', { step: 0.5 })}</div>

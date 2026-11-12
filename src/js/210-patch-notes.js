@@ -1,6 +1,14 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.01', t: 'The admin panel keeps what you type', n: [
+    'Fixed: in the admin panel, only the first thing you typed was saved. After each change the page redrew and the cursor left the form, so the next field you moved to lost what you typed, and numbers typed after that acted as keyboard shortcuts and could even switch pages. Fields now save in place: move between them with Tab or the mouse and every value is kept.',
+    'Fixed (Coach mode): changes to your own coach did not last. The panel was editing a copy of you that the game rebuilds from your career. Your name, skills, salary and years now change the coach himself, and stay changed.',
+    'New (Coach mode): your own card in the admin panel also lets you set your reputation, job security, age and, as head coach, your assistant pool.',
+    'Fixed: another school\'s overall rating, set in the admin panel, drifted back to where it started after a season or two. The change now sticks.',
+    'The same fix applies to the admin page in Player Career.',
+    'Some values are meant to move after you set them: injuries and suspensions count down each week, the meters and the bank balance change as you play, and a school\'s style and star players are redrawn every offseason.',
+  ] },
   { v: '10.00', t: 'A New Beginning', n: [
     'Version 10. Since 9.54 the game has gained two new modes (Agent and High School Coach), a nemesis who follows you for a whole career, scandals you can cause, player stories, conferences that raid each other, travel and altitude, the alumni network, season recaps and career pictures, class files, and a rebuilt Coach mode. The notes for 9.55 to 9.62 below have the details.',
     'New and optional: the real 2026 pack. When you start an athletic director or coach career at a college, switch on "Real 2026 rosters and schedule". It is off unless you turn it on, and it only affects the career you are starting.',

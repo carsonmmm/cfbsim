@@ -40,6 +40,10 @@ catch (e) { fail.push('PATCH_NOTES.md is out of date: run `node scripts/patch-no
 try { const r = lastJson(run(['tests/realpack.js'])); if (!r || !Array.isArray(r.fail)) fail.push('realpack: ' + JSON.stringify(r)); else if (r.fail.length) r.fail.slice(0, 12).forEach(f => fail.push('realpack: ' + f)); else console.log(`ok  realpack: ${r.players} players and ${r.games} games in the pack; a career with it plays at the same strength`); }
 catch (e) { fail.push('realpack crashed: ' + String(e.stderr || e.message).slice(0, 300)); }
 
+// the admin panels, typed into with a real keyboard
+try { const r = lastJson(run(['tests/admin.js'])); if (!r || !Array.isArray(r.fail)) fail.push('admin: ' + JSON.stringify(r)); else if (r.fail.length) r.fail.slice(0, 12).forEach(f => fail.push('admin: ' + f)); else console.log('ok  admin: every value typed into the admin panels is kept, and your own coach changes for good'); }
+catch (e) { fail.push('admin crashed: ' + String(e.stderr || e.message).slice(0, 300)); }
+
 // text contrast in every theme
 try { const r = lastJson(run(['tests/contrast.js'])); if (!r || !Array.isArray(r.fail)) fail.push('contrast: ' + JSON.stringify(r)); else if (r.fail.length) r.fail.forEach(f => fail.push('contrast: ' + f)); else console.log('ok  contrast: ' + r.checked + ' pieces of text across 5 themes, light and dark'); }
 catch (e) { fail.push('contrast crashed: ' + String(e.stderr || e.message).slice(0, 300)); }

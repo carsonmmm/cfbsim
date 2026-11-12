@@ -555,7 +555,7 @@ function cAdmSet(k, el) {
   else if (k === 't:name') { const s = String(v).trim().slice(0, 26); if (s) t.name = s; }
   else if (k === 't:coach') { const s = String(v).trim().slice(0, 26); if (s) t.coach = s; }
   else if (k.startsWith('t:')) { if (!Number.isFinite(n)) return; t[k.slice(2)] = clamp(n, 30, 99); if (k === 't:rating') { t.off = r1(clamp(t.rating + (t.off - t.def) / 2, 30, 99)); t.def = r1(clamp(2 * t.rating - t.off, 30, 99)); } else t.rating = r1((t.off + t.def) / 2); rosterCache.clear(); }
-  cs.admin++; cSave(); cui.flash = 'Saved.'; render(); refocus({ cadm: k });
+  cs.admin++; cSave(); admInPlace(vCAdmin, 'cadm', el); // no redraw: the cursor stays where it is (see admInPlace)
 }
 
 /* ---------- the game dialog ---------- */
