@@ -248,7 +248,7 @@ const actions = {
   admboost(d) { state.roster.forEach(p => { p.ovr = clamp(p.ovr + (+d.d), 1, 99); if (p.pot < p.ovr) p.pot = p.ovr; Object.keys(p.tr || {}).forEach(k => p.tr[k] = clamp(p.tr[k] + (+d.d), 1, 99)); }); after(`Everyone ${+d.d > 0 ? '+' : ''}${d.d} OVR.`); },
   admpayall() { state.roster.forEach(p => p.pay = marketValue(p)); after('Everyone is paid market value.'); },
   admfill() { const r = ui.admC; const c = genCandidates(r, 1)[0]; if (r === 'HC') { c.off = c.def = c.rec = c.dev = c.gm = 85; } else { c.ovr = 85; } state.staff[r] = c; after(`${c.name} hired.`); },
-  admvacate() { state.staff[ui.admC] = null; after('Job vacated.'); },
+  admvacate() { const c = state.staff[ui.admC]; if (c && c.me && isCoach()) return after('That is you. Change jobs from the job market.'); state.staff[ui.admC] = null; after('Job vacated.'); },
   admcands() { STAFF_ROLES.forEach(r => state.cands[r] = genCandidates(r, r === 'HC' ? 7 : 4)); after('New candidates generated.'); },
   admcash(d) { state.fin.balance += +d.d; after(); },
   admmax() { Object.assign(state.meters, { fan: 100, boost: 100, board: 100, morale: 100, hot: 0 }); after(); },
@@ -266,14 +266,17 @@ const LIVE_LOCKED = new Set(['rehab', 'primary', 'live', 'simreg', 'simdec', 'si
   // NFL roster moves wait until the live game is final (B06)
   'pcut', 'trgo', 'toacc', 'ximport', 'ximportask', 'xwv', 'xpsq', 'xpsqup', 'xpsqcut', 'admadd', 'walkon', 'fasub', 'rsyes', 'rssub', 'rsno', 'rstag', 'pautocut', 'pcapfix', 'jobtake', 'cin', 'pnext', 'offnext', 'fawave', 'dpick', 'drun', 'dauto1', 'dall', 'ddown', 'dup', 'prohcfire', 'prohchire', 'catchretry', 'prs', 'pxsub', 'setsch', 'live2', 'popt']);
 const LIVE_LOCK_MSG = 'Finish the live game first. Resume it from the top of the page, then play it out or choose "Simulate the rest of the game".';
-function keepFocus(sel) {
+function keepFocus(sel, el) {
   queueMicrotask(() => {
+    // A field that is still on the page was not redrawn, so the browser is moving the cursor itself (to the next field
+    // on Tab, or to whatever was clicked). Putting it back here sent the next thing typed into the field just left.
+    if (el && el.isConnected) return;
     const cur = document.activeElement; if ((cur && cur !== document.body) || !sel) return;
     const t = document.querySelector(sel); if (t && !t.disabled && t.getClientRects().length && !t.closest('[inert]')) t.focus({ preventScroll: true });
   });
 }
 document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (el) keepFocus(selectorFor(el)); }, true);
-document.addEventListener('change', e => keepFocus(selectorFor(e.target)), true);
+document.addEventListener('change', e => keepFocus(selectorFor(e.target), e.target), true);
 document.addEventListener('scroll', e => { if (e.target && e.target.id === 'tabs') tabFade(false); }, true);
 window.addEventListener('resize', () => tabFade(false));
 document.addEventListener('click', e => {

@@ -90,6 +90,8 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
   `const name = () => …` can't be wrapped. Edit those where they are defined.
 - **Changing existing behavior:** edit the function where it lives. That is the point of having plain source files.
 - **After every render:** `qolAfterRender()` runs.
+- **Forms must not redraw the page on every change.** `render()` replaces the page, so the cursor leaves the form and the next field typed into loses its text. Save the value, then bring the other fields up to date in place (`admInPlace` in `220-admin.js` does this for the admin panels).
+- **In Coach mode, your own entry on the staff is a copy.** `syncMe()` rebuilds it from `state.co`. Anything that should change the coach has to change `state.co`.
 - **Which tabs show:** `tabVisible(k)` in `190-render.js`.
 - **Balance:** `balOn()` is true when the Updated balance setting is on.
 
@@ -116,6 +118,7 @@ node tests/run.js tests/hscoach.js        # High School Coach: fifteen seasons, 
 node tests/run.js tests/coachjobs.js      # Coach mode: hiring and firing as head coach, interim promotions, the job market
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/realpack.js                    # the real 2026 pack file, and a career started with it
+node tests/admin.js                       # the admin panels, typed into with a real keyboard and mouse
 node tests/saves.js                       # every saved career in tests/fixtures opens, draws and plays on
 node tests/contrast.js                    # text contrast in all five themes, light and dark
 node tests/persist.js                     # saves from the v9.47 build load in this one
