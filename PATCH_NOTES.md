@@ -1,5 +1,17 @@
 # Football Empire patch notes
 
+## 9.62 — A coach's career
+- Coach mode, fixed: as head coach, hiring an assistant could fail with no message. The cause was that candidates asked for big-program money at every school, so at smaller schools nobody fit your assistant pool. Candidates now ask for money on your school's scale. This also makes assistants cheaper for athletic directors at smaller schools.
+- Every offer that does not go through now tells you why: he declined, he is over your pool (and by how much), the job is not open, or it is not yours to fill. Candidates you cannot afford are marked before you ask, and you can still talk them down with Negotiate.
+- New: widen the search. When nobody left on a list will take the job at your price, bring in three more candidates, once a week for each job. One of them is always a young coach who wants the chance.
+- NFL head coaches can now change their own staff from the Staff page: let an assistant go, and offer the job to a candidate. Before, there was no way to do it.
+- New: promotions during the season. A head coach on a hot seat, or a coordinator whose unit is near the bottom of the country, can be fired after a loss. If you are next in line you can be asked to take over as interim, running the team or the unit for the rest of the season: a coordinator for the head job, a position coach for his coordinator's. It does not happen in your first season at a school, and an interim cannot change the staff.
+- After the season the school decides. Win as the interim and it offers you the job for good; otherwise it hires someone else and you return to your old job, with the season on your record.
+- Fixed: taking the head coaching job at your own school left you in your old job with the new salary. It is now a real promotion, and it is marked as one on the job market.
+- The job market: a position coach now sometimes sees the coordinator job above him open up; every opening says why it is open and how the team did; once each offseason you can wait for a second wave of about nine more openings and two more interviews; and your school may answer a better offer with a new deal.
+- Fixed: a coach who was fired or not kept, with no offers left and no interviews left, could not move on. A smaller job now always calls.
+- Old saves load as before.
+
 ## 9.61 — Friday nights
 - New: High School Coach, on the Home screen. Take over a small-town team: about forty kids, four years each, ten games and the playoffs.
 - Develop them. Players improve with practice, faster if they work hard, and fastest if you spend your own time on them. Set how the team practices and what offense it runs each preseason.

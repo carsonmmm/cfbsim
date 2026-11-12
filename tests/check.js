@@ -23,7 +23,7 @@ try {
 } catch (e) { fail.push('smoke crashed: ' + String(e.stderr || e.message).slice(0, 300)); }
 
 // 3) feature checks: each returns { fail: [...] } with a line for everything that is wrong
-for (const [file, what] of [['home', 'the Home screen'], ['fantasy-draft', 'the fantasy draft'], ['ironman', 'Ironman careers'], ['recap', 'recaps, timeline and feedback'], ['world', 'travel, injuries and alumni'], ['rivals', 'the nemesis and scandals'], ['stories', 'player stories and realignment'], ['classfiles', 'class files'], ['agent', 'Agent mode'], ['hscoach', 'High School Coach'], ['balance', 'balance guardrails']]) {
+for (const [file, what] of [['home', 'the Home screen'], ['fantasy-draft', 'the fantasy draft'], ['ironman', 'Ironman careers'], ['recap', 'recaps, timeline and feedback'], ['world', 'travel, injuries and alumni'], ['rivals', 'the nemesis and scandals'], ['stories', 'player stories and realignment'], ['classfiles', 'class files'], ['agent', 'Agent mode'], ['hscoach', 'High School Coach'], ['coachjobs', 'Coach mode staff, promotions and jobs'], ['balance', 'balance guardrails']]) {
   try {
     const r = lastJson(run(['tests/run.js', 'tests/' + file + '.js']));
     if (!r || r.ERR || !Array.isArray(r.fail)) fail.push(file + ': ' + JSON.stringify(r));

@@ -383,7 +383,7 @@ function finishMarket() {
   const co = state.co; const m = co.market; if (!m || m.done) return true;
   if (!m.take) { if (marketBlocked()) return false; m.done = true; addNews(`${co.name} stays at ${myName()} as ${roleTitle(co.role).toLowerCase()}.`); return true; }
   const t = m.take; m.done = true;
-  if (t.home) { co.contract = t.k; co.sec = Math.max(co.sec, 55); syncMe(); addNews(`${co.name} signs a new deal with ${myName()}: ${t.k.yrs} years at ${fmM(t.k.sal)} a year.`, 'big'); return true; }
+  if (t.home && t.role === co.role) { co.contract = t.k; co.sec = Math.max(co.sec, 55); syncMe(); addNews(`${co.name} signs a new deal with ${myName()}: ${t.k.yrs} years at ${fmM(t.k.sal)} a year.`, 'big'); return true; }
   // leaving early costs the exit fee; the new school covers half
   if (!co.fired && co.contract.left > 0 && co.contract.exit) { const fee = r1(co.contract.exit / 2); co.earn = r2(co.earn - fee); addNews(`${co.name} pays ${fmM(fee)} of his ${fmM(co.contract.exit)} exit fee; ${jobNm(t)} covers the rest.`); }
   STAFF_ROLES.forEach(r => { const c = state.staff[r]; if (c && !c.me && !c.interim && (ROLE_TIER[r] >= 2 || (c.ovr || 0) >= 72)) treeAdd(c, r, ME, r); }); /* your coordinators and best assistants join your coaching tree */

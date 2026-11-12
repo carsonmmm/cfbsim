@@ -946,6 +946,7 @@ function setupRound(r) {
 function buyout(c) { return r1(c.salary * c.years * (c.buyPct != null ? c.buyPct : (c.role === 'HC' ? 0.75 : 0.5))); }
 function fireCoach(role) {
   const c = state.staff[role]; if (!c || c.me) return;
+  if (isCoach() && !(coRunsStaff() && role !== 'HC')) return; // in Coach mode only a head coach fires, never an interim, and never himself
   STAFF_ROLES.forEach(r => { const x = state.staff[r]; if (x && x !== c && !x.me) rapAdj(x, -4, `You fired ${c.name}`); });
   const b = buyout(c); state.fin.ytd.buyouts += b; state.fin.balance -= b;
   const recentW = mGames().filter(g => g.done); const wins = recentW.filter(g => g.mResult === 'W').length, pct = recentW.length ? wins / recentW.length : 0.5;
@@ -964,14 +965,16 @@ function fireCoach(role) {
 function hireAccept(c, bump) {
   const m = state.meters;
   const prestige = 70 + (rankOf(ME) ? 12 - rankOf(ME) * 0.3 : 0) + (m.board - 60) * 0.1 + (facLvl('building') - 3) * 3;
-  return clamp(0.5 + (prestige - coachOvr(c)) / 40 + (bump ? 0.28 : 0) + (c.tree ? 0.2 : 0), 0.05, 0.97); // a former assistant listens when you call
+  return clamp(0.5 + (prestige - coachOvr(c)) / 40 + (bump ? 0.28 : 0) + (c.tree ? 0.2 : 0) + (c.eager ? 0.35 : 0), 0.05, 0.97); // eager: a young coach found by widening the search (v9.62) // a former assistant listens when you call
 }
 function hireCoach(role, cid, bump, offer) {
   const list = state.cands[role]; const c = list.find(x => x.id === cid); if (!c || c.declined) return 'gone'; coachNorm(c, role);
   if (role === 'HC' && state.phase !== 'offseason' && state.staff.HC && state.staff.HC.interim) return 'wait';
   if (state.staff[role] && !state.staff[role].interim) return 'filled';
   // your assistant pool only limits the assistants you hire as head coach; the AD pays the head coach (B03)
-  if (isCoach() && (role === state.co.role || (state.co.role === 'HC' && role !== 'HC' && assistantSpend() + (offer ? offer.sal : c.salary) > state.co.contract.pool))) return 'pool';
+  // In Coach mode only a head coach hires, and never an interim one. The school's own hiring (autoHire) is not held to that.
+  if (isCoach() && (role === state.co.role || (!coRunsStaff() && !(typeof AUTO_HIRE !== 'undefined' && AUTO_HIRE)))) return 'notyours';
+  if (isCoach() && state.co.role === 'HC' && role !== 'HC' && assistantSpend() + (offer ? offer.sal : c.salary) > (state.co.contract.pool || 0) + 0.001) return 'pool';
   if (!c.rxb && typeof rxBid === 'function' && !isComm()) { c.rxb = 1; const b = rxBid(role, cid); if (b) { c.salary = r1(c.salary + b.extra); addNews(`${b.name} of ${teamName(b.by)} bid for ${c.name || 'the same coach'} too. The price went up by $${b.extra}M.`); } }
   const p = offer ? negOdds(c, offer, false) : hireAccept(c, bump);
   if (R() < p) {
