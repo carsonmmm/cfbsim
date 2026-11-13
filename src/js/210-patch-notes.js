@@ -1,6 +1,14 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.02', t: 'Promote from within', n: [
+    'New (Athletic Director and Coach): promote your own coaches. When a job is open, the Staff page now has a "Promotions and interims" card. A position coach can move up to coordinator on his side of the ball, any position coach can take special teams, and a coordinator can become head coach. He gets a raise and a new contract, and his old job opens up.',
+    'New: an interim at every job. Name one of your coaches as the interim and he keeps his own job while he covers the open one. A graduate assistant can hold a coordinator or position job too. When you are ready, give the interim the job, end the interim, or hire someone else.',
+    'New: choose your interim head coach. If you fire the head coach during the season, you pick which coordinator takes over, and you can change your mind. When the season ends he stays until you decide: give him the job for good, promote a different coordinator, or hire from outside. The offseason waits for that decision.',
+    'New: an assistant head coach. Give the title to any one assistant. It comes with a 15% raise, he is first in line if the head coach job opens, and he loses less in the bigger job. It is optional: you never have to fill it.',
+    'Coach mode: a head coach can do all of this for the jobs under him, inside his assistant pool. Nobody can be promoted into your own job.',
+    'A coach in a bigger job starts a little below his old rating while he learns it. Autopilot settles any interims for you in the offseason.',
+  ] },
   { v: '10.01', t: 'The admin panel keeps what you type', n: [
     'Fixed: in the admin panel, only the first thing you typed was saved. After each change the page redrew and the cursor left the form, so the next field you moved to lost what you typed, and numbers typed after that acted as keyboard shortcuts and could even switch pages. Fields now save in place: move between them with Tab or the mouse and every value is kept.',
     'Fixed (Coach mode): changes to your own coach did not last. The panel was editing a copy of you that the game rebuilds from your career. Your name, skills, salary and years now change the coach himself, and stay changed.',

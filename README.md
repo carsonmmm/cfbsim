@@ -43,7 +43,7 @@ Also on the home screen:
 
 <img src="docs/img/phone.png" alt="The home screen on a phone" width="280">
 
-All 71 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **10.01**.
+All 72 updates are in [PATCH_NOTES.md](PATCH_NOTES.md). The current version is **10.02**.
 
 ## Good to know
 
