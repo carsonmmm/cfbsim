@@ -196,6 +196,7 @@ function offBlockers() {
   if (!isCoach() && o.step === 1 && !o.boardRes) b.push({ txt: 'Present your plan to the board.', tab: 'off' });
   if (o.step === 2 && (o.poach || []).some(x => !x.done)) b.push({ txt: 'Answer the other programs calling about your assistants.', tab: 'off' });
   if (o.step >= 2 && !state.staff.HC && !isCoach()) b.push({ txt: 'Hire a head coach.', tab: 'staff' });
+  if (typeof spHcUnsettled === 'function' && spHcUnsettled()) b.push({ txt: 'Give the interim head coach the job, or hire a new one.', tab: 'staff' });
   if (o.step === 5 && state.rec && !state.rec.done) b.push({ txt: 'Hold National Signing Day.', tab: 'off' });
   return b;
 }
