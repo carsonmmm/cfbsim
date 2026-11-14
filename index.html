@@ -12502,7 +12502,7 @@ function relCardHTML() {
 }
 function coachCard(role, big) {
   const c = state.staff[role];
-  if (!c) return `<div class="coach vacant"><div class="role">${ROLE_TITLE[role]}</div><div class="cname">Vacant</div><p class="hint">${role === 'HC' ? 'Hire from the candidates below.' : 'Hire below, or leave it open and a graduate assistant fills in (rating 62).'}</p></div>`;
+  if (!c) return `<div class="coach vacant"><div class="role">${ROLE_TITLE[role]}</div><div class="cname">Vacant</div><p class="hint">${role === 'HC' ? 'Hire from the candidates below.' : 'Promote one of your coaches, hire below, or leave it open and a graduate assistant fills in (rating 62).'}</p></div>`;
   const conf = ui.confirm === 'fire-' + role;
   const ratings = role === 'HC' ? [['OFF', c.off], ['DEF', c.def], ['REC', c.rec], ['DEV', c.dev], ['GAME', c.gm]] : [['OVR', c.ovr], ['REC', c.rec], ['DEV', c.dev]];
   return `<div class="coach${big ? ' big' : ''}"><div class="role">${esc(c.title)}${c.interim ? ' <span class="pill warn">Interim</span>' : ''}</div><div class="cname">${esc(c.name)}</div>
@@ -14506,6 +14506,10 @@ function pfCrowd(P) {
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.03', t: 'Promote right from the open job', n: [
+    'Easier to find (Athletic Director and Coach): when you fire a coordinator, the open job on the Staff page now lists your position coaches right on its card. Tap a name to promote him. Each button shows the rating he would have in the new job. Before, the choices were only in a separate card further down the page.',
+    'The same goes for an open special teams job, and for the head coach job: in the offseason you promote a coordinator from the card, and during the season you name him interim.',
+  ] },
   { v: '10.02', t: 'Promote from within', n: [
     'New (Athletic Director and Coach): promote your own coaches. When a job is open, the Staff page now has a "Promotions and interims" card. A position coach can move up to coordinator on his side of the ball, any position coach can take special teams, and a coordinator can become head coach. He gets a raise and a new contract, and his old job opens up.',
     'New: an interim at every job. Name one of your coaches as the interim and he keeps his own job while he covers the open one. A graduate assistant can hold a coordinator or position job too. When you are ready, give the interim the job, end the interim, or hire someone else.',
@@ -23917,4 +23921,12 @@ Object.assign(actions, {
   spahc(d) { after(spMsg(spSetAhc(d.role))); },
   spahcoff(d) { after(spMsg(spDropAhc(d.role))); },
 });
+// v10.03: an open job's own card lists the coaches who can move up into it, so you do not have to find the card below
+{ const _f = coachCard; coachCard = function (role) {
+  let h = _f.apply(this, arguments);
+  try { if (!state.staff[role] && spCan(role)) { const feed = spFeed(role); const hcSeason = role === 'HC' && state.phase !== 'offseason'; const act = hcSeason ? 'spinterim' : 'sppromote';
+    if (feed.length) { const list = feed.map(f => { const s = state.staff[f]; const p = spProject(s, role, f); return `<button class="btn sm" data-act="${act}" data-role="${role}" data-from="${f}">${esc(s.name)} · ${f} · ${role === 'HC' ? coachOvr(p) : p.ovr}</button>`; }).join('');
+      const add = `<div class="small mt"><b>${hcSeason ? 'Name an interim from your staff' : 'Promote from your staff'}</b> <span class="muted">(his rating in this job)</span></div><div class="row gap" style="flex-wrap:wrap">${list}</div>`; const i = h.lastIndexOf('</div>'); if (i >= 0) h = h.slice(0, i) + add + h.slice(i); } } } catch (e) { }
+  return h;
+}; }
 </script>

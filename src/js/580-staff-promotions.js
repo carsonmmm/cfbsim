@@ -138,3 +138,11 @@ Object.assign(actions, {
   spahc(d) { after(spMsg(spSetAhc(d.role))); },
   spahcoff(d) { after(spMsg(spDropAhc(d.role))); },
 });
+// v10.03: an open job's own card lists the coaches who can move up into it, so you do not have to find the card below
+{ const _f = coachCard; coachCard = function (role) {
+  let h = _f.apply(this, arguments);
+  try { if (!state.staff[role] && spCan(role)) { const feed = spFeed(role); const hcSeason = role === 'HC' && state.phase !== 'offseason'; const act = hcSeason ? 'spinterim' : 'sppromote';
+    if (feed.length) { const list = feed.map(f => { const s = state.staff[f]; const p = spProject(s, role, f); return `<button class="btn sm" data-act="${act}" data-role="${role}" data-from="${f}">${esc(s.name)} · ${f} · ${role === 'HC' ? coachOvr(p) : p.ovr}</button>`; }).join('');
+      const add = `<div class="small mt"><b>${hcSeason ? 'Name an interim from your staff' : 'Promote from your staff'}</b> <span class="muted">(his rating in this job)</span></div><div class="row gap" style="flex-wrap:wrap">${list}</div>`; const i = h.lastIndexOf('</div>'); if (i >= 0) h = h.slice(0, i) + add + h.slice(i); } } } catch (e) { }
+  return h;
+}; }

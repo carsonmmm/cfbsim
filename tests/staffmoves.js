@@ -11,7 +11,7 @@ const fail = []; const need = (ok, msg) => { if (!ok) fail.push(msg); };
   const ocName = state.staff.OC.name, qbName = state.staff.QB.name;
   fireCoach('QB'); need(spInterim('QB', 'GA') === 'ok' && state.staff.QB.interim, 'a graduate assistant as interim QB coach');
   need(spSendBack('QB') === 'ok' && !state.staff.QB, 'ending an interim');
-  fireCoach('DC'); need(spInterim('DC', 'QB') === 'no', 'an offensive coach cannot stand in on defense');
+  fireCoach('DC'); { const card = coachCard('DC'); need(card.includes('Promote from your staff') && (card.match(/data-act="sppromote" data-role="DC"/g) || []).length === 5, 'the open DC card should list five position coaches to promote'); } need(spInterim('DC', 'QB') === 'no', 'an offensive coach cannot stand in on defense');
   const lbName = state.staff.LB.name; need(spInterim('DC', 'LB') === 'ok' && state.staff.DC.interim && state.staff.DC.name === lbName && state.staff.LB && state.staff.LB.name === lbName, 'the LB coach as interim DC keeps his own job');
   need(spKeep('DC') === 'ok' && !state.staff.DC.interim && state.staff.DC.salary > 0 && state.staff.DC.years > 0 && !state.staff.LB, 'giving the interim DC the job opens the LB job');
   // straight promotion

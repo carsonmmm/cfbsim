@@ -1,6 +1,10 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.03', t: 'Promote right from the open job', n: [
+    'Easier to find (Athletic Director and Coach): when you fire a coordinator, the open job on the Staff page now lists your position coaches right on its card. Tap a name to promote him. Each button shows the rating he would have in the new job. Before, the choices were only in a separate card further down the page.',
+    'The same goes for an open special teams job, and for the head coach job: in the offseason you promote a coordinator from the card, and during the season you name him interim.',
+  ] },
   { v: '10.02', t: 'Promote from within', n: [
     'New (Athletic Director and Coach): promote your own coaches. When a job is open, the Staff page now has a "Promotions and interims" card. A position coach can move up to coordinator on his side of the ball, any position coach can take special teams, and a coordinator can become head coach. He gets a raise and a new contract, and his old job opens up.',
     'New: an interim at every job. Name one of your coaches as the interim and he keeps his own job while he covers the open one. A graduate assistant can hold a coordinator or position job too. When you are ready, give the interim the job, end the interim, or hire someone else.',

@@ -435,7 +435,7 @@ function relCardHTML() {
 }
 function coachCard(role, big) {
   const c = state.staff[role];
-  if (!c) return `<div class="coach vacant"><div class="role">${ROLE_TITLE[role]}</div><div class="cname">Vacant</div><p class="hint">${role === 'HC' ? 'Hire from the candidates below.' : 'Hire below, or leave it open and a graduate assistant fills in (rating 62).'}</p></div>`;
+  if (!c) return `<div class="coach vacant"><div class="role">${ROLE_TITLE[role]}</div><div class="cname">Vacant</div><p class="hint">${role === 'HC' ? 'Hire from the candidates below.' : 'Promote one of your coaches, hire below, or leave it open and a graduate assistant fills in (rating 62).'}</p></div>`;
   const conf = ui.confirm === 'fire-' + role;
   const ratings = role === 'HC' ? [['OFF', c.off], ['DEF', c.def], ['REC', c.rec], ['DEV', c.dev], ['GAME', c.gm]] : [['OVR', c.ovr], ['REC', c.rec], ['DEV', c.dev]];
   return `<div class="coach${big ? ' big' : ''}"><div class="role">${esc(c.title)}${c.interim ? ' <span class="pill warn">Interim</span>' : ''}</div><div class="cname">${esc(c.name)}</div>
