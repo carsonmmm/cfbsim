@@ -70,6 +70,7 @@ All of `src/js` shares one global scope, exactly as if it were one file. A file 
 | `560` | Coach mode: running your staff, interim promotions, the job market |
 | `570` | The optional real 2026 pack: loading it, real identities on your roster, the real schedule |
 | `580` | Staff moves for an AD and a head coach: promotions from within, interims at every job, the assistant head coach |
+| `590` | Player Career two-way players: weekly plan, fatigue, split training, coach trust, schools, awards, draft and NFL packages (`cs.x.tw`) |
 
 ## How the game is put together
 
@@ -118,6 +119,7 @@ node tests/run.js tests/agent.js          # Agent mode: twelve years played by a
 node tests/run.js tests/hscoach.js        # High School Coach: fifteen seasons, the recruiting link and the college job
 node tests/run.js tests/coachjobs.js      # Coach mode: hiring and firing as head coach, interim promotions, the job market
 node tests/run.js tests/staffmoves.js     # promoting from within, interims at every job, the assistant head coach
+node tests/run.js tests/twoway.js         # Player Career two-way players, through a full career
 node tests/run.js tests/balance.js        # seasons on autopilot stay in a believable range
 node tests/realpack.js                    # the real 2026 pack file, and a career started with it
 node tests/admin.js                       # the admin panels, typed into with a real keyboard and mouse

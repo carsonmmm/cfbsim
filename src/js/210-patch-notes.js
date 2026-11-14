@@ -1,6 +1,19 @@
 /* ===================== PATCH NOTES: every update since the first version ===================== */
 // Newest first. The Home screen shows the latest one; "All updates" opens the full history.
 const PATCH_NOTES = [
+  { v: '10.04', t: 'Two-way players, rebuilt', n: [
+    'Player Career: playing two positions is now something you manage every week, not a switch you flip once.',
+    'New: a weekly two-way plan on the Home page. Choose mostly your main position, balanced, more of the second position, or every snap. Each choice shows the snaps you get on the other side and what it does to your fatigue.',
+    'New: fatigue. Playing both ways wears you down. Tired legs cost rating points on both sides and raise your injury risk. A lighter plan, a bye week or a rest week brings it back, and the trainer will step in when it gets bad.',
+    'New: you split your own training. Pick how much of every skill point goes to the second position (none, 25%, 50% or 75%) and spend those points on its ratings yourself. The second position no longer grows much on its own.',
+    'New: the coach has to trust you over there. You start as a situational player, then earn a place in the rotation, then a starting job. Good games on that side raise his trust; playing worn down lowers it.',
+    'New: talks with the coach. He may ask you to give up the second position when your main one slips, or ask a one-position player to help out when a starter is hurt. Once a season you can also ask him to try you on the other side, so a career no longer has to start as two-way.',
+    'New: schools differ. Some promise both ways, some are open to it, some want one position. The recruiting and transfer pages show which is which, and it sets how much the coaches trust you on day one. Two-way players get a little more NIL money.',
+    'New: awards and records. A national Two-Way Player of the Year, an All-State two-way honor in high school, a lift in the Heisman race for doing both well, and a news story when you score a touchdown and get a takeaway or sack in the same game. Your player page keeps a count of two-way games, iron-man games and those big games.',
+    'New: the draft and the NFL. Before the draft you see how many clubs grade you at each position and how many would use you at both. The club that takes you may ask you to switch positions, or give you a package of snaps on the other side. Without one, you can ask for a package once a season. The club takes it away if your main job slips.',
+    'You can also make your second position your main one when it has caught up.',
+    'Careers from before this update keep their second position and pick up the new system where they are.',
+  ] },
   { v: '10.03', t: 'Promote right from the open job', n: [
     'Easier to find (Athletic Director and Coach): when you fire a coordinator, the open job on the Staff page now lists your position coaches right on its card. Tap a name to promote him. Each button shows the rating he would have in the new job. Before, the choices were only in a separate card further down the page.',
     'The same goes for an open special teams job, and for the head coach job: in the offseason you promote a coordinator from the card, and during the season you name him interim.',

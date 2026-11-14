@@ -244,7 +244,7 @@ function cgNew(spec) {
     line: {}, log: [], plays: [], decN: 0, decOk: 0, pending: null, trust: 0, lgId: spec.lgId || null, oppTid: spec.oppTid || null, hsIdx: spec.hsIdx,
   };
   g.total = g.N * 2;
-  g.share2 = twoWayOn() && share > 0 ? clamp(0.2 + (cOvr2(me) - 65) * 0.012, 0.08, 0.5) : 0; /* a two-way player's snaps on the other side */
+  g.share2 = twoWayOn() && share > 0 ? (typeof twShare2 === 'function' ? twShare2() : clamp(0.2 + (cOvr2(me) - 65) * 0.012, 0.08, 0.5)) : 0; /* a two-way player's snaps on the other side */
   // which of the player's drives get a snap decision
   const mine = []; for (let i = 0; i < g.total; i++) { const s = (i + g.first) % 2; if ((side === 'off') === (s === mi)) mine.push(i); }
   let k = cSpec(pos) ? (share >= 0.9 ? ri(1, 2) : 0) : share >= 0.9 ? ri(6, 9) : share >= 0.3 ? ri(2, 3) : share > 0 ? (R() < 0.5 ? 1 : 0) : 0;
@@ -401,8 +401,8 @@ function cgDrive(g, s, dec) {
   else if (out === 'td') { pts = R() < 0.96 ? 7 : 6; }
   else if (out === 'fg') { pts = 3; }
   g.pts[s] += pts; g.q[s][qi] += pts;
-  const bg = bgStats(g, s, out, !!dec, dec && dec.credited);
-  if (g.share2) { const b2 = bgStats(g, s, out, false, false, { pos: cs.p.two, a: cs.p.a2, share: g.share2, rank: 1 }); if (b2.me) bg.me = bg.me ? bg.me + '; ' + b2.me : b2.me; }
+  const bg = bgStats(g, s, out, !!dec, dec && dec.credited, typeof twAlt1 === 'function' ? twAlt1(g) : undefined);
+  if (g.share2) { const b2 = bgStats(g, s, out, false, false, typeof twAlt2 === 'function' ? twAlt2(g) : { pos: cs.p.two, a: cs.p.a2, share: g.share2, rank: 1 }); if (b2.me) g.tw2 = (g.tw2 || 0) + 1; if (b2.me) bg.me = bg.me ? bg.me + '; ' + b2.me : b2.me; }
   txt = dec ? dec.dtxt : '';
   g.log.unshift({ i: g.i, qtr: c.qtr, clock: c.clock, s, out, np: bg.np, yds: bg.yds, txt, me: bg.me, dec: !!dec, pick6: dec && dec.pick6 });
   g.i++;
@@ -423,7 +423,7 @@ function bgStats(g, s, out, hadDec, credited, alt) {
   const hsBoost = cs.lvl === 'hs' ? 1.1 : 1;
   const passRate = pos === 'QB' && me.style === 'dual' ? 0.43 : 0.47;
   let pp = Math.round(plays * passRate + (R() - 0.5)); pp = clamp(pp, 0, plays); const rp = plays - pp;
-  const decAdj = 0; const B = alt ? 1 : g.bgScale || 1;
+  const decAdj = 0; const B = alt && !alt.main ? 1 : g.bgScale || 1;
   const oppU = { off: unitLvl(g, g.F[1 - g.mi].off), def: unitLvl(g, g.F[1 - g.mi].def) }; const a = alt ? alt.a : me.a;
   const passTD = out === 'td' && !credited && R() < 0.58; const rushTD = out === 'td' && !credited && !passTD;
   const intTO = out === 'to' && !(hadDec) && R() < 0.55; const fumTO = out === 'to' && !hadDec && !intTO;

@@ -24,6 +24,7 @@ Effort: **S** is a day or less, **M** is a few days, **L** is a week or more.
 - Search and link-preview tags, an icon, a not-found page, a sitemap, the page language.
 - Coach mode: hiring and firing as head coach, interim promotions and a better job market (9.62).
 - Promoting from within: move your own coaches up, name an interim at any job, and an optional assistant head coach (10.02).
+- Two-way players rebuilt in Player Career: a weekly snap plan, fatigue, split training, coach's trust, awards, the draft and NFL packages (10.04).
 - The optional real 2026 pack: real rosters for all 138 schools and the real 2026 schedule (10.00).
 
 **A correction to my first review.** I wrote that saves could run out of room at about 5 MB. I had measured the save before it is stored. Saves are compressed: a six-season athletic director save takes 134 KB, so the limit is roughly 35 long careers away. Moving saves to a different kind of storage is not needed, and I did not do it. The storage note covers the rare case.
